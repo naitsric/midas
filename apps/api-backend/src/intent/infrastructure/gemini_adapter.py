@@ -1,0 +1,85 @@
+import json
+
+import google.generativeai as genai
+
+from src.conversation.domain.entities import Conversation
+from src.intent.domain.entities import IntentResult
+from src.intent.domain.exceptions import IntentDetectionError
+from src.intent.domain.ports import IntentDetector
+from src.intent.domain.value_objects import Confidence, ExtractedEntities, ProductType
+
+PRODUCT_TYPE_MAP = {
+    "mortgage": ProductType.MORTGAGE,
+    "auto_loan": ProductType.AUTO_LOAN,
+    "refinance": ProductType.REFINANCE,
+    "insurance": ProductType.INSURANCE,
+}
+
+SYSTEM_PROMPT = (
+    "Eres un analizador de intención financiera. "
+    "Analiza conversaciones entre asesores financieros y clientes.\n\n"
+    "Detecta si hay intención clara de adquirir un producto financiero "
+    "(mortgage, auto_loan, refinance, insurance).\n\n"
+    "Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional:\n"
+    "{\n"
+    '    "intent_detected": true/false,\n'
+    '    "confidence": 0.0-1.0,\n'
+    '    "product_type": "mortgage" | "auto_loan" | "refinance" | "insurance" | null,\n'
+    '    "entities": {\n'
+    '        "amount": "monto o null",\n'
+    '        "term": "plazo o null",\n'
+    '        "location": "ubicación o null"\n'
+    "    },\n"
+    '    "summary": "resumen breve de la intención detectada"\n'
+    "}"
+)
+
+
+class GeminiIntentDetector(IntentDetector):
+    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash"):
+        genai.configure(api_key=api_key)
+        self._model = genai.GenerativeModel(model_name, system_instruction=SYSTEM_PROMPT)
+
+    async def detect(self, conversation: Conversation) -> IntentResult:
+        conversation_text = "\n".join(
+            f"{'Asesor' if m.sender.is_advisor else 'Cliente'} ({m.sender.name}): {m.text}"
+            for m in conversation.messages
+        )
+
+        prompt = f"Analiza esta conversación:\n\n{conversation_text}"
+
+        try:
+            response = self._model.generate_content(prompt)
+            return self._parse_response(response.text)
+        except Exception as e:
+            if isinstance(e, IntentDetectionError):
+                raise
+            raise IntentDetectionError(f"Error al comunicarse con Gemini: {e}") from e
+
+    def _parse_response(self, text: str) -> IntentResult:
+        try:
+            data = json.loads(text.strip())
+        except json.JSONDecodeError as e:
+            raise IntentDetectionError(f"Respuesta de Gemini no es JSON válido: {text[:200]}") from e
+
+        if not data.get("intent_detected"):
+            return IntentResult.not_detected(summary=data.get("summary", "Sin intención detectada"))
+
+        product_type_str = data.get("product_type")
+        product_type = PRODUCT_TYPE_MAP.get(product_type_str)
+        if product_type is None:
+            raise IntentDetectionError(f"Tipo de producto no reconocido: {product_type_str}")
+
+        entities_data = data.get("entities", {})
+        entities = ExtractedEntities(
+            amount=entities_data.get("amount"),
+            term=entities_data.get("term"),
+            location=entities_data.get("location"),
+        )
+
+        return IntentResult.detected(
+            product_type=product_type,
+            confidence=Confidence(float(data.get("confidence", 0.0))),
+            entities=entities,
+            summary=data.get("summary", ""),
+        )

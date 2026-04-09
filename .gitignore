@@ -1,0 +1,21 @@
+# Source files (PDFs, DOCX, XLSX)
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+
+# OS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Environment
+.env
+
+# Obsidian
+.obsidian/

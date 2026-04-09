@@ -1,0 +1,36 @@
+[project]
+name = "midas-api"
+version = "0.1.0"
+description = "MIDAS Conversation Intelligence API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "google-generativeai>=0.8.0",
+    "pydantic>=2.10.0",
+    "python-dotenv>=1.0.0",
+    "uvicorn>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "integration: tests que requieren servicios externos (Gemini API, DB)",
+    "e2e: tests end-to-end del flujo completo",
+]
+addopts = "-m 'not integration and not e2e'"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]

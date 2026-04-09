@@ -1,0 +1,56 @@
+#midas-root {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 280px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.midas-sidebar-header {
+  background-color: #00a884;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.midas-sidebar-content {
+  padding: 16px;
+  color: #3b4a54;
+}
+
+#midas-status {
+  font-size: 14px;
+  color: #667781;
+}
+
+#midas-intent-card {
+  margin-top: 10px;
+  background-color: #f0f2f5;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+#generate-app-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #00a884;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#generate-app-btn:hover {
+  background-color: #008f72;
+}
