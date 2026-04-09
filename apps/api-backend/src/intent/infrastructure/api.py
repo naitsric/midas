@@ -2,7 +2,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
 
-from src.conversation.application.use_cases import GetConversation
+from src.advisor.domain.entities import Advisor
+from src.advisor.infrastructure.auth import RequireAdvisor
 from src.conversation.domain.ports import ConversationRepository
 from src.conversation.domain.value_objects import ConversationId
 from src.intent.application.use_cases import DetectFinancialIntent
@@ -13,12 +14,11 @@ from src.intent.infrastructure.schemas import IntentResponse
 
 def create_intent_router(repository: ConversationRepository, detector: IntentDetector) -> APIRouter:
     router = APIRouter(prefix="/api/conversations", tags=["intent"])
-    get_conversation = GetConversation(repository)
     detect_intent = DetectFinancialIntent(detector)
 
     @router.post("/{conversation_id}/detect-intent")
-    async def detect_conversation_intent(conversation_id: UUID) -> IntentResponse:
-        conv = await get_conversation.execute(ConversationId(conversation_id))
+    async def detect_conversation_intent(conversation_id: UUID, advisor: Advisor = RequireAdvisor) -> IntentResponse:
+        conv = await repository.find_by_id_and_advisor(ConversationId(conversation_id), advisor.id)
         if conv is None:
             raise HTTPException(status_code=404, detail="Conversación no encontrada")
 

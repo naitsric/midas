@@ -1,5 +1,6 @@
 import pytest
 
+from src.advisor.domain.value_objects import AdvisorId
 from src.conversation.domain.entities import Conversation
 from src.conversation.domain.value_objects import MessageSender
 from src.intent.application.use_cases import DetectFinancialIntent
@@ -27,7 +28,7 @@ class FailingIntentDetector(IntentDetector):
 
 
 def _conversation_with_messages() -> Conversation:
-    conv = Conversation.create(advisor_name="Carlos", client_name="María")
+    conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
     conv.add_message(sender=MessageSender.advisor("Carlos"), text="Hola María, ¿en qué te puedo ayudar?")
     conv.add_message(sender=MessageSender.client("María"), text="Estoy buscando un crédito hipotecario de 250 millones")
     conv.add_message(sender=MessageSender.advisor("Carlos"), text="Perfecto, ¿a cuántos años lo quieres?")
@@ -70,7 +71,7 @@ class TestDetectFinancialIntent:
         detector = FakeIntentDetector(IntentResult.not_detected(summary=""))
         use_case = DetectFinancialIntent(detector)
 
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
 
         with pytest.raises(IntentDetectionError, match="mensajes"):
             await use_case.execute(conv)

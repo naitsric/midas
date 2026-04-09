@@ -23,15 +23,28 @@ def client():
     return TestClient(app)
 
 
+def _register_advisor(client: TestClient) -> str:
+    """Registra un asesor y retorna el api_key."""
+    resp = client.post(
+        "/api/advisors",
+        json={"name": "Carlos", "email": "carlos@test.com", "phone": "3001234567"},
+    )
+    return resp.json()["api_key"]
+
+
 @pytest.mark.e2e
 class TestFullAdvisorFlow:
     """Flujo completo tal como lo usaría la extensión Chrome."""
 
     def test_mortgage_flow(self, client):
+        api_key = _register_advisor(client)
+        headers = {"X-API-Key": api_key}
+
         # 1. Asesor abre conversación
         resp = client.post(
             "/api/conversations",
             json={"advisor_name": "Carlos", "client_name": "María"},
+            headers=headers,
         )
         assert resp.status_code == 201
         conv_id = resp.json()["id"]
@@ -47,15 +60,15 @@ class TestFullAdvisorFlow:
             {"sender_name": "Carlos", "is_advisor": True, "text": "Perfecto, déjame revisar opciones para ti."},
         ]
         for msg in messages:
-            resp = client.post(f"/api/conversations/{conv_id}/messages", json=msg)
+            resp = client.post(f"/api/conversations/{conv_id}/messages", json=msg, headers=headers)
             assert resp.status_code == 201
 
         # 3. Verificar que la conversación tiene todos los mensajes
-        resp = client.get(f"/api/conversations/{conv_id}")
+        resp = client.get(f"/api/conversations/{conv_id}", headers=headers)
         assert resp.json()["message_count"] == 3
 
         # 4. Detectar intención financiera
-        resp = client.post(f"/api/conversations/{conv_id}/detect-intent")
+        resp = client.post(f"/api/conversations/{conv_id}/detect-intent", headers=headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["intent_detected"] is True
@@ -64,10 +77,14 @@ class TestFullAdvisorFlow:
         assert data["confidence"] >= 0.7
 
     def test_casual_conversation_no_intent(self, client):
+        api_key = _register_advisor(client)
+        headers = {"X-API-Key": api_key}
+
         # 1. Conversación casual sin intención financiera
         resp = client.post(
             "/api/conversations",
             json={"advisor_name": "Carlos", "client_name": "Pedro"},
+            headers=headers,
         )
         conv_id = resp.json()["id"]
 
@@ -77,19 +94,23 @@ class TestFullAdvisorFlow:
             {"sender_name": "Carlos", "is_advisor": True, "text": "Sí, estuvo bueno. Hablamos luego."},
         ]
         for msg in messages:
-            client.post(f"/api/conversations/{conv_id}/messages", json=msg)
+            client.post(f"/api/conversations/{conv_id}/messages", json=msg, headers=headers)
 
         # 2. No debe detectar intención
-        resp = client.post(f"/api/conversations/{conv_id}/detect-intent")
+        resp = client.post(f"/api/conversations/{conv_id}/detect-intent", headers=headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["intent_detected"] is False
         assert data["is_actionable"] is False
 
     def test_auto_loan_flow(self, client):
+        api_key = _register_advisor(client)
+        headers = {"X-API-Key": api_key}
+
         resp = client.post(
             "/api/conversations",
             json={"advisor_name": "Carlos", "client_name": "Luis"},
+            headers=headers,
         )
         conv_id = resp.json()["id"]
 
@@ -101,9 +122,10 @@ class TestFullAdvisorFlow:
                 "text": "Carlos, quiero financiar una camioneta de 80 millones. "
                 "¿Qué opciones de crédito vehicular hay?",
             },
+            headers=headers,
         )
 
-        resp = client.post(f"/api/conversations/{conv_id}/detect-intent")
+        resp = client.post(f"/api/conversations/{conv_id}/detect-intent", headers=headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["intent_detected"] is True

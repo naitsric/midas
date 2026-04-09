@@ -2,7 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
 
-from src.conversation.application.use_cases import GetConversation, SaveConversation
+from src.advisor.domain.entities import Advisor
+from src.advisor.infrastructure.auth import RequireAdvisor
+from src.conversation.application.use_cases import SaveConversation
 from src.conversation.domain.entities import Conversation
 from src.conversation.domain.ports import ConversationRepository
 from src.conversation.domain.value_objects import ConversationId, MessageSender
@@ -17,7 +19,6 @@ from src.conversation.infrastructure.schemas import (
 def create_conversation_router(repository: ConversationRepository) -> APIRouter:
     router = APIRouter(prefix="/api/conversations", tags=["conversations"])
     save_use_case = SaveConversation(repository)
-    get_use_case = GetConversation(repository)
 
     def _to_response(conv: Conversation) -> ConversationResponse:
         return ConversationResponse(
@@ -37,9 +38,18 @@ def create_conversation_router(repository: ConversationRepository) -> APIRouter:
             created_at=conv.created_at.isoformat(),
         )
 
+    async def _get_conversation_for_advisor(conversation_id: UUID, advisor: Advisor) -> Conversation:
+        conv = await repository.find_by_id_and_advisor(ConversationId(conversation_id), advisor.id)
+        if conv is None:
+            raise HTTPException(status_code=404, detail="Conversación no encontrada")
+        return conv
+
     @router.post("", status_code=201)
-    async def create_conversation(request: CreateConversationRequest) -> ConversationResponse:
+    async def create_conversation(
+        request: CreateConversationRequest, advisor: Advisor = RequireAdvisor
+    ) -> ConversationResponse:
         conv = Conversation.create(
+            advisor_id=advisor.id,
             advisor_name=request.advisor_name,
             client_name=request.client_name,
         )
@@ -47,17 +57,15 @@ def create_conversation_router(repository: ConversationRepository) -> APIRouter:
         return _to_response(conv)
 
     @router.get("/{conversation_id}")
-    async def get_conversation(conversation_id: UUID) -> ConversationResponse:
-        conv = await get_use_case.execute(ConversationId(conversation_id))
-        if conv is None:
-            raise HTTPException(status_code=404, detail="Conversación no encontrada")
+    async def get_conversation(conversation_id: UUID, advisor: Advisor = RequireAdvisor) -> ConversationResponse:
+        conv = await _get_conversation_for_advisor(conversation_id, advisor)
         return _to_response(conv)
 
     @router.post("/{conversation_id}/messages", status_code=201)
-    async def add_message(conversation_id: UUID, request: AddMessageRequest) -> ConversationResponse:
-        conv = await get_use_case.execute(ConversationId(conversation_id))
-        if conv is None:
-            raise HTTPException(status_code=404, detail="Conversación no encontrada")
+    async def add_message(
+        conversation_id: UUID, request: AddMessageRequest, advisor: Advisor = RequireAdvisor
+    ) -> ConversationResponse:
+        conv = await _get_conversation_for_advisor(conversation_id, advisor)
 
         sender = (
             MessageSender.advisor(request.sender_name)

@@ -1,5 +1,6 @@
 import pytest
 
+from src.advisor.domain.value_objects import AdvisorId
 from src.conversation.application.use_cases import GetConversation, SaveConversation
 from src.conversation.domain.entities import Conversation
 from src.conversation.domain.value_objects import ConversationId, MessageSender
@@ -24,7 +25,7 @@ def get_conversation(repository):
 class TestSaveConversation:
     @pytest.mark.asyncio
     async def test_save_new_conversation(self, save_conversation, get_conversation):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         conv.add_message(sender=MessageSender.advisor("Carlos"), text="Hola")
 
         await save_conversation.execute(conv)
@@ -37,7 +38,7 @@ class TestSaveConversation:
 
     @pytest.mark.asyncio
     async def test_save_updates_existing(self, save_conversation, get_conversation):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         conv.add_message(sender=MessageSender.advisor("Carlos"), text="Hola")
         await save_conversation.execute(conv)
 
@@ -51,7 +52,7 @@ class TestSaveConversation:
 class TestGetConversation:
     @pytest.mark.asyncio
     async def test_get_existing(self, save_conversation, get_conversation):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         await save_conversation.execute(conv)
 
         found = await get_conversation.execute(conv.id)

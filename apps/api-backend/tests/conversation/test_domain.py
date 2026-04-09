@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 
+from src.advisor.domain.value_objects import AdvisorId
 from src.conversation.domain.entities import Conversation, Message
 from src.conversation.domain.exceptions import EmptyConversationError, InvalidMessageError
 from src.conversation.domain.value_objects import ConversationId, MessageSender
@@ -80,38 +81,38 @@ class TestConversation:
         return MessageSender.client("María")
 
     def test_create_conversation(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         assert conv.id is not None
         assert conv.advisor_name == "Carlos"
         assert conv.client_name == "María"
         assert len(conv.messages) == 0
 
     def test_add_message(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         conv.add_message(sender=self._advisor(), text="Hola")
         assert len(conv.messages) == 1
         assert conv.messages[0].text == "Hola"
 
     def test_add_multiple_messages(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         conv.add_message(sender=self._advisor(), text="Hola")
         conv.add_message(sender=self._client(), text="Necesito un crédito hipotecario")
         conv.add_message(sender=self._advisor(), text="Claro, ¿de cuánto?")
         assert len(conv.messages) == 3
 
     def test_message_count(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         assert conv.message_count == 0
         conv.add_message(sender=self._advisor(), text="Hola")
         assert conv.message_count == 1
 
     def test_last_message(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         conv.add_message(sender=self._advisor(), text="Hola")
         conv.add_message(sender=self._client(), text="Necesito un crédito")
         assert conv.last_message.text == "Necesito un crédito"
 
     def test_last_message_empty_raises(self):
-        conv = Conversation.create(advisor_name="Carlos", client_name="María")
+        conv = Conversation.create(advisor_id=AdvisorId.generate(), advisor_name="Carlos", client_name="María")
         with pytest.raises(EmptyConversationError):
             _ = conv.last_message
