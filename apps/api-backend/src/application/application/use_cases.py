@@ -32,3 +32,11 @@ class GetCreditApplication:
 
     async def execute(self, application_id: ApplicationId) -> CreditApplication | None:
         return await self._repository.find_by_id(application_id)
+
+
+class ListCreditApplications:
+    def __init__(self, repository: ApplicationRepository):
+        self._repository = repository
+
+    async def execute(self, advisor_id: AdvisorId) -> list[CreditApplication]:
+        return await self._repository.find_all_by_advisor(advisor_id)

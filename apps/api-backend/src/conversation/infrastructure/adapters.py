@@ -21,3 +21,6 @@ class InMemoryConversationRepository(ConversationRepository):
         if conv is not None and conv.advisor_id == advisor_id:
             return conv
         return None
+
+    async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[Conversation]:
+        return [c for c in self._store.values() if c.advisor_id == advisor_id]

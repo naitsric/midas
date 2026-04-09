@@ -15,7 +15,7 @@ MIDAS es una plataforma de **WhatsApp Conversation Intelligence para asesores fi
 ```
 midas/
 ├── apps/
-│   ├── api-backend/       # FastAPI + Google Gemini — intent detection API
+│   ├── api-backend/       # FastAPI + Google Gemini — multi-tenant API (intent detection, credit applications)
 │   └── chrome-extension/  # Manifest V3 extension for WhatsApp Web
 ├── architecture/          # Architecture docs, ADRs, diagrams
 ├── company/               # Vision, mission, glossary
@@ -41,6 +41,8 @@ uv run uvicorn src.main:app --reload --port 8000
 uv run pytest                          # Corre solo unit tests por defecto
 uv run pytest tests/conversation/ -q   # Bounded context: Conversation
 uv run pytest tests/intent/ -q         # Bounded context: Intent
+uv run pytest tests/advisor/ -q        # Bounded context: Advisor
+uv run pytest tests/application/ -q    # Bounded context: Application
 
 # Integration tests (requiere GEMINI_API_KEY en .env)
 uv run pytest -m integration           # Gemini real, DB real (cuando exista)
@@ -91,7 +93,10 @@ The extension connects to the API backend at `http://localhost:8000`.
 
 ## Key domain concepts
 
+- **Multi-tenancy por asesor**: cada asesor es un tenant aislado. Toda entidad (conversación, solicitud) pertenece a un `AdvisorId`. Los repositorios exponen `find_by_id_and_advisor()` para garantizar aislamiento — un asesor nunca ve datos de otro.
+- **Autenticación por API Key**: cada asesor recibe un `ApiKey` (prefijo `midas_*`) al registrarse. Todos los endpoints (excepto registro y health) requieren `X-API-Key` header. El dependency `RequireAdvisor` inyecta el asesor autenticado en cada handler.
 - **Asesores financieros independientes**: contratistas que venden productos financieros usando WhatsApp personal. Su cartera de clientes ES su negocio.
+- **Ciclo de vida del asesor**: ACTIVE → SUSPENDED (con razón) → ACTIVE, o ACTIVE → DEACTIVATED (terminal). Solo asesores ACTIVE pueden autenticarse.
 - **Captura pasiva**: la extensión Chrome lee conversaciones de WhatsApp Web sin data entry manual. Requiere consentimiento de ambas partes.
 - **Detección de intención financiera**: IA analiza conversaciones para identificar necesidad de un producto financiero específico.
 - **Solicitud pre-llenada**: solicitud de crédito generada automáticamente con datos extraídos de la conversación. Es el "aha moment" del producto.
@@ -113,11 +118,15 @@ The extension connects to the API backend at `http://localhost:8000`.
 
 ## Architecture (API Backend)
 
-**Hexagonal (Ports & Adapters) + DDD + TDD**
+**Hexagonal (Ports & Adapters) + DDD + TDD + Multi-tenant**
 
 ```
 src/
-├── conversation/              # Bounded Context: Conversation
+├── advisor/                   # Bounded Context: Advisor (tenant identity + auth)
+│   ├── domain/                # Advisor entity, AdvisorId/ApiKey/AdvisorStatus VOs, ports
+│   ├── application/           # Use cases (RegisterAdvisor, AuthenticateAdvisor, GetAdvisor)
+│   └── infrastructure/        # InMemoryRepo, RequireAdvisor auth dependency, FastAPI router
+├── conversation/              # Bounded Context: Conversation (scoped by AdvisorId)
 │   ├── domain/                # Entities, Value Objects, Ports, Exceptions
 │   ├── application/           # Use cases (SaveConversation, GetConversation)
 │   └── infrastructure/        # Adapters (InMemoryRepo, FastAPI router, schemas)
@@ -125,20 +134,33 @@ src/
 │   ├── domain/                # IntentResult, Confidence, ProductType, IntentDetector port
 │   ├── application/           # Use cases (DetectFinancialIntent)
 │   └── infrastructure/        # GeminiIntentDetector adapter, FastAPI router, schemas
+├── application/               # Bounded Context: Credit Application (scoped by AdvisorId)
+│   ├── domain/                # CreditApplication entity, Applicant/ProductRequest VOs, ports
+│   ├── application/           # Use cases (GenerateCreditApplication)
+│   └── infrastructure/        # GeminiApplicationGenerator, InMemoryRepo, FastAPI router
 └── main.py                    # Composition root — dependency injection via create_app()
 ```
 
+- **Multi-tenant por diseño**: el `AdvisorId` es el tenant key. Todas las entidades llevan `advisor_id`. Los repository ports definen `find_by_id_and_advisor(entity_id, advisor_id)` y `find_all_by_advisor(advisor_id)` — no existe query sin scope de tenant.
+- **Auth como bounded context**: `RequireAdvisor` (FastAPI Depends) valida `X-API-Key`, resuelve el `Advisor` activo, y lo inyecta en todos los handlers. El registro (`POST /api/advisors`) es el único endpoint público.
 - **Domain layer**: sin dependencias externas (solo stdlib + Pydantic). Value objects inmutables (`@dataclass(frozen=True)`)
 - **Ports**: interfaces abstractas (ABC). Adapters: implementaciones concretas
-- **Composition root**: `create_app()` acepta repos y detectors inyectados — para tests se pasan fakes, en producción se usan los reales
+- **Composition root**: `create_app()` acepta repos, detectors y generators inyectados — para tests se pasan fakes, en producción se usan los reales
 - **TDD**: tests primero (RED), implementación después (GREEN), refactor
 
 ### API Endpoints
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/api/conversations` | Crear conversación |
-| `GET` | `/api/conversations/{id}` | Obtener conversación |
-| `POST` | `/api/conversations/{id}/messages` | Agregar mensaje |
-| `POST` | `/api/conversations/{id}/detect-intent` | Detectar intención financiera |
+| Método | Endpoint | Auth | Descripción |
+|--------|----------|------|-------------|
+| `GET` | `/health` | No | Health check |
+| `POST` | `/api/advisors` | No | Registrar asesor (devuelve API key) |
+| `GET` | `/api/advisors/me` | Si | Perfil del asesor autenticado |
+| `GET` | `/api/conversations` | Si | Listar conversaciones del asesor |
+| `POST` | `/api/conversations` | Si | Crear conversación |
+| `POST` | `/api/conversations/import` | Si | Importar conversación completa con mensajes |
+| `GET` | `/api/conversations/{id}` | Si | Obtener conversación |
+| `POST` | `/api/conversations/{id}/messages` | Si | Agregar mensaje |
+| `POST` | `/api/conversations/{id}/detect-intent` | Si | Detectar intención financiera |
+| `POST` | `/api/conversations/{id}/generate-application` | Si | Generar solicitud de crédito |
+| `GET` | `/api/applications` | Si | Listar solicitudes del asesor |
+| `GET` | `/api/applications/{id}` | Si | Obtener solicitud |

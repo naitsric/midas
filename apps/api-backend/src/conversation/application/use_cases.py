@@ -1,3 +1,4 @@
+from src.advisor.domain.value_objects import AdvisorId
 from src.conversation.domain.entities import Conversation
 from src.conversation.domain.ports import ConversationRepository
 from src.conversation.domain.value_objects import ConversationId
@@ -17,3 +18,11 @@ class GetConversation:
 
     async def execute(self, conversation_id: ConversationId) -> Conversation | None:
         return await self._repository.find_by_id(conversation_id)
+
+
+class ListConversations:
+    def __init__(self, repository: ConversationRepository):
+        self._repository = repository
+
+    async def execute(self, advisor_id: AdvisorId) -> list[Conversation]:
+        return await self._repository.find_all_by_advisor(advisor_id)

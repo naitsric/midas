@@ -1,7 +1,11 @@
 import pytest
 
 from src.advisor.domain.value_objects import AdvisorId
-from src.application.application.use_cases import GenerateCreditApplication, GetCreditApplication
+from src.application.application.use_cases import (
+    GenerateCreditApplication,
+    GetCreditApplication,
+    ListCreditApplications,
+)
 from src.application.domain.entities import CreditApplication
 from src.application.domain.exceptions import ApplicationGenerationError
 from src.application.domain.ports import ApplicationGenerator, ApplicationRepository
@@ -31,6 +35,9 @@ class FakeApplicationRepository(ApplicationRepository):
         if app is not None and app.advisor_id == advisor_id:
             return app
         return None
+
+    async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[CreditApplication]:
+        return [a for a in self._store.values() if a.advisor_id == advisor_id]
 
 
 class FakeApplicationGenerator(ApplicationGenerator):
@@ -173,3 +180,49 @@ class TestGetCreditApplication:
         use_case = GetCreditApplication(repository=repo)
         result = await use_case.execute(ApplicationId.generate())
         assert result is None
+
+
+class TestListCreditApplications:
+    @pytest.mark.asyncio
+    async def test_list_empty(self):
+        repo = FakeApplicationRepository()
+        use_case = ListCreditApplications(repository=repo)
+        result = await use_case.execute(AdvisorId.generate())
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_list_returns_only_advisor_applications(self):
+        repo = FakeApplicationRepository()
+        advisor_1 = AdvisorId.generate()
+        advisor_2 = AdvisorId.generate()
+
+        app1 = CreditApplication.create(
+            advisor_id=advisor_1,
+            applicant=ApplicantData(full_name="María"),
+            product_request=ProductRequest(product_type=ProductType.MORTGAGE),
+            conversation_summary="Hipotecario",
+        )
+        app2 = CreditApplication.create(
+            advisor_id=advisor_1,
+            applicant=ApplicantData(full_name="Pedro"),
+            product_request=ProductRequest(product_type=ProductType.AUTO_LOAN),
+            conversation_summary="Vehicular",
+        )
+        app3 = CreditApplication.create(
+            advisor_id=advisor_2,
+            applicant=ApplicantData(full_name="Luis"),
+            product_request=ProductRequest(product_type=ProductType.INSURANCE),
+            conversation_summary="Seguro",
+        )
+
+        for app in [app1, app2, app3]:
+            await repo.save(app)
+
+        use_case = ListCreditApplications(repository=repo)
+        result = await use_case.execute(advisor_1)
+
+        assert len(result) == 2
+        ids = {a.id for a in result}
+        assert app1.id in ids
+        assert app2.id in ids
+        assert app3.id not in ids

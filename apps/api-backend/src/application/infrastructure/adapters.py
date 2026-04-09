@@ -21,3 +21,6 @@ class InMemoryApplicationRepository(ApplicationRepository):
         if app is not None and app.advisor_id == advisor_id:
             return app
         return None
+
+    async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[CreditApplication]:
+        return [a for a in self._store.values() if a.advisor_id == advisor_id]

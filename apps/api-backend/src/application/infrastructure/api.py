@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from src.advisor.domain.entities import Advisor
 from src.advisor.infrastructure.auth import RequireAdvisor
-from src.application.application.use_cases import GenerateCreditApplication
+from src.application.application.use_cases import GenerateCreditApplication, ListCreditApplications
 from src.application.domain.entities import CreditApplication
 from src.application.domain.exceptions import ApplicationGenerationError
 from src.application.domain.ports import ApplicationGenerator, ApplicationRepository
@@ -34,6 +34,7 @@ def create_application_router(
         repository=application_repo,
         generator=application_generator,
     )
+    list_applications = ListCreditApplications(repository=application_repo)
 
     def _to_response(app: CreditApplication) -> CreditApplicationResponse:
         return CreditApplicationResponse(
@@ -77,6 +78,11 @@ def create_application_router(
             raise HTTPException(status_code=422, detail=str(e)) from e
 
         return _to_response(app)
+
+    @router.get("/applications")
+    async def list_apps(advisor: Advisor = RequireAdvisor) -> list[CreditApplicationResponse]:
+        apps = await list_applications.execute(advisor.id)
+        return [_to_response(app) for app in apps]
 
     @router.get("/applications/{application_id}")
     async def get_app(application_id: UUID, advisor: Advisor = RequireAdvisor) -> CreditApplicationResponse:

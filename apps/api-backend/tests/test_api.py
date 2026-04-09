@@ -268,6 +268,120 @@ class TestConversationEndpoints:
         response = client.get(f"/api/conversations/{conv_id}", headers=_auth_headers(api_key_2))
         assert response.status_code == 404
 
+    def test_list_conversations_empty(self, client):
+        api_key, _ = _register_advisor(client)
+        response = client.get("/api/conversations", headers=_auth_headers(api_key))
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_list_conversations(self, client):
+        api_key, _ = _register_advisor(client)
+        headers = _auth_headers(api_key)
+
+        client.post("/api/conversations", json={"advisor_name": "Carlos", "client_name": "María"}, headers=headers)
+        client.post("/api/conversations", json={"advisor_name": "Carlos", "client_name": "Pedro"}, headers=headers)
+
+        response = client.get("/api/conversations", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 2
+        # Respuesta resumida sin mensajes
+        assert "messages" not in data[0]
+        assert "message_count" in data[0]
+
+    def test_list_conversations_only_own(self, client):
+        api_key_1, _ = _register_advisor(client)
+        resp2 = client.post(
+            "/api/advisors",
+            json={"name": "Otro", "email": "otro@example.com", "phone": "301"},
+        )
+        api_key_2 = resp2.json()["api_key"]
+
+        # Asesor 1 crea 2 conversaciones
+        client.post(
+            "/api/conversations",
+            json={"advisor_name": "Carlos", "client_name": "María"},
+            headers=_auth_headers(api_key_1),
+        )
+        # Asesor 2 crea 1 conversación
+        client.post(
+            "/api/conversations",
+            json={"advisor_name": "Otro", "client_name": "Luis"},
+            headers=_auth_headers(api_key_2),
+        )
+
+        # Asesor 1 solo ve su conversación
+        response = client.get("/api/conversations", headers=_auth_headers(api_key_1))
+        assert len(response.json()) == 1
+        assert response.json()[0]["client_name"] == "María"
+
+    def test_import_conversation(self, client):
+        api_key, _ = _register_advisor(client)
+        headers = _auth_headers(api_key)
+
+        response = client.post(
+            "/api/conversations/import",
+            json={
+                "advisor_name": "Carlos",
+                "client_name": "María",
+                "messages": [
+                    {"sender_name": "Carlos", "is_advisor": True, "text": "Hola María"},
+                    {"sender_name": "María", "is_advisor": False, "text": "Necesito un crédito hipotecario"},
+                    {"sender_name": "Carlos", "is_advisor": True, "text": "Claro, ¿de cuánto?"},
+                ],
+            },
+            headers=headers,
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["advisor_name"] == "Carlos"
+        assert data["client_name"] == "María"
+        assert data["message_count"] == 3
+        assert len(data["messages"]) == 3
+        assert data["messages"][0]["text"] == "Hola María"
+        assert data["messages"][1]["is_advisor"] is False
+
+    def test_import_conversation_empty_messages_returns_422(self, client):
+        api_key, _ = _register_advisor(client)
+        response = client.post(
+            "/api/conversations/import",
+            json={"advisor_name": "Carlos", "client_name": "María", "messages": []},
+            headers=_auth_headers(api_key),
+        )
+        assert response.status_code == 422
+
+    def test_import_conversation_appears_in_list(self, client):
+        api_key, _ = _register_advisor(client)
+        headers = _auth_headers(api_key)
+
+        client.post(
+            "/api/conversations/import",
+            json={
+                "advisor_name": "Carlos",
+                "client_name": "María",
+                "messages": [
+                    {"sender_name": "María", "is_advisor": False, "text": "Quiero un crédito"},
+                ],
+            },
+            headers=headers,
+        )
+
+        response = client.get("/api/conversations", headers=headers)
+        assert len(response.json()) == 1
+        assert response.json()[0]["client_name"] == "María"
+        assert response.json()[0]["message_count"] == 1
+
+    def test_import_without_auth_returns_401(self, client):
+        response = client.post(
+            "/api/conversations/import",
+            json={
+                "advisor_name": "Carlos",
+                "client_name": "María",
+                "messages": [{"sender_name": "Carlos", "is_advisor": True, "text": "Hola"}],
+            },
+        )
+        assert response.status_code == 401
+
 
 class TestIntentEndpoints:
     def test_detect_intent(self, client):
@@ -386,3 +500,24 @@ class TestApplicationEndpoints:
         fake_id = str(ApplicationId.generate())
         response = client.get(f"/api/applications/{fake_id}", headers=_auth_headers(api_key))
         assert response.status_code == 404
+
+    def test_list_applications_empty(self, client):
+        api_key, _ = _register_advisor(client)
+        response = client.get("/api/applications", headers=_auth_headers(api_key))
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_list_applications(self, client):
+        api_key, _ = _register_advisor(client)
+        headers = _auth_headers(api_key)
+
+        # Generar 2 solicitudes
+        conv_id_1 = self._create_conversation_with_messages(client, headers)
+        client.post(f"/api/conversations/{conv_id_1}/generate-application", headers=headers)
+
+        conv_id_2 = self._create_conversation_with_messages(client, headers)
+        client.post(f"/api/conversations/{conv_id_2}/generate-application", headers=headers)
+
+        response = client.get("/api/applications", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json()) == 2

@@ -19,3 +19,7 @@ class ConversationRepository(ABC):
         self, conversation_id: ConversationId, advisor_id: AdvisorId
     ) -> Conversation | None:
         pass
+
+    @abstractmethod
+    async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[Conversation]:
+        pass

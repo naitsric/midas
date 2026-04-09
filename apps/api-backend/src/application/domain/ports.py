@@ -22,6 +22,10 @@ class ApplicationRepository(ABC):
     ) -> CreditApplication | None:
         pass
 
+    @abstractmethod
+    async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[CreditApplication]:
+        pass
+
 
 class ApplicationGenerator(ABC):
     @abstractmethod
