@@ -1,4 +1,5 @@
 import os
+from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -30,7 +31,15 @@ def create_app(
     advisor_repo: AdvisorRepository | None = None,
     database: Database | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="MIDAS Conversation Intelligence API")
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        if database is not None:
+            await database.connect()
+        yield
+        if database is not None:
+            await database.disconnect()
+
+    app = FastAPI(title="MIDAS Conversation Intelligence API", lifespan=lifespan)
 
     app.add_middleware(
         CORSMiddleware,
@@ -44,7 +53,9 @@ def create_app(
     load_dotenv()
     database_url = os.getenv("DATABASE_URL")
 
-    if database_url and database is None:
+    # Solo crear Database si no se pasó ningún repo explícito (ej: en tests se pasan fakes)
+    any_repo_passed = any([conversation_repo, intent_detector, application_repo, application_generator, advisor_repo])
+    if database_url and database is None and not any_repo_passed:
         database = Database(database_url)
 
     if database is not None:
@@ -58,14 +69,6 @@ def create_app(
             conversation_repo = PostgresConversationRepository(database)
         if application_repo is None:
             application_repo = PostgresApplicationRepository(database)
-
-        @app.on_event("startup")
-        async def startup():
-            await database.connect()
-
-        @app.on_event("shutdown")
-        async def shutdown():
-            await database.disconnect()
     else:
         if conversation_repo is None:
             conversation_repo = InMemoryConversationRepository()

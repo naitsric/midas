@@ -3,7 +3,8 @@
  *
  * Los selectores de WhatsApp Web cambian frecuentemente (clases ofuscadas).
  * Centralizamos aquí para facilitar mantenimiento.
- * Preferimos data-testid cuando está disponible.
+ *
+ * Selectores verificados: 2026-04-09
  */
 
 // eslint-disable-next-line no-var
@@ -14,43 +15,29 @@ var MIDAS = window.MIDAS || {};
 
   const SELECTORS = {
     // Header del chat activo — contiene nombre del contacto
-    chatHeader: '[data-testid="conversation-info-header-chat-title"]',
-    chatHeaderFallback: "header span[title]",
+    chatHeader: "header span[title]",
 
-    // Contenedor de mensajes
-    messageList: '[data-testid="conversation-panel-messages"]',
-    messageListFallback: '[role="application"]',
-
-    // Cada burbuja de mensaje
-    messageRow: '[data-testid="msg-container"]',
-    messageRowFallback: ".message-in, .message-out",
+    // Cada fila de mensaje (WhatsApp usa role="row" para cada burbuja)
+    messageRow: '[role="row"]',
 
     // Texto dentro de un mensaje
-    messageText: '[data-testid="msg-text"]',
-    messageTextFallback: "span.selectable-text",
+    messageText: '[data-testid="selectable-text"]',
 
-    // Mensajes salientes (del asesor) vs entrantes (del cliente)
+    // Clases que WhatsApp inyecta dentro del row para distinguir dirección
     outgoing: ".message-out",
-
-    // Nombre del usuario en el perfil/header
-    profileName: '[data-testid="drawer-header-title"]',
+    incoming: ".message-in",
   };
 
-  function querySelector(parent, primary, fallback) {
-    return parent.querySelector(primary) || parent.querySelector(fallback);
-  }
-
   function getActiveChatName() {
-    const el = querySelector(document, SELECTORS.chatHeader, SELECTORS.chatHeaderFallback);
+    const el = document.querySelector(SELECTORS.chatHeader);
     return el?.textContent?.trim() || null;
   }
 
   function getOwnName() {
-    const profileEl = document.querySelector(SELECTORS.profileName);
-    if (profileEl?.textContent?.trim()) {
-      return profileEl.textContent.trim();
-    }
-    return null;
+    // En chats individuales no se muestra el nombre propio.
+    // Usamos el título del header del drawer de perfil si está abierto.
+    const profileEl = document.querySelector('[data-testid="drawer-header-title"]');
+    return profileEl?.textContent?.trim() || null;
   }
 
   function scrapeActiveChat() {
@@ -59,31 +46,23 @@ var MIDAS = window.MIDAS || {};
       return { advisor_name: null, client_name: null, messages: [] };
     }
 
-    const messageContainer = querySelector(
-      document,
-      SELECTORS.messageList,
-      SELECTORS.messageListFallback
-    );
-    if (!messageContainer) {
+    const rows = document.querySelectorAll(SELECTORS.messageRow);
+    if (!rows.length) {
       return { advisor_name: null, client_name: clientName, messages: [] };
     }
-
-    const rows = messageContainer.querySelectorAll(
-      `${SELECTORS.messageRow}, ${SELECTORS.messageRowFallback}`
-    );
 
     const messages = [];
     const advisorName = getOwnName();
 
     for (const row of rows) {
-      const textEl = querySelector(row, SELECTORS.messageText, SELECTORS.messageTextFallback);
+      const textEl = row.querySelector(SELECTORS.messageText);
       if (!textEl) continue;
 
       const text = textEl.textContent?.trim();
       if (!text) continue;
 
-      const isOutgoing =
-        row.closest(SELECTORS.outgoing) !== null || row.classList.contains("message-out");
+      // WhatsApp pone .message-out o .message-in dentro del row HTML
+      const isOutgoing = !!row.querySelector(SELECTORS.outgoing);
 
       messages.push({
         sender_name: isOutgoing ? (advisorName || "Asesor") : clientName,

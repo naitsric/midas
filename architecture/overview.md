@@ -66,10 +66,30 @@ graph LR
     API --> DB
 ```
 
+## Multi-Tenant Architecture
+
+MIDAS es **multi-tenant por diseño**: cada asesor financiero es un tenant aislado.
+
+- **Tenant key**: `AdvisorId` (UUID). Todas las entidades (Conversation, CreditApplication) llevan `advisor_id` como campo obligatorio.
+- **Aislamiento en repositorios**: los ports definen `find_by_id_and_advisor(entity_id, advisor_id)` — no existe query sin scope de tenant. Un asesor nunca puede acceder a datos de otro.
+- **Autenticación**: API Key única por asesor (`X-API-Key` header, prefijo `midas_*`). `RequireAdvisor` resuelve el asesor activo e inyecta su identidad en todos los handlers.
+- **Ciclo de vida**: ACTIVE → SUSPENDED → ACTIVE, o ACTIVE → DEACTIVATED (terminal). Solo asesores activos pueden autenticarse.
+
+```mermaid
+graph TD
+    EXT[Chrome Extension] -->|X-API-Key| AUTH[RequireAdvisor]
+    AUTH -->|Advisor activo| CONV[Conversation BC]
+    AUTH -->|Advisor activo| APP[Application BC]
+    AUTH -->|Advisor activo| INT[Intent BC]
+    CONV -->|advisor_id scope| REPO_C[(ConversationRepo)]
+    APP -->|advisor_id scope| REPO_A[(ApplicationRepo)]
+```
+
 ## Core Components (The Google & Python Stack)
 
 ### 1. Conversation Intelligence Engine (`fastapi-backend`)
 Powered by **Python (FastAPI)** and **Google AI SDK**:
+- **Multi-Tenant API**: Each advisor operates in isolation with API key authentication. All data access is scoped by `AdvisorId`.
 - **Intent Detection**: Using **Gemini 2.5 Flash** for real-time signal classification (Mortgages, Auto, etc.) due to its high-throughput and low latency.
 - **Contextual Memory**: Leveraging Gemini's 1M+ token window to maintain long-term client history.
 - **Python-Native AI Ecosystem**: Utilizing libraries like `pydantic` for robust data modeling and `langchain` for agentic workflows.
@@ -97,4 +117,4 @@ Powered by **Python (FastAPI)** and **Google AI SDK**:
 - [ADR-0001: WhatsApp Capture Approach](./adrs/0001-whatsapp-capture-approach.md)
 
 ---
-Última actualización: 2026-04-08
+Última actualización: 2026-04-09

@@ -49,19 +49,33 @@ class GeminiApplicationGenerator(ApplicationGenerator):
 
         try:
             response = self._model.generate_content(prompt)
-            return self._parse_response(response.text, advisor_id, intent)
+            return self._parse_response(response.text, advisor_id, intent, conversation)
         except Exception as e:
             if isinstance(e, ApplicationGenerationError):
                 raise
             raise ApplicationGenerationError(f"Error al generar solicitud con Gemini: {e}") from e
 
-    def _parse_response(self, text: str, advisor_id: AdvisorId, intent: IntentResult) -> CreditApplication:
+    @staticmethod
+    def _clean_json(text: str) -> str:
+        text = text.strip()
+        if text.startswith("```"):
+            lines = text.split("\n")
+            lines = [line for line in lines if not line.strip().startswith("```")]
+            text = "\n".join(lines)
+        return text.strip()
+
+    def _parse_response(
+        self, text: str, advisor_id: AdvisorId, intent: IntentResult, conversation: Conversation
+    ) -> CreditApplication:
         try:
-            data = json.loads(text.strip())
+            data = json.loads(self._clean_json(text))
         except json.JSONDecodeError as e:
             raise ApplicationGenerationError(f"Respuesta de Gemini no es JSON válido: {text[:200]}") from e
 
-        full_name = data.get("full_name", "").strip()
+        full_name = (data.get("full_name") or "").strip()
+        if not full_name:
+            # Fallback: usar el nombre del contacto de WhatsApp
+            full_name = conversation.client_name if conversation else ""
         if not full_name:
             raise ApplicationGenerationError("Gemini no pudo extraer el nombre del cliente")
 

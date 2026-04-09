@@ -56,9 +56,20 @@ class GeminiIntentDetector(IntentDetector):
                 raise
             raise IntentDetectionError(f"Error al comunicarse con Gemini: {e}") from e
 
+    @staticmethod
+    def _clean_json(text: str) -> str:
+        """Elimina bloques markdown ```json ... ``` que Gemini a veces agrega."""
+        text = text.strip()
+        if text.startswith("```"):
+            # Quitar primera línea (```json) y última (```)
+            lines = text.split("\n")
+            lines = [line for line in lines if not line.strip().startswith("```")]
+            text = "\n".join(lines)
+        return text.strip()
+
     def _parse_response(self, text: str) -> IntentResult:
         try:
-            data = json.loads(text.strip())
+            data = json.loads(self._clean_json(text))
         except json.JSONDecodeError as e:
             raise IntentDetectionError(f"Respuesta de Gemini no es JSON válido: {text[:200]}") from e
 
