@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIDAS</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header class="popup-header">
+      <h1>MIDAS</h1>
+      <p>Conversation Intelligence</p>
+    </header>
+
+    <!-- Estado: No autenticado -->
+    <div id="auth-form" class="section">
+      <label for="api-key-input">API Key del asesor</label>
+      <input
+        type="password"
+        id="api-key-input"
+        placeholder="midas_..."
+        autocomplete="off"
+      >
+      <label for="api-url-input">URL del servidor</label>
+      <input
+        type="url"
+        id="api-url-input"
+        placeholder="http://localhost:8000"
+      >
+      <button id="connect-btn" class="btn btn-primary">Conectar</button>
+      <p id="auth-error" class="error hidden"></p>
+    </div>
+
+    <!-- Estado: Autenticado -->
+    <div id="auth-status" class="section hidden">
+      <div class="status-card">
+        <span class="status-dot"></span>
+        <div>
+          <p class="advisor-name" id="advisor-name"></p>
+          <p class="status-text">Conectado</p>
+        </div>
+      </div>
+      <button id="disconnect-btn" class="btn btn-secondary">Desconectar</button>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

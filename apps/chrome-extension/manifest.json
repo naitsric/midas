@@ -1,34 +1,45 @@
 {
   "manifest_version": 3,
-  "name": "MIDAS Global Conversation Intelligence",
+  "name": "MIDAS Conversation Intelligence",
   "version": "0.1.0",
-  "description": "The zero-friction Conversation Intelligence platform for financial advisors.",
+  "description": "Asistente de inteligencia conversacional para asesores financieros. Detecta intención financiera y genera solicitudes de crédito desde WhatsApp Web.",
+
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
+
   "host_permissions": [
     "https://web.whatsapp.com/*",
     "http://localhost:8000/*"
   ],
-  "action": {
-    "default_popup": "index.html"
-  },
+
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/background/service-worker.js",
     "type": "module"
   },
+
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "MIDAS"
+  },
+
   "content_scripts": [
     {
       "matches": ["https://web.whatsapp.com/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "js": [
+        "src/content/scraper.js",
+        "src/content/sidebar.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+
+  "web_accessible_resources": [
+    {
+      "resources": ["src/styles/sidebar.css"],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ]
 }
