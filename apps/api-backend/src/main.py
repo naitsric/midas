@@ -19,6 +19,7 @@ from src.conversation.infrastructure.api import create_conversation_router
 from src.intent.domain.ports import IntentDetector
 from src.intent.infrastructure.api import create_intent_router
 from src.intent.infrastructure.gemini_adapter import GeminiIntentDetector
+from src.shared.infrastructure.database import Database
 
 
 def create_app(
@@ -27,6 +28,7 @@ def create_app(
     application_repo: ApplicationRepository | None = None,
     application_generator: ApplicationGenerator | None = None,
     advisor_repo: AdvisorRepository | None = None,
+    database: Database | None = None,
 ) -> FastAPI:
     app = FastAPI(title="MIDAS Conversation Intelligence API")
 
@@ -38,22 +40,46 @@ def create_app(
         allow_headers=["*"],
     )
 
-    if conversation_repo is None:
-        conversation_repo = InMemoryConversationRepository()
+    # Si hay DATABASE_URL y no se pasaron repos explícitos, usar PostgreSQL
+    load_dotenv()
+    database_url = os.getenv("DATABASE_URL")
+
+    if database_url and database is None:
+        database = Database(database_url)
+
+    if database is not None:
+        from src.advisor.infrastructure.postgres_adapter import PostgresAdvisorRepository
+        from src.application.infrastructure.postgres_adapter import PostgresApplicationRepository
+        from src.conversation.infrastructure.postgres_adapter import PostgresConversationRepository
+
+        if advisor_repo is None:
+            advisor_repo = PostgresAdvisorRepository(database)
+        if conversation_repo is None:
+            conversation_repo = PostgresConversationRepository(database)
+        if application_repo is None:
+            application_repo = PostgresApplicationRepository(database)
+
+        @app.on_event("startup")
+        async def startup():
+            await database.connect()
+
+        @app.on_event("shutdown")
+        async def shutdown():
+            await database.disconnect()
+    else:
+        if conversation_repo is None:
+            conversation_repo = InMemoryConversationRepository()
+        if application_repo is None:
+            application_repo = InMemoryApplicationRepository()
+        if advisor_repo is None:
+            advisor_repo = InMemoryAdvisorRepository()
 
     if intent_detector is None or application_generator is None:
-        load_dotenv()
         api_key = os.getenv("GEMINI_API_KEY", "")
         if intent_detector is None:
             intent_detector = GeminiIntentDetector(api_key=api_key)
         if application_generator is None:
             application_generator = GeminiApplicationGenerator(api_key=api_key)
-
-    if application_repo is None:
-        application_repo = InMemoryApplicationRepository()
-
-    if advisor_repo is None:
-        advisor_repo = InMemoryAdvisorRepository()
 
     # Configurar auth
     set_authenticate_use_case(AuthenticateAdvisor(advisor_repo))

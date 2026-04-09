@@ -54,6 +54,12 @@ uv run pytest -m e2e                   # Chrome Extension → API → Gemini
 uv run pytest -m 'not e2e'             # Unit + Integration (CI con secrets)
 uv run pytest -m 'integration or e2e'  # Solo tests que requieren servicios
 
+# --- Database ---
+
+# Migraciones (requiere DATABASE_URL en .env)
+uv run python -m src.shared.infrastructure.migrator run      # Ejecutar pendientes
+uv run python -m src.shared.infrastructure.migrator status   # Ver estado
+
 # Lint and format
 uv run ruff check .
 uv run ruff format .
