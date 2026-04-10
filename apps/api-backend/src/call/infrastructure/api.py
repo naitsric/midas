@@ -10,22 +10,44 @@ from src.advisor.domain.entities import Advisor
 from src.advisor.domain.exceptions import AdvisorAuthenticationError
 from src.advisor.domain.value_objects import ApiKey
 from src.advisor.infrastructure.auth import RequireAdvisor
+from src.application.application.use_cases import GenerateCreditApplication
+from src.application.domain.exceptions import ApplicationGenerationError
+from src.application.domain.ports import ApplicationGenerator, ApplicationRepository
+from src.application.infrastructure.schemas import (
+    ApplicantResponse,
+    CreditApplicationResponse,
+    ProductRequestResponse,
+)
 from src.call.application.use_cases import EndCall, ListCalls, StartCall
 from src.call.domain.entities import CallRecording
 from src.call.domain.ports import CallRepository, SpeechTranscriber
 from src.call.domain.value_objects import CallId, CallStatus
 from src.call.infrastructure.schemas import CallResponse, CallSummaryResponse, StartCallRequest
+from src.conversation.domain.entities import Conversation, Message
+from src.conversation.domain.value_objects import ConversationId, MessageSender
+from src.intent.application.use_cases import DetectFinancialIntent
+from src.intent.domain.ports import IntentDetector
 
 
 def create_call_router(
     repository: CallRepository,
     transcriber: SpeechTranscriber | None = None,
     authenticate: AuthenticateAdvisor | None = None,
+    intent_detector: IntentDetector | None = None,
+    application_repo: ApplicationRepository | None = None,
+    application_generator: ApplicationGenerator | None = None,
 ) -> APIRouter:
     router = APIRouter(prefix="/api/calls", tags=["calls"])
     start_call = StartCall(repository)
     end_call = EndCall(repository)
     list_calls = ListCalls(repository)
+
+    detect_intent = DetectFinancialIntent(intent_detector) if intent_detector else None
+    generate_application = (
+        GenerateCreditApplication(repository=application_repo, generator=application_generator)
+        if application_repo and application_generator
+        else None
+    )
 
     def _to_response(call: CallRecording) -> CallResponse:
         return CallResponse(
@@ -46,6 +68,20 @@ def create_call_router(
             duration_seconds=call.duration_seconds,
             created_at=call.created_at.isoformat(),
         )
+
+    def _call_to_conversation(call: CallRecording, advisor: Advisor) -> Conversation:
+        """Convierte un CallRecording con transcript a una Conversation para intent detection."""
+        conv = Conversation(
+            id=ConversationId.generate(),
+            advisor_id=advisor.id,
+            advisor_name=advisor.name,
+            client_name=call.client_name,
+        )
+        # Poner todo el transcript como un mensaje del cliente
+        # (el intent detector analiza el contenido completo)
+        if call.transcript and call.transcript.strip():
+            conv.add_message(MessageSender(name=call.client_name, is_advisor=False), call.transcript)
+        return conv
 
     async def _authenticate_ws(api_key: str | None) -> Advisor | None:
         """Autentica via query param para WebSocket."""
@@ -81,6 +117,87 @@ def create_call_router(
         call = await end_call.execute(call)
         return _to_response(call)
 
+    @router.post("/{call_id}/detect-intent")
+    async def detect_call_intent(call_id: UUID, advisor: Advisor = RequireAdvisor):
+        """Detecta intención financiera en el transcript de una llamada."""
+        if detect_intent is None:
+            raise HTTPException(status_code=501, detail="Intent detector no configurado")
+
+        call = await repository.find_by_id_and_advisor(CallId(call_id), advisor.id)
+        if call is None:
+            raise HTTPException(status_code=404, detail="Llamada no encontrada")
+
+        if not call.transcript or not call.transcript.strip():
+            raise HTTPException(status_code=422, detail="La llamada no tiene transcripción")
+
+        conv = _call_to_conversation(call, advisor)
+        result = await detect_intent.execute(conv)
+
+        return {
+            "intent_detected": result.intent_detected,
+            "confidence": result.confidence.value,
+            "product_type": result.product_type.value if result.product_type else None,
+            "entities": {
+                "amount": result.entities.amount,
+                "term": result.entities.term,
+                "location": result.entities.location,
+                **result.entities.additional,
+            },
+            "summary": result.summary,
+            "is_actionable": result.is_actionable,
+        }
+
+    @router.post("/{call_id}/generate-application", status_code=201)
+    async def generate_app_from_call(call_id: UUID, advisor: Advisor = RequireAdvisor):
+        """Genera solicitud de crédito desde el transcript de una llamada."""
+        if detect_intent is None:
+            raise HTTPException(status_code=501, detail="Intent detector no configurado")
+        if generate_application is None:
+            raise HTTPException(status_code=501, detail="Application generator no configurado")
+
+        call = await repository.find_by_id_and_advisor(CallId(call_id), advisor.id)
+        if call is None:
+            raise HTTPException(status_code=404, detail="Llamada no encontrada")
+
+        if not call.transcript or not call.transcript.strip():
+            raise HTTPException(status_code=422, detail="La llamada no tiene transcripción")
+
+        conv = _call_to_conversation(call, advisor)
+
+        try:
+            intent = await detect_intent.execute(conv)
+        except Exception as e:
+            raise HTTPException(status_code=422, detail=f"Error detectando intención: {e}") from e
+
+        try:
+            app = await generate_application.execute(advisor_id=advisor.id, conversation=conv, intent=intent)
+        except ApplicationGenerationError as e:
+            raise HTTPException(status_code=422, detail=str(e)) from e
+
+        return CreditApplicationResponse(
+            id=str(app.id),
+            status=app.status.value,
+            status_label=app.status.label,
+            applicant=ApplicantResponse(
+                full_name=app.applicant.full_name,
+                phone=app.applicant.phone,
+                estimated_income=app.applicant.estimated_income,
+                employment_type=app.applicant.employment_type,
+                completeness=app.applicant.completeness,
+            ),
+            product_request=ProductRequestResponse(
+                product_type=app.product_request.product_type.value,
+                product_label=app.product_request.product_type.label,
+                amount=app.product_request.amount,
+                term=app.product_request.term,
+                location=app.product_request.location,
+                summary=app.product_request.summary,
+            ),
+            conversation_summary=app.conversation_summary,
+            rejection_reason=app.rejection_reason,
+            created_at=app.created_at.isoformat(),
+        )
+
     @router.websocket("/{call_id}/stream")
     async def stream_audio(websocket: WebSocket, call_id: UUID, api_key: str | None = None):
         """
@@ -90,6 +207,7 @@ def create_call_router(
         - Cliente envía: binary frames (audio PCM 16kHz 16-bit mono)
         - Cliente envía: text frame {"action": "end"} para finalizar
         - Servidor envía: text frames {"type": "transcript", "text": "...", "is_final": bool}
+        - Servidor envía: text frame {"type": "intent", ...} con resultado de detección
         - Servidor envía: text frame {"type": "completed", "call_id": "..."}
         - Servidor envía: text frame {"type": "error", "message": "..."}
         """
@@ -178,6 +296,28 @@ def create_call_router(
         call.mark_processing()
         call.complete(duration_seconds=duration)
         await repository.save(call)
+
+        # Detectar intención si hay transcript y detector configurado
+        import logging
+        logger = logging.getLogger("midas.call")
+        intent_result = None
+        if detect_intent and call.transcript and call.transcript.strip():
+            try:
+                logger.info(f"Detectando intención para llamada {call.id}...")
+                conv = _call_to_conversation(call, advisor)
+                result = await detect_intent.execute(conv)
+                intent_result = {
+                    "type": "intent",
+                    "intent_detected": result.intent_detected,
+                    "confidence": result.confidence.value,
+                    "product_type": result.product_type.value if result.product_type else None,
+                    "summary": result.summary,
+                    "is_actionable": result.is_actionable,
+                    "call_id": str(call.id),
+                }
+                await websocket.send_json(intent_result)
+            except Exception:
+                pass
 
         try:
             await websocket.send_json(

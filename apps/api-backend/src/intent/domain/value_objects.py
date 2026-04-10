@@ -7,6 +7,8 @@ from src.intent.domain.exceptions import InvalidConfidenceError
 class ProductType(Enum):
     MORTGAGE = "mortgage"
     AUTO_LOAN = "auto_loan"
+    CREDIT_CARD = "credit_card"
+    PERSONAL_LOAN = "personal_loan"
     REFINANCE = "refinance"
     INSURANCE = "insurance"
 
@@ -15,6 +17,8 @@ class ProductType(Enum):
         labels = {
             ProductType.MORTGAGE: "Crédito Hipotecario",
             ProductType.AUTO_LOAN: "Crédito Vehicular",
+            ProductType.CREDIT_CARD: "Tarjeta de Crédito",
+            ProductType.PERSONAL_LOAN: "Crédito de Libre Inversión",
             ProductType.REFINANCE: "Refinanciación",
             ProductType.INSURANCE: "Seguro",
         }

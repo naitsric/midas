@@ -11,6 +11,8 @@ from src.intent.domain.value_objects import Confidence, ExtractedEntities, Produ
 PRODUCT_TYPE_MAP = {
     "mortgage": ProductType.MORTGAGE,
     "auto_loan": ProductType.AUTO_LOAN,
+    "credit_card": ProductType.CREDIT_CARD,
+    "personal_loan": ProductType.PERSONAL_LOAN,
     "refinance": ProductType.REFINANCE,
     "insurance": ProductType.INSURANCE,
 }
@@ -19,12 +21,12 @@ SYSTEM_PROMPT = (
     "Eres un analizador de intención financiera. "
     "Analiza conversaciones entre asesores financieros y clientes.\n\n"
     "Detecta si hay intención clara de adquirir un producto financiero "
-    "(mortgage, auto_loan, refinance, insurance).\n\n"
+    "(mortgage, auto_loan, credit_card, personal_loan, refinance, insurance).\n\n"
     "Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional:\n"
     "{\n"
     '    "intent_detected": true/false,\n'
     '    "confidence": 0.0-1.0,\n'
-    '    "product_type": "mortgage" | "auto_loan" | "refinance" | "insurance" | null,\n'
+    '    "product_type": "mortgage" | "auto_loan" | "credit_card" | "personal_loan" | "refinance" | "insurance" | null,\n'
     '    "entities": {\n'
     '        "amount": "monto o null",\n'
     '        "term": "plazo o null",\n'

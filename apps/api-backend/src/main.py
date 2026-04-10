@@ -100,13 +100,19 @@ def create_app(
     auth_use_case = AuthenticateAdvisor(advisor_repo)
     set_authenticate_use_case(auth_use_case)
 
-    # Speech-to-Text transcriber (solo si hay GOOGLE_CLOUD_PROJECT)
+    # Speech-to-Text transcriber
     speech_transcriber = None
     google_project = os.getenv("GOOGLE_CLOUD_PROJECT")
     if google_project:
         from src.call.infrastructure.google_stt_adapter import GoogleSpeechTranscriber
 
         speech_transcriber = GoogleSpeechTranscriber(project_id=google_project)
+    else:
+        gemini_key = os.getenv("GEMINI_API_KEY", "")
+        if gemini_key:
+            from src.call.infrastructure.google_stt_adapter import GeminiSpeechTranscriber
+
+            speech_transcriber = GeminiSpeechTranscriber(api_key=gemini_key)
 
     app.include_router(create_advisor_router(advisor_repo))
     app.include_router(create_conversation_router(conversation_repo))
@@ -114,7 +120,16 @@ def create_app(
     app.include_router(
         create_application_router(conversation_repo, intent_detector, application_repo, application_generator)
     )
-    app.include_router(create_call_router(call_repo, transcriber=speech_transcriber, authenticate=auth_use_case))
+    app.include_router(
+        create_call_router(
+            call_repo,
+            transcriber=speech_transcriber,
+            authenticate=auth_use_case,
+            intent_detector=intent_detector,
+            application_repo=application_repo,
+            application_generator=application_generator,
+        )
+    )
 
     @app.get("/health")
     async def health():

@@ -77,3 +77,99 @@ class FakeSpeechTranscriber(SpeechTranscriber):
             pass
         for chunk in self._chunks:
             yield chunk
+
+
+class GeminiSpeechTranscriber(SpeechTranscriber):
+    """Transcribe audio usando Gemini. Acumula ~5s de audio PCM, lo envía como WAV."""
+
+    def __init__(self, api_key: str, chunk_seconds: int = 5):
+        self._api_key = api_key
+        self._chunk_seconds = chunk_seconds
+        # PCM 16kHz 16-bit mono = 32000 bytes/sec
+        self._bytes_per_chunk = 32000 * chunk_seconds
+
+    @staticmethod
+    def _pcm_to_wav(pcm_data: bytes, sample_rate: int = 16000, channels: int = 1, bits: int = 16) -> bytes:
+        """Agrega WAV header a datos PCM raw."""
+        import struct
+
+        data_size = len(pcm_data)
+        header = struct.pack(
+            "<4sI4s4sIHHIIHH4sI",
+            b"RIFF",
+            36 + data_size,
+            b"WAVE",
+            b"fmt ",
+            16,
+            1,  # PCM format
+            channels,
+            sample_rate,
+            sample_rate * channels * bits // 8,
+            channels * bits // 8,
+            bits,
+            b"data",
+            data_size,
+        )
+        return header + pcm_data
+
+    async def transcribe_stream(self, audio_chunks: AsyncIterator[bytes]) -> AsyncIterator[TranscriptChunk]:
+        import google.generativeai as genai
+
+        genai.configure(api_key=self._api_key)
+        model = genai.GenerativeModel("gemini-2.0-flash")
+
+        buffer = bytearray()
+
+        async for chunk in audio_chunks:
+            buffer.extend(chunk)
+
+            if len(buffer) >= self._bytes_per_chunk:
+                wav_data = self._pcm_to_wav(bytes(buffer))
+                buffer.clear()
+
+                try:
+                    response = await model.generate_content_async(
+                        [
+                            {"mime_type": "audio/wav", "data": wav_data},
+                            "Transcribe este audio exactamente como se dice, palabra por palabra. "
+                            "Solo devuelve la transcripcion, sin explicaciones ni formato adicional. "
+                            "Si no hay habla clara, devuelve una cadena vacia.",
+                        ],
+                    )
+                    text = response.text.strip()
+                    if text:
+                        yield TranscriptChunk(text=text, is_final=False)
+                        yield TranscriptChunk(text=text, is_final=True)
+                except Exception:
+                    pass
+
+        # Procesar audio restante en el buffer
+        if len(buffer) > 3200:  # Al menos 0.1s de audio
+            wav_data = self._pcm_to_wav(bytes(buffer))
+            try:
+                response = await model.generate_content_async(
+                    [
+                        {"mime_type": "audio/wav", "data": wav_data},
+                        "Transcribe este audio exactamente como se dice, palabra por palabra. "
+                        "Solo devuelve la transcripcion, sin explicaciones ni formato adicional. "
+                        "Si no hay habla clara, devuelve una cadena vacia.",
+                    ],
+                )
+                text = response.text.strip()
+                if text:
+                    yield TranscriptChunk(text=text, is_final=True)
+            except Exception:
+                pass
+
+
+class FakeSpeechTranscriber(SpeechTranscriber):
+    """Fake para tests."""
+
+    def __init__(self, chunks: list[TranscriptChunk] | None = None):
+        self._chunks = chunks or []
+
+    async def transcribe_stream(self, audio_chunks: AsyncIterator[bytes]) -> AsyncIterator[TranscriptChunk]:
+        async for _ in audio_chunks:
+            pass
+        for chunk in self._chunks:
+            yield chunk
