@@ -144,6 +144,10 @@ src/
 │   ├── domain/                # CreditApplication entity, Applicant/ProductRequest VOs, ports
 │   ├── application/           # Use cases (GenerateCreditApplication)
 │   └── infrastructure/        # GeminiApplicationGenerator, InMemoryRepo, FastAPI router
+├── call/                      # Bounded Context: Call Recording (scoped by AdvisorId)
+│   ├── domain/                # CallRecording entity, CallId/CallStatus VOs, CallRepository/SpeechTranscriber ports
+│   ├── application/           # Use cases (StartCall, EndCall, ListCalls, GetCall)
+│   └── infrastructure/        # InMemory/Postgres repos, FastAPI router + WebSocket (planned)
 └── main.py                    # Composition root — dependency injection via create_app()
 ```
 
@@ -170,3 +174,7 @@ src/
 | `POST` | `/api/conversations/{id}/generate-application` | Si | Generar solicitud de crédito |
 | `GET` | `/api/applications` | Si | Listar solicitudes del asesor |
 | `GET` | `/api/applications/{id}` | Si | Obtener solicitud |
+| `POST` | `/api/calls` | Si | Iniciar grabación de llamada |
+| `GET` | `/api/calls` | Si | Listar grabaciones del asesor |
+| `GET` | `/api/calls/{id}` | Si | Obtener detalle de llamada |
+| `POST` | `/api/calls/{id}/end` | Si | Finalizar grabación |
