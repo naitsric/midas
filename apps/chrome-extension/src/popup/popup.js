@@ -53,7 +53,7 @@ async function handleConnect() {
   }
 
   elements.connectBtn.disabled = true;
-  elements.connectBtn.textContent = "Conectando...";
+  elements.connectBtn.textContent = "CONECTANDO…";
   elements.authError.classList.add("hidden");
 
   try {
@@ -80,7 +80,7 @@ async function handleConnect() {
     showError("Error de conexión con el servidor");
   } finally {
     elements.connectBtn.disabled = false;
-    elements.connectBtn.textContent = "Conectar";
+    elements.connectBtn.textContent = "CONECTAR";
   }
 }
 
