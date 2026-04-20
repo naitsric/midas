@@ -1,0 +1,68 @@
+name: MidasApp
+options:
+  bundleIdPrefix: com.midas
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    ENABLE_USER_SCRIPT_SANDBOXING: false
+packages:
+  AmazonChimeSDK:
+    url: https://github.com/aws/amazon-chime-sdk-ios-spm
+    from: 0.27.2
+targets:
+  MidasApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+    dependencies:
+      - package: AmazonChimeSDK
+        product: AmazonChimeSDK
+      - package: AmazonChimeSDK
+        product: AmazonChimeSDKMedia
+    settings:
+      base:
+        INFOPLIST_FILE: iosApp/Info.plist
+        # CODE_SIGN_ENTITLEMENTS: iosApp/MidasApp.entitlements  # Requiere Apple Developer Program ($99/año) para Push Notifications
+        PRODUCT_BUNDLE_IDENTIFIER: com.cristianduque.midas
+        FRAMEWORK_SEARCH_PATHS:
+          - "$(SRCROOT)/../composeApp/build/bin/currentFramework"
+        OTHER_LINKER_FLAGS: "-ObjC -framework ComposeApp"
+        SWIFT_VERSION: "5.0"
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: Automatic
+    preBuildScripts:
+      - name: "Build Kotlin Framework"
+        script: |
+          cd "$SRCROOT/.."
+          export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          if [ "$PLATFORM_NAME" = "iphonesimulator" ]; then
+            GRADLE_TASK="linkDebugFrameworkIosSimulatorArm64"
+            FRAMEWORK_DIR="iosSimulatorArm64"
+          else
+            GRADLE_TASK="linkDebugFrameworkIosArm64"
+            FRAMEWORK_DIR="iosArm64"
+          fi
+          ./gradlew :composeApp:$GRADLE_TASK
+          rm -f composeApp/build/bin/currentFramework
+          ln -sf "$(pwd)/composeApp/build/bin/$FRAMEWORK_DIR/debugFramework" composeApp/build/bin/currentFramework
+        basedOnDependencyAnalysis: false
+    postCompileScripts:
+      - name: "Embed Kotlin Framework"
+        script: |
+          mkdir -p "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH"
+          cp -R "$SRCROOT/../composeApp/build/bin/currentFramework/ComposeApp.framework" "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/"
+          if [ "$PLATFORM_NAME" != "iphonesimulator" ]; then
+            /usr/bin/codesign --force --sign "$EXPANDED_CODE_SIGN_IDENTITY" "$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/ComposeApp.framework"
+          fi
+        basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - name: "Sync Compose Resources"
+        script: |
+          cd "$SRCROOT/.."
+          export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          ./gradlew :composeApp:syncComposeResourcesForIos
+        basedOnDependencyAnalysis: false
