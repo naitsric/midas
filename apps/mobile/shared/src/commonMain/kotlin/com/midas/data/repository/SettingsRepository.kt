@@ -6,15 +6,18 @@ import kotlinx.coroutines.flow.StateFlow
 
 private const val KEY_API_KEY = "api_key"
 private const val KEY_LANGUAGE = "language"
+private const val KEY_ONBOARDED = "onboarded"
 
 class SettingsRepository(
     private val storage: KeyValueStorage = KeyValueStorage(),
 ) {
     private val _apiKey = MutableStateFlow(storage.getString(KEY_API_KEY))
     private val _language = MutableStateFlow(storage.getString(KEY_LANGUAGE) ?: "es")
+    private val _onboarded = MutableStateFlow(storage.getString(KEY_ONBOARDED) == "1")
 
     val apiKey: StateFlow<String?> = _apiKey
     val language: StateFlow<String> = _language
+    val onboarded: StateFlow<Boolean> = _onboarded
 
     suspend fun saveApiKey(key: String) {
         storage.putString(KEY_API_KEY, key)
@@ -34,4 +37,11 @@ class SettingsRepository(
     }
 
     fun getLanguage(): String = _language.value
+
+    fun markOnboarded() {
+        storage.putString(KEY_ONBOARDED, "1")
+        _onboarded.value = true
+    }
+
+    fun hasCompletedOnboarding(): Boolean = _onboarded.value
 }

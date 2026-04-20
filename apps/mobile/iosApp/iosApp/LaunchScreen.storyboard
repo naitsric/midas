@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Launch-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Monogram" translatesAutoresizingMaskIntoConstraints="NO" id="mono-iv">
+                                <rect key="frame" x="157" y="355.5" width="88" height="88"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="88" id="mono-w"/>
+                                    <constraint firstAttribute="height" constant="88" id="mono-h"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Midas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mid-lbl">
+                                <rect key="frame" x="0.0" y="469.5" width="402" height="38"/>
+                                <fontDescription key="fontDescription" name="Inter-Bold" family="Inter" pointSize="30"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CONVERSATION INTELLIGENCE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sub-lbl">
+                                <rect key="frame" x="0.0" y="515.5" width="402" height="14"/>
+                                <fontDescription key="fontDescription" name="Inter-Medium" family="Inter" pointSize="11"/>
+                                <color key="textColor" red="0.619" green="0.619" blue="0.619" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hair-bg">
+                                <rect key="frame" x="165" y="754" width="72" height="2"/>
+                                <color key="backgroundColor" white="0.15" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="hair-w"/>
+                                    <constraint firstAttribute="height" constant="2" id="hair-h"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hair-fg">
+                                <rect key="frame" x="165" y="754" width="72" height="2"/>
+                                <color key="backgroundColor" red="0.0" green="0.903" blue="0.463" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="fg-w"/>
+                                    <constraint firstAttribute="height" constant="2" id="fg-h"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© MIDAS · CONVERSATION INTELLIGENCE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="legal-lbl">
+                                <rect key="frame" x="0.0" y="800" width="402" height="13"/>
+                                <fontDescription key="fontDescription" name="Inter-Medium" family="Inter" pointSize="9"/>
+                                <color key="textColor" red="0.4" green="0.4" blue="0.4" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.050" green="0.050" blue="0.050" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="mono-iv" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="mono-cx"/>
+                            <constraint firstItem="mono-iv" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.88" id="mono-cy"/>
+                            <constraint firstItem="mid-lbl" firstAttribute="top" secondItem="mono-iv" secondAttribute="bottom" constant="26" id="mid-top"/>
+                            <constraint firstItem="mid-lbl" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="mid-lead"/>
+                            <constraint firstItem="mid-lbl" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="mid-trail"/>
+                            <constraint firstItem="sub-lbl" firstAttribute="top" secondItem="mid-lbl" secondAttribute="bottom" constant="8" id="sub-top"/>
+                            <constraint firstItem="sub-lbl" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="sub-lead"/>
+                            <constraint firstItem="sub-lbl" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="sub-trail"/>
+                            <constraint firstItem="hair-bg" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hair-cx"/>
+                            <constraint firstAttribute="bottom" secondItem="hair-bg" secondAttribute="bottom" constant="120" id="hair-bottom"/>
+                            <constraint firstItem="hair-fg" firstAttribute="leading" secondItem="hair-bg" secondAttribute="leading" id="fg-lead"/>
+                            <constraint firstItem="hair-fg" firstAttribute="top" secondItem="hair-bg" secondAttribute="top" id="fg-top"/>
+                            <constraint firstItem="legal-lbl" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="legal-lead"/>
+                            <constraint firstItem="legal-lbl" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="legal-trail"/>
+                            <constraint firstAttribute="bottom" secondItem="legal-lbl" secondAttribute="bottom" constant="70" id="legal-bottom"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="safe-id"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="201" y="437"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Monogram" width="88" height="88"/>
+    </resources>
+</document>
