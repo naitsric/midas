@@ -1,8 +1,11 @@
 package com.midas.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -12,16 +15,28 @@ import androidx.compose.ui.unit.sp
 import midasapp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.Font
 
-// Brand colors
+// Brand accents (stable across modes)
 val MidasGreen = Color(0xFF00E676)
 val MidasGreenDark = Color(0xFF00C853)
 val MidasGreenSubtle = Color(0xFF1B5E20)
+
+// Dark mode tokens
 val MidasDarkBg = Color(0xFF0D0D0D)
 val MidasDarkSurface = Color(0xFF1A1A1A)
 val MidasDarkCard = Color(0xFF1E1E1E)
 val MidasDarkCardBorder = Color(0xFF2A2A2A)
 val MidasGray = Color(0xFF9E9E9E)
 val MidasLightGray = Color(0xFFE0E0E0)
+
+// Light mode tokens — aligned with Claude Design Variant A
+val MidasLightBg = Color(0xFFF6F6F4)
+val MidasLightSurface = Color(0xFFFFFFFF)
+val MidasLightCard = Color(0xFFFFFFFF)
+val MidasLightCardBorder = Color(0xFFE5E5E0)
+val MidasLightMuted = Color(0xFF6B6B6B)
+val MidasLightTextPrimary = Color(0xFF111111)
+val MidasGreenLight = Color(0xFF00A859)
+
 val MidasOrange = Color(0xFFFF9800)
 val MidasBlue = Color(0xFF42A5F5)
 val MidasPurple = Color(0xFFB388FF)
@@ -55,6 +70,97 @@ private val DarkColorScheme = darkColorScheme(
     inverseOnSurface = Color.Black,
     surfaceTint = MidasGreen,
 )
+
+private val LightColorScheme = lightColorScheme(
+    primary = MidasGreenLight,
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFD6F5E3),
+    onPrimaryContainer = Color(0xFF0B4A27),
+    secondary = MidasGreenDark,
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFD6F5E3),
+    onSecondaryContainer = Color(0xFF0B4A27),
+    tertiary = MidasBlue,
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFDBEBFA),
+    onTertiaryContainer = Color(0xFF0A2A4A),
+    background = MidasLightBg,
+    onBackground = MidasLightTextPrimary,
+    surface = MidasLightSurface,
+    onSurface = MidasLightTextPrimary,
+    surfaceVariant = MidasLightCard,
+    onSurfaceVariant = MidasLightMuted,
+    outline = MidasLightCardBorder,
+    outlineVariant = Color(0xFFECEEEA),
+    error = Color(0xFFD32F2F),
+    onError = Color.White,
+    errorContainer = Color(0xFFFDE7E7),
+    onErrorContainer = Color(0xFF8A1A1A),
+    inverseSurface = MidasLightTextPrimary,
+    inverseOnSurface = Color.White,
+    surfaceTint = MidasGreenLight,
+)
+
+// Extra semantic tokens that don't fit cleanly into Material color scheme.
+// Components read these via LocalMidasColors so a single switch flips everything.
+data class MidasColors(
+    val isDark: Boolean,
+    val bg: Color,
+    val textPrimary: Color,
+    val backgroundGradientTop: Color,
+    val backgroundGradientBottom: Color,
+    val cardBackground: Color,
+    val cardBorder: Color,
+    val muted: Color,
+    val subtleMuted: Color,
+    val primaryAccent: Color,
+    val primaryAccentOn: Color,
+    val statusPositive: Color,
+    val statusNegative: Color,
+    val tickerBackground: Color,
+    val inputBackground: Color,
+    val pasteCardBackground: Color,
+)
+
+private val DarkMidasColors = MidasColors(
+    isDark = true,
+    bg = Color(0xFF0D0D0D),
+    textPrimary = Color.White,
+    backgroundGradientTop = Color(0xFF0A0F0B),
+    backgroundGradientBottom = MidasDarkBg,
+    cardBackground = Color(0xFF121512),
+    cardBorder = MidasDarkCardBorder,
+    muted = MidasGray,
+    subtleMuted = Color(0xFF6E7570),
+    primaryAccent = MidasGreen,
+    primaryAccentOn = Color.Black,
+    statusPositive = MidasGreen,
+    statusNegative = Color(0xFFEF5350),
+    tickerBackground = Color(0xFF121512),
+    inputBackground = Color(0xFF121512),
+    pasteCardBackground = Color(0xFF0E1A13),
+)
+
+private val LightMidasColors = MidasColors(
+    isDark = false,
+    bg = MidasLightBg,
+    textPrimary = MidasLightTextPrimary,
+    backgroundGradientTop = Color(0xFFE8F5EB),
+    backgroundGradientBottom = MidasLightBg,
+    cardBackground = MidasLightCard,
+    cardBorder = MidasLightCardBorder,
+    muted = MidasLightMuted,
+    subtleMuted = Color(0xFF9AA0A6),
+    primaryAccent = MidasGreenLight,
+    primaryAccentOn = Color.White,
+    statusPositive = MidasGreenLight,
+    statusNegative = Color(0xFFD0342C),
+    tickerBackground = Color(0xFFFFFFFF),
+    inputBackground = Color(0xFFFAFAF8),
+    pasteCardBackground = Color(0xFFF1FBF4),
+)
+
+val LocalMidasColors = compositionLocalOf { DarkMidasColors }
 
 private val MidasShapes = Shapes(
     small = RoundedCornerShape(8.dp),
@@ -178,11 +284,18 @@ private fun MidasTypography(): Typography {
 }
 
 @Composable
-fun MidasTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = DarkColorScheme,
-        typography = MidasTypography(),
-        shapes = MidasShapes,
-        content = content,
-    )
+fun MidasTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val midasColors = if (darkTheme) DarkMidasColors else LightMidasColors
+    CompositionLocalProvider(LocalMidasColors provides midasColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = MidasTypography(),
+            shapes = MidasShapes,
+            content = content,
+        )
+    }
 }
