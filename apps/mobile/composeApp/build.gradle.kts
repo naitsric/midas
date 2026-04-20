@@ -16,13 +16,14 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = true
+            isStatic = false
+            export(project(":shared"))
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared"))
+            api(project(":shared"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

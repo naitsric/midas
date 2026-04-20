@@ -1,12 +1,15 @@
 package com.midas.ui.calls
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +29,11 @@ import com.midas.ui.theme.*
 import kotlinx.coroutines.launch
 
 @Composable
-fun CallListScreen(apiClient: MidasApiClient, onNewRecording: () -> Unit) {
+fun CallListScreen(
+    apiClient: MidasApiClient,
+    onNewRecording: () -> Unit,
+    onCallClick: (String) -> Unit = {},
+) {
     val s = LocalStrings.current
     var calls by remember { mutableStateOf<List<CallSummary>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
@@ -65,7 +74,10 @@ fun CallListScreen(apiClient: MidasApiClient, onNewRecording: () -> Unit) {
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(calls) { call ->
-                    CallCard(call)
+                    CallCard(call, onClick = {
+                        println("[CallList] tap on call=${call.id}")
+                        onCallClick(call.id)
+                    })
                 }
             }
         }
@@ -73,16 +85,20 @@ fun CallListScreen(apiClient: MidasApiClient, onNewRecording: () -> Unit) {
 }
 
 @Composable
-private fun CallCard(call: CallSummary) {
+private fun CallCard(call: CallSummary, onClick: () -> Unit) {
     val statusColor = when (call.status) {
         "completed" -> MidasGreen
         "recording" -> MidasOrange
         else -> MidasBlue
     }
 
-    Card(
+    Surface(
+        onClick = {
+            println("[CallCard] Surface onClick fired")
+            onClick()
+        },
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MidasDarkCard),
+        color = MidasDarkCard,
         shape = RoundedCornerShape(14.dp),
     ) {
         Row(
@@ -130,6 +146,17 @@ private fun CallCard(call: CallSummary) {
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 9.sp,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            // Explicit visible CTA so tapping is unambiguous on iOS device,
+            // where the wrapping Surface.onClick can be unreliable in some
+            // Compose Multiplatform builds.
+            IconButton(onClick = onClick) {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = "Ver detalle",
+                    tint = MidasGreen,
                 )
             }
         }

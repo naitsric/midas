@@ -10,8 +10,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -38,6 +40,7 @@ fun LoginScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val clipboard = LocalClipboardManager.current
 
     Box(
         modifier = Modifier
@@ -117,7 +120,7 @@ fun LoginScreen(
 
                     Spacer(Modifier.height(20.dp))
 
-                    // API Key field with lock icon
+                    // API Key field with lock icon + paste action
                     TextField(
                         value = apiKey,
                         onValueChange = { apiKey = it; error = null },
@@ -136,7 +139,20 @@ fun LoginScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                         },
-                        visualTransformation = PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                clipboard.getText()?.text?.let {
+                                    apiKey = it.trim()
+                                    error = null
+                                }
+                            }) {
+                                Icon(
+                                    Icons.Default.ContentPaste,
+                                    contentDescription = "Pegar",
+                                    tint = MidasGreen,
+                                )
+                            }
+                        },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         isError = error != null,

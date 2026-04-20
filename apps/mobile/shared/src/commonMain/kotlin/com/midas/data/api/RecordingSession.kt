@@ -5,6 +5,7 @@ import com.midas.data.repository.SettingsRepository
 import com.midas.domain.model.TranscriptMessage
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
+import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -38,12 +39,17 @@ class RecordingSession(
         val call = apiClient.startCall(clientName)
         callId = call.id
         val apiKey = settings.getApiKey() ?: throw Exception("No API key")
-        val wsUrl = apiClient.getWebSocketUrl(call.id, apiKey)
+        val wsInfo = apiClient.getWebSocketInfo(call.id, apiKey)
 
         val recorder = AudioRecorder()
         val client = HttpClient { install(WebSockets) }
         try {
-            client.webSocket(wsUrl) {
+            client.webSocket(
+                method = HttpMethod.Get,
+                host = wsInfo.host,
+                port = wsInfo.port,
+                path = wsInfo.path,
+            ) {
                 val sendJob = launch {
                     recorder.startRecording().collect { chunk ->
                         if (!isRecording()) {

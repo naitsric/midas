@@ -112,11 +112,28 @@ class MidasApiClient(
         return response.body()
     }
 
+    suspend fun detectIntentFromCall(callId: String): IntentResult {
+        val key = getApiKey()
+        val response = client.post("$baseUrl/api/calls/$callId/detect-intent") {
+            key?.let { header("X-API-Key", it) }
+        }
+        if (response.status.value >= 400) {
+            throw ApiError(response.status.value, "Error al detectar intención")
+        }
+        return response.body()
+    }
+
     // --- WebSocket ---
 
-    fun getWebSocketUrl(callId: String, apiKey: String): String {
-        val wsBase = baseUrl.replace("http://", "ws://").replace("https://", "wss://")
-        return "$wsBase/api/calls/$callId/stream?api_key=$apiKey"
+    data class WebSocketInfo(val host: String, val port: Int, val path: String, val secure: Boolean)
+
+    fun getWebSocketInfo(callId: String, apiKey: String): WebSocketInfo {
+        val isSecure = baseUrl.startsWith("https://")
+        val withoutScheme = baseUrl.removePrefix("http://").removePrefix("https://")
+        val parts = withoutScheme.split(":", limit = 2)
+        val host = parts[0]
+        val port = if (parts.size > 1) parts[1].toIntOrNull() ?: if (isSecure) 443 else 80 else if (isSecure) 443 else 80
+        return WebSocketInfo(host, port, "/api/calls/$callId/stream?api_key=$apiKey", isSecure)
     }
 
     fun close() {

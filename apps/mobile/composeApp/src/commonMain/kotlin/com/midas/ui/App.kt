@@ -1,7 +1,9 @@
 package com.midas.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -18,11 +20,14 @@ import com.midas.data.defaultBaseUrl
 import com.midas.data.repository.SettingsRepository
 import com.midas.ui.applications.ApplicationListScreen
 import com.midas.ui.auth.LoginScreen
+import com.midas.ui.calls.CallDetailScreen
 import com.midas.ui.calls.CallListScreen
 import com.midas.ui.calls.RecordingScreen
 import com.midas.ui.conversations.ConversationListScreen
 import com.midas.ui.dashboard.DashboardScreen
 import com.midas.ui.i18n.*
+import com.midas.ui.voip.VoipDialScreen
+import com.midas.voip.VoipCallManager
 import com.midas.ui.theme.MidasDarkBg
 import com.midas.ui.theme.MidasDarkCard
 import com.midas.ui.theme.MidasGreen
@@ -30,20 +35,22 @@ import com.midas.ui.theme.MidasGray
 import com.midas.ui.theme.MidasTheme
 
 enum class Screen {
-    Dashboard, Conversations, Applications, Calls, NewRecording
+    Dashboard, Conversations, Applications, Calls, NewRecording, VoipDial, CallDetail
 }
 
 @Composable
-fun MidasApp() {
-    val settings = remember { SettingsRepository() }
-    val apiClient = remember {
+fun MidasApp(
+    settings: SettingsRepository = remember { SettingsRepository() },
+    apiClient: MidasApiClient = remember {
         MidasApiClient(
             baseUrl = defaultBaseUrl,
             apiKeyProvider = { settings.getApiKey() },
         )
-    }
-
-    var isLoggedIn by remember { mutableStateOf(false) }
+    },
+    voipCallManager: VoipCallManager? = null,
+) {
+    val storedApiKey by settings.apiKey.collectAsState()
+    var isLoggedIn by remember { mutableStateOf(storedApiKey != null) }
     var currentLanguage by remember { mutableStateOf(Language.ES) }
     val strings = remember(currentLanguage) { stringsFor(currentLanguage) }
 
@@ -59,6 +66,7 @@ fun MidasApp() {
                 MainScaffold(
                     apiClient = apiClient,
                     settings = settings,
+                    voipCallManager = voipCallManager,
                     currentLanguage = currentLanguage,
                     onLanguageChange = {
                         currentLanguage = it
@@ -74,12 +82,16 @@ fun MidasApp() {
 private fun MainScaffold(
     apiClient: MidasApiClient,
     settings: SettingsRepository,
+    voipCallManager: VoipCallManager?,
     currentLanguage: Language,
     onLanguageChange: (Language) -> Unit,
 ) {
     val s = LocalStrings.current
     var currentScreen by remember { mutableStateOf(Screen.Dashboard) }
-    val showBottomBar = currentScreen != Screen.NewRecording
+    var selectedCallId by remember { mutableStateOf<String?>(null) }
+    val showBottomBar = currentScreen != Screen.NewRecording &&
+        currentScreen != Screen.VoipDial &&
+        currentScreen != Screen.CallDetail
 
     data class NavItem(val screen: Screen, val label: String, val icon: @Composable () -> Unit)
 
@@ -95,61 +107,33 @@ private fun MainScaffold(
             containerColor = MidasDarkBg,
             bottomBar = {
                 if (showBottomBar) {
-                    Column {
-                        // Floating "Grabar llamada" pill
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            FloatingActionButton(
-                                onClick = { currentScreen = Screen.NewRecording },
-                                containerColor = MidasGreen,
-                                contentColor = Color.Black,
-                                shape = RoundedCornerShape(28.dp),
-                                modifier = Modifier.height(48.dp),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MidasDarkBg)
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        navItems.forEach { item ->
+                            val selected = currentScreen == item.screen
+                            val color = if (selected) MidasGreen else MidasGray
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clickable { currentScreen = item.screen }
+                                    .padding(vertical = 4.dp),
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 20.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    Icon(
-                                        Icons.Default.Mic,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp),
-                                    )
-                                    Text(
-                                        s.callNewRecording,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontSize = 14.sp,
-                                    )
+                                CompositionLocalProvider(LocalContentColor provides color) {
+                                    item.icon()
                                 }
-                            }
-                        }
-                        // Bottom navigation
-                        NavigationBar(
-                            containerColor = MidasDarkBg,
-                            tonalElevation = 0.dp,
-                        ) {
-                            navItems.forEach { item ->
-                                NavigationBarItem(
-                                    icon = item.icon,
-                                    label = {
-                                        Text(
-                                            item.label,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontSize = 10.sp,
-                                        )
-                                    },
-                                    selected = currentScreen == item.screen,
-                                    onClick = { currentScreen = item.screen },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        selectedIconColor = MidasGreen,
-                                        selectedTextColor = MidasGreen,
-                                        unselectedIconColor = MidasGray,
-                                        unselectedTextColor = MidasGray,
-                                        indicatorColor = MidasGreen.copy(alpha = 0.12f),
-                                    ),
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    item.label,
+                                    color = color,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontSize = 10.sp,
                                 )
                             }
                         }
@@ -172,12 +156,71 @@ private fun MainScaffold(
                     Screen.Calls -> CallListScreen(
                         apiClient = apiClient,
                         onNewRecording = { currentScreen = Screen.NewRecording },
+                        onCallClick = { id ->
+                            println("[App] navigating to CallDetail id=$id")
+                            selectedCallId = id
+                            currentScreen = Screen.CallDetail
+                        },
                     )
+                    Screen.CallDetail -> {
+                        val id = selectedCallId
+                        if (id != null) {
+                            CallDetailScreen(
+                                apiClient = apiClient,
+                                callId = id,
+                                onBack = { currentScreen = Screen.Calls },
+                            )
+                        } else {
+                            currentScreen = Screen.Calls
+                        }
+                    }
                     Screen.NewRecording -> RecordingScreen(
                         apiClient = apiClient,
                         settings = settings,
                         onFinished = { currentScreen = Screen.Calls },
                     )
+                    Screen.VoipDial -> {
+                        if (voipCallManager != null) {
+                            VoipDialScreen(
+                                voipCallManager = voipCallManager,
+                                onClose = { currentScreen = Screen.Dashboard },
+                            )
+                        } else {
+                            currentScreen = Screen.Dashboard
+                        }
+                    }
+                }
+            }
+        }
+
+        // Floating action buttons overlay — hover above content + bottom nav
+        if (showBottomBar) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 80.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (voipCallManager != null) {
+                    FloatingActionButton(
+                        onClick = { currentScreen = Screen.VoipDial },
+                        containerColor = MidasGreen,
+                        contentColor = Color.Black,
+                        shape = CircleShape,
+                        modifier = Modifier.size(56.dp),
+                    ) {
+                        Icon(Icons.Default.Phone, contentDescription = "Llamar")
+                    }
+                }
+                FloatingActionButton(
+                    onClick = { currentScreen = Screen.NewRecording },
+                    containerColor = MidasGreen,
+                    contentColor = Color.Black,
+                    shape = CircleShape,
+                    modifier = Modifier.size(56.dp),
+                ) {
+                    Icon(Icons.Default.Mic, contentDescription = s.callNewRecording)
                 }
             }
         }

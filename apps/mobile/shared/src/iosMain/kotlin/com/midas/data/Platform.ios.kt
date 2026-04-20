@@ -1,3 +1,3 @@
 package com.midas.data
 
-actual val defaultBaseUrl: String = "http://192.168.78.226:8005"
+actual val defaultBaseUrl: String = "http://InfraS-Backe-Rw986DMpmSLZ-46441931.us-east-1.elb.amazonaws.com"
