@@ -4,44 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MIDAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="popup">
-    <header class="popup-header">
-      <h1>MIDAS</h1>
-      <p>Conversation Intelligence</p>
-    </header>
+    <div class="popup-grid" aria-hidden="true"></div>
 
-    <!-- Estado: No autenticado -->
-    <div id="auth-form" class="section">
-      <label for="api-key-input">API Key del asesor</label>
-      <input
-        type="password"
-        id="api-key-input"
-        placeholder="midas_..."
-        autocomplete="off"
-      >
-      <label for="api-url-input">URL del servidor</label>
-      <input
-        type="url"
-        id="api-url-input"
-        placeholder="http://localhost:8000"
-      >
-      <button id="connect-btn" class="btn btn-primary">Conectar</button>
-      <p id="auth-error" class="error hidden"></p>
-    </div>
-
-    <!-- Estado: Autenticado -->
-    <div id="auth-status" class="section hidden">
-      <div class="status-card">
-        <span class="status-dot"></span>
-        <div>
-          <p class="advisor-name" id="advisor-name"></p>
-          <p class="status-text">Conectado</p>
+    <div class="popup-inner">
+      <header class="popup-header">
+        <div class="monogram" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M4 26 L4 6 L12 18 L16 12 L20 18 L28 6 L28 26"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="16" cy="12" r="2" fill="currentColor"/>
+          </svg>
         </div>
-      </div>
-      <button id="disconnect-btn" class="btn btn-secondary">Desconectar</button>
+        <div class="header-text">
+          <div class="header-title">Midas</div>
+          <div class="header-sub">Conversation Intelligence</div>
+        </div>
+      </header>
+
+      <!-- Estado: No autenticado -->
+      <section id="auth-form" class="section">
+        <div class="status-pill status-pill--off">
+          <span class="status-dot status-dot--off" aria-hidden="true"></span>
+          <div class="status-pill-text">
+            <div class="status-pill-title">Sin conexión</div>
+            <div class="status-pill-sub">Configura tu API key</div>
+          </div>
+          <span class="status-badge status-badge--off">OFF</span>
+        </div>
+
+        <div class="form">
+          <label class="field-label" for="api-key-input">API KEY</label>
+          <input
+            type="password"
+            id="api-key-input"
+            class="field-input field-input--mono"
+            placeholder="midas_..."
+            autocomplete="off"
+          >
+
+          <label class="field-label" for="api-url-input">SERVIDOR</label>
+          <input
+            type="url"
+            id="api-url-input"
+            class="field-input field-input--mono"
+            placeholder="https://api.midas.app"
+          >
+
+          <p id="auth-error" class="form-error hidden"></p>
+
+          <button id="connect-btn" class="btn btn--primary">CONECTAR</button>
+        </div>
+      </section>
+
+      <!-- Estado: Autenticado -->
+      <section id="auth-status" class="section hidden">
+        <div class="status-pill status-pill--on">
+          <span class="status-dot status-dot--on" aria-hidden="true"></span>
+          <div class="status-pill-text">
+            <div class="status-pill-title" id="advisor-name">Asesor</div>
+            <div class="status-pill-sub">Asesor · Conectado</div>
+          </div>
+          <span class="status-badge status-badge--on">LIVE</span>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">HOY</div>
+            <div class="metric-value">12</div>
+            <div class="metric-sub">chats</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">INTENT</div>
+            <div class="metric-value">3</div>
+            <div class="metric-sub">detectada</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">SOLIC.</div>
+            <div class="metric-value">1</div>
+            <div class="metric-sub">generada</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn--ghost">AJUSTES</button>
+          <button id="disconnect-btn" class="btn btn--danger">DESCONECTAR</button>
+        </div>
+      </section>
+
+      <footer class="popup-footer">v1.0.0 · SOC 2</footer>
     </div>
   </div>
 
