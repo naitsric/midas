@@ -20,3 +20,12 @@ class AdvisorRepository(ABC):
     @abstractmethod
     async def find_by_email(self, email: str) -> Advisor | None:
         pass
+
+
+class VoipPushRegistrar(ABC):
+    """Registra device tokens de PushKit contra el backend de notificaciones (ej: SNS APNS_VOIP)."""
+
+    @abstractmethod
+    async def register_device_token(self, device_token: str, advisor_id: AdvisorId) -> str:
+        """Crea (o actualiza) un endpoint para el device token. Retorna el endpoint ARN."""
+        pass

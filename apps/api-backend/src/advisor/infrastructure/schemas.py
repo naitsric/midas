@@ -20,3 +20,12 @@ class AdvisorResponse(BaseModel):
 
 class AdvisorRegisteredResponse(AdvisorResponse):
     api_key: str
+
+
+class RegisterVoipTokenRequest(BaseModel):
+    device_token: str
+
+
+class VoipTokenRegisteredResponse(BaseModel):
+    advisor_id: str
+    voip_endpoint_arn: str

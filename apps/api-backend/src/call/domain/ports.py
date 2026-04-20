@@ -24,6 +24,10 @@ class CallRepository(ABC):
     async def find_all_by_advisor(self, advisor_id: AdvisorId) -> list[CallRecording]:
         pass
 
+    @abstractmethod
+    async def find_by_voip_call_id(self, voip_call_id: str) -> CallRecording | None:
+        pass
+
 
 @dataclass(frozen=True)
 class TranscriptChunk:
@@ -36,3 +40,24 @@ class SpeechTranscriber(ABC):
     async def transcribe_stream(self, audio_chunks: AsyncIterator[bytes]) -> AsyncIterator[TranscriptChunk]:
         """Recibe stream de audio PCM, emite chunks de transcripción."""
         ...
+
+
+@dataclass(frozen=True)
+class PhoneMapping:
+    phone_number: str
+    advisor_id: AdvisorId
+    provider: str = "telnyx"
+
+
+class PhoneNumberRepository(ABC):
+    @abstractmethod
+    async def save(self, mapping: PhoneMapping) -> None:
+        pass
+
+    @abstractmethod
+    async def find_advisor_by_phone(self, phone_number: str) -> AdvisorId | None:
+        pass
+
+    @abstractmethod
+    async def find_phones_by_advisor(self, advisor_id: AdvisorId) -> list[PhoneMapping]:
+        pass

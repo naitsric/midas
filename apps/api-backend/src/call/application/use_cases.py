@@ -8,8 +8,15 @@ class StartCall:
     def __init__(self, repository: CallRepository):
         self._repository = repository
 
-    async def execute(self, advisor_id: AdvisorId, client_name: str) -> CallRecording:
+    async def execute(
+        self,
+        advisor_id: AdvisorId,
+        client_name: str,
+        voip_call_id: str | None = None,
+    ) -> CallRecording:
         call = CallRecording.create(advisor_id=advisor_id, client_name=client_name)
+        if voip_call_id:
+            call.voip_call_id = voip_call_id
         await self._repository.save(call)
         return call
 

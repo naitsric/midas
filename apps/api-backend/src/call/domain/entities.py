@@ -14,6 +14,9 @@ class CallRecording:
     status: CallStatus = CallStatus.RECORDING
     transcript: str = ""
     duration_seconds: int | None = None
+    voip_call_id: str | None = None
+    recording_key: str | None = None
+    recording_url: str | None = None
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     completed_at: datetime | None = None
 

@@ -162,14 +162,3 @@ class GeminiSpeechTranscriber(SpeechTranscriber):
                 pass
 
 
-class FakeSpeechTranscriber(SpeechTranscriber):
-    """Fake para tests."""
-
-    def __init__(self, chunks: list[TranscriptChunk] | None = None):
-        self._chunks = chunks or []
-
-    async def transcribe_stream(self, audio_chunks: AsyncIterator[bytes]) -> AsyncIterator[TranscriptChunk]:
-        async for _ in audio_chunks:
-            pass
-        for chunk in self._chunks:
-            yield chunk
