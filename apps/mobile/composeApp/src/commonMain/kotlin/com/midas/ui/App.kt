@@ -51,7 +51,7 @@ fun MidasApp(
 ) {
     val storedApiKey by settings.apiKey.collectAsState()
     var isLoggedIn by remember { mutableStateOf(storedApiKey != null) }
-    var currentLanguage by remember { mutableStateOf(Language.ES) }
+    var currentLanguage by remember { mutableStateOf(Language.EN) }
     val strings = remember(currentLanguage) { stringsFor(currentLanguage) }
 
     CompositionLocalProvider(LocalStrings provides strings) {

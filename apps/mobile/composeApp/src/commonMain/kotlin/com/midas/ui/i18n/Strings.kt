@@ -269,4 +269,4 @@ fun stringsFor(language: Language): Strings = when (language) {
     Language.EN -> EnglishStrings
 }
 
-val LocalStrings = compositionLocalOf { SpanishStrings }
+val LocalStrings = compositionLocalOf { EnglishStrings }
