@@ -9,7 +9,14 @@ class Database:
         self._pool: asyncpg.Pool | None = None
 
     async def connect(self) -> None:
-        self._pool = await asyncpg.create_pool(self._url, min_size=2, max_size=10)
+        # statement_cache_size=0 is required for Supabase Transaction Pooler
+        # (pgBouncer in transaction mode) which does not support prepared statements.
+        self._pool = await asyncpg.create_pool(
+            self._url,
+            min_size=2,
+            max_size=10,
+            statement_cache_size=0,
+        )
 
     async def disconnect(self) -> None:
         if self._pool:

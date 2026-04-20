@@ -14,6 +14,8 @@ class Advisor:
     status: AdvisorStatus
     api_key: ApiKey
     suspension_reason: str | None = None
+    voip_endpoint_arn: str | None = None
+    voip_device_token: str | None = None
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     @classmethod

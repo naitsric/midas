@@ -1,6 +1,6 @@
 from src.advisor.domain.entities import Advisor
 from src.advisor.domain.exceptions import AdvisorAuthenticationError, InvalidAdvisorError
-from src.advisor.domain.ports import AdvisorRepository
+from src.advisor.domain.ports import AdvisorRepository, VoipPushRegistrar
 from src.advisor.domain.value_objects import AdvisorId, ApiKey
 
 
@@ -36,4 +36,24 @@ class AuthenticateAdvisor:
             raise AdvisorAuthenticationError("API key inválida")
         if not advisor.is_active:
             raise AdvisorAuthenticationError("El asesor no está activo")
+        return advisor
+
+
+class RegisterVoipDeviceToken:
+    def __init__(self, repository: AdvisorRepository, registrar: VoipPushRegistrar):
+        self._repository = repository
+        self._registrar = registrar
+
+    async def execute(self, advisor: Advisor, device_token: str) -> Advisor:
+        if not device_token or not device_token.strip():
+            raise InvalidAdvisorError("device_token no puede estar vacío")
+
+        normalized = device_token.strip().lower()
+        if advisor.voip_device_token == normalized and advisor.voip_endpoint_arn:
+            return advisor
+
+        endpoint_arn = await self._registrar.register_device_token(normalized, advisor.id)
+        advisor.voip_device_token = normalized
+        advisor.voip_endpoint_arn = endpoint_arn
+        await self._repository.save(advisor)
         return advisor

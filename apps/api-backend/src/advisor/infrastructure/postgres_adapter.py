@@ -11,15 +11,18 @@ class PostgresAdvisorRepository(AdvisorRepository):
     async def save(self, advisor: Advisor) -> None:
         await self._db.execute(
             """
-            INSERT INTO advisors (id, name, email, phone, status, api_key, suspension_reason, created_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO advisors (id, name, email, phone, status, api_key, suspension_reason,
+                                  voip_endpoint_arn, voip_device_token, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             ON CONFLICT (id) DO UPDATE SET
                 name = EXCLUDED.name,
                 email = EXCLUDED.email,
                 phone = EXCLUDED.phone,
                 status = EXCLUDED.status,
                 api_key = EXCLUDED.api_key,
-                suspension_reason = EXCLUDED.suspension_reason
+                suspension_reason = EXCLUDED.suspension_reason,
+                voip_endpoint_arn = EXCLUDED.voip_endpoint_arn,
+                voip_device_token = EXCLUDED.voip_device_token
             """,
             advisor.id.value,
             advisor.name,
@@ -28,6 +31,8 @@ class PostgresAdvisorRepository(AdvisorRepository):
             advisor.status.value,
             advisor.api_key.value,
             advisor.suspension_reason,
+            advisor.voip_endpoint_arn,
+            advisor.voip_device_token,
             advisor.created_at,
         )
 
@@ -53,5 +58,7 @@ class PostgresAdvisorRepository(AdvisorRepository):
             status=AdvisorStatus(row["status"]),
             api_key=ApiKey(row["api_key"]),
             suspension_reason=row["suspension_reason"],
+            voip_endpoint_arn=row["voip_endpoint_arn"],
+            voip_device_token=row["voip_device_token"],
             created_at=row["created_at"],
         )
