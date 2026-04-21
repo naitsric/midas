@@ -352,6 +352,9 @@ export class InfraStack extends cdk.Stack {
         publicLoadBalancer: true,
         assignPublicIp: true,
         taskSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+        // ADK + google.genai imports add ~70s to cold start; give the task
+        // room to come up before the ALB starts firing health checks.
+        healthCheckGracePeriod: cdk.Duration.seconds(180),
         taskImageOptions: {
           image: ecs.ContainerImage.fromDockerImageAsset(backendImage),
           containerPort: 8000,
@@ -371,6 +374,9 @@ export class InfraStack extends cdk.Stack {
       path: '/health',
       healthyHttpCodes: '200',
       interval: cdk.Duration.seconds(30),
+      timeout: cdk.Duration.seconds(10),
+      healthyThresholdCount: 2,
+      unhealthyThresholdCount: 5,
     });
 
     // Backend needs to register PushKit device tokens against the APNS_VOIP

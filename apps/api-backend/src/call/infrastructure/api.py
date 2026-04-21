@@ -81,17 +81,33 @@ async def _process_voip_recording(
             return
 
         genai.configure(api_key=gemini_key)
-        model = genai.GenerativeModel("gemini-2.0-flash")
         prompt = (
             "Transcribe esta llamada telefónica completa. "
             "Devuelve solo la transcripción, identificando los hablantes "
             "como 'Asesor:' y 'Cliente:' al inicio de cada turno. "
             "Si no es claro, deja como 'Hablante:'."
         )
-        response = await model.generate_content_async(
-            [{"mime_type": content_type, "data": audio_bytes}, prompt]
-        )
-        transcript = (response.text or "").strip()
+        # 2.5-flash is the current default; 2.0-flash kept as fallback only.
+        transcript = ""
+        last_error: Exception | None = None
+        for model_name in ("gemini-2.5-flash", "gemini-2.0-flash"):
+            try:
+                model = genai.GenerativeModel(model_name)
+                response = await model.generate_content_async(
+                    [{"mime_type": content_type, "data": audio_bytes}, prompt]
+                )
+                transcript = (response.text or "").strip()
+                last_error = None
+                break
+            except Exception as e:
+                last_error = e
+                msg = str(e)
+                if "RESOURCE_EXHAUSTED" in msg or "429" in msg:
+                    logger.warning(f"{model_name} quota exhausted, trying next model")
+                    continue
+                raise
+        if last_error is not None:
+            raise last_error
 
         # Re-fetch the call (it may have been updated meanwhile)
         call = await repository.find_by_id(call_id)
@@ -149,6 +165,15 @@ async def _process_voip_recording(
 
     except Exception:
         logger.exception(f"Failed to process VoIP recording for call {call_id}")
+        # Don't leave the call stuck in PROCESSING — mark it failed so the UI
+        # surfaces the state and the advisor can retry manually.
+        try:
+            call = await repository.find_by_id(call_id)
+            if call is not None and call.status == CallStatus.PROCESSING:
+                call.fail()
+                await repository.save(call)
+        except Exception:
+            logger.exception(f"Also failed to mark {call_id} as FAILED")
 
 
 def create_call_router(
@@ -165,6 +190,9 @@ def create_call_router(
     start_call = StartCall(repository)
     end_call = EndCall(repository)
     list_calls = ListCalls(repository)
+    # Hold strong references to background tasks so the asyncio event loop
+    # doesn't GC them mid-flight (Python 3.12 enforces this strictly).
+    background_tasks: set[asyncio.Task[None]] = set()
 
     detect_intent = DetectFinancialIntent(intent_detector) if intent_detector else None
     generate_application = (
@@ -361,7 +389,7 @@ def create_call_router(
 
         # Run transcription + intent detection in the background so the Lambda
         # webhook returns immediately (audio may take 10–30s to process).
-        asyncio.create_task(
+        task = asyncio.create_task(
             _process_voip_recording(
                 call_id=call.id,
                 recording_url=request.recording_url,
@@ -374,6 +402,8 @@ def create_call_router(
                 application_generator=application_generator,
             )
         )
+        background_tasks.add(task)
+        task.add_done_callback(background_tasks.discard)
 
         return {"status": "ok", "call_id": str(call.id)}
 

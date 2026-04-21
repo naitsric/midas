@@ -116,7 +116,7 @@ class GeminiSpeechTranscriber(SpeechTranscriber):
         import google.generativeai as genai
 
         genai.configure(api_key=self._api_key)
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
 
         buffer = bytearray()
 

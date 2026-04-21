@@ -11,6 +11,7 @@
 
   "host_permissions": [
     "https://web.whatsapp.com/*",
+    "http://InfraS-Backe-Rw986DMpmSLZ-46441931.us-east-1.elb.amazonaws.com/*",
     "http://localhost:8000/*"
   ],
 

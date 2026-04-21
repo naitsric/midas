@@ -26,7 +26,7 @@ SYSTEM_PROMPT = (
 
 
 class GeminiApplicationGenerator(ApplicationGenerator):
-    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash"):
+    def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash"):
         genai.configure(api_key=api_key)
         self._model = genai.GenerativeModel(model_name, system_instruction=SYSTEM_PROMPT)
 

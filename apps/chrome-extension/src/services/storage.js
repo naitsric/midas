@@ -4,7 +4,7 @@ const KEYS = {
   ADVISOR_NAME: "midas_advisor_name",
 };
 
-const DEFAULT_API_URL = "http://localhost:8000";
+const DEFAULT_API_URL = "http://InfraS-Backe-Rw986DMpmSLZ-46441931.us-east-1.elb.amazonaws.com";
 
 async function get(key) {
   const result = await chrome.storage.local.get(key);
