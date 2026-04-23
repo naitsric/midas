@@ -205,7 +205,7 @@ private fun MainScaffold(
                         }
                     }
                     Screen.Applications -> ApplicationListScreen(apiClient)
-                    Screen.Copilot -> CopilotScreen()
+                    Screen.Copilot -> CopilotScreen(apiClient = apiClient)
                     Screen.Calls -> CallListScreen(
                         apiClient = apiClient,
                         onNewRecording = { currentScreen = Screen.NewRecording },

@@ -20,6 +20,9 @@ from src.call.infrastructure.api import create_call_router
 from src.conversation.domain.ports import ConversationRepository
 from src.conversation.infrastructure.adapters import InMemoryConversationRepository
 from src.conversation.infrastructure.api import create_conversation_router
+from src.copilot.domain.ports import CopilotAgent
+from src.copilot.infrastructure.adk.agent import AdkCopilotAgent
+from src.copilot.infrastructure.api import create_copilot_router
 from src.intent.domain.ports import IntentDetector
 from src.intent.infrastructure.api import create_intent_router
 from src.intent.infrastructure.gemini_adapter import GeminiIntentDetector
@@ -35,6 +38,7 @@ def create_app(
     call_repo: CallRepository | None = None,
     phone_repo: PhoneNumberRepository | None = None,
     voip_registrar: VoipPushRegistrar | None = None,
+    copilot_agent: CopilotAgent | None = None,
     database: Database | None = None,
 ) -> FastAPI:
     @asynccontextmanager
@@ -58,6 +62,13 @@ def create_app(
     # Si hay DATABASE_URL y no se pasaron repos explícitos, usar PostgreSQL
     load_dotenv()
     database_url = os.getenv("DATABASE_URL")
+
+    # Configurar ADK (google.genai) para usar AI Studio con nuestra GEMINI_API_KEY.
+    # Por default google.genai va a Vertex AI, que requiere un project GCP distinto.
+    gemini_api_key = os.getenv("GEMINI_API_KEY", "")
+    if gemini_api_key and not os.getenv("GOOGLE_API_KEY"):
+        os.environ["GOOGLE_API_KEY"] = gemini_api_key
+    os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "0")
 
     # Solo crear Database si no se pasó ningún repo explícito (ej: en tests se pasan fakes)
     any_repo_passed = any(
@@ -149,6 +160,15 @@ def create_app(
             advisor_repo=advisor_repo,
         )
     )
+
+    # Copilot — ADK-based assistant. Reusa los mismos repos para sus tools.
+    if copilot_agent is None:
+        copilot_agent = AdkCopilotAgent(
+            call_repo=call_repo,
+            application_repo=application_repo,
+            conversation_repo=conversation_repo,
+        )
+    app.include_router(create_copilot_router(copilot_agent))
 
     @app.get("/health")
     async def health():

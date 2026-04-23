@@ -34,11 +34,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.midas.data.api.MidasApiClient
+import com.midas.domain.model.CopilotEvent
+import com.midas.domain.model.CopilotHistoryItem
 import com.midas.ui.components.ArrowForwardGlyph
 import com.midas.ui.components.MidasMonogram
 import com.midas.ui.i18n.LocalStrings
 import com.midas.ui.theme.LocalMidasColors
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 private enum class CopilotState { Empty, Thinking, Answered }
@@ -46,7 +49,7 @@ private enum class CopilotState { Empty, Thinking, Answered }
 private data class CopilotMessage(
     val id: Int,
     val role: Role,
-    val text: String? = null,
+    val text: String = "",
     val thinking: Boolean = false,
     val sources: List<Source> = emptyList(),
 ) {
@@ -58,7 +61,7 @@ private data class Source(val type: Type, val label: String) {
 }
 
 @Composable
-fun CopilotScreen() {
+fun CopilotScreen(apiClient: MidasApiClient) {
     val s = LocalStrings.current
     val colors = LocalMidasColors.current
 
@@ -72,34 +75,69 @@ fun CopilotScreen() {
         val q = query.trim()
         if (q.isEmpty()) return
         val userMsg = CopilotMessage(id = nextId++, role = CopilotMessage.Role.User, text = q)
-        val thinkingMsg = CopilotMessage(id = nextId++, role = CopilotMessage.Role.Assistant, thinking = true)
+        val assistantId = nextId++
+        val thinkingMsg = CopilotMessage(id = assistantId, role = CopilotMessage.Role.Assistant, thinking = true)
+        // Construir historial del backend ANTES de agregar el nuevo turno.
+        val history = messages
+            .filter { !it.thinking && it.text.isNotEmpty() }
+            .map {
+                CopilotHistoryItem(
+                    role = if (it.role == CopilotMessage.Role.User) "user" else "assistant",
+                    text = it.text,
+                )
+            }
         messages = messages + userMsg + thinkingMsg
         input = ""
         state = CopilotState.Thinking
 
         scope.launch {
-            delay(1400)
-            messages = messages.dropLast(1) + CopilotMessage(
-                id = nextId++,
-                role = CopilotMessage.Role.Assistant,
-                text = defaultAnswerFor(q),
-                sources = listOf(
-                    Source(Source.Type.Chat, "${s.copilotSourceChat} · 8 msg"),
-                    Source(Source.Type.Call, "${s.copilotSourceCall} · 12 min"),
-                    Source(Source.Type.Application, "${s.copilotSourceApp} #1204"),
-                ),
-            )
-            state = CopilotState.Answered
+            apiClient.streamCopilot(history = history, message = q)
+                .catch { e ->
+                    messages = messages.map { m ->
+                        if (m.id == assistantId) m.copy(
+                            thinking = false,
+                            text = "Error: ${e.message ?: "no se pudo conectar"}",
+                        ) else m
+                    }
+                    state = CopilotState.Answered
+                }
+                .collect { event ->
+                    messages = messages.map { m ->
+                        if (m.id != assistantId) return@map m
+                        when (event) {
+                            is CopilotEvent.Token -> m.copy(thinking = false, text = m.text + event.text)
+                            is CopilotEvent.ToolCall -> m.copy(thinking = true)
+                            is CopilotEvent.ToolResult -> {
+                                val src = event.toSource(s) ?: return@map m
+                                m.copy(sources = m.sources + src)
+                            }
+                            is CopilotEvent.Done -> m.copy(thinking = false)
+                            is CopilotEvent.Error -> m.copy(
+                                thinking = false,
+                                text = if (m.text.isEmpty()) "Error: ${event.message}" else m.text,
+                            )
+                        }
+                    }
+                    if (event is CopilotEvent.Done || event is CopilotEvent.Error) {
+                        state = CopilotState.Answered
+                    }
+                }
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(colors.bg)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.bg)
+            .statusBarsPadding()  // header below the iOS notch / status bar
+            .imePadding(),        // composer rises with the keyboard
+    ) {
         // Header
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
-                .padding(top = 32.dp, bottom = 14.dp),
+                .padding(top = 16.dp, bottom = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MidasMonogram(size = 26.dp, cornerRadius = 7.dp)
@@ -229,11 +267,10 @@ private fun MessagesList(messages: List<CopilotMessage>, thinkingLabel: String) 
 
 @Composable
 private fun MessageBubble(msg: CopilotMessage, thinkingLabel: String) {
-    val colors = LocalMidasColors.current
     when {
-        msg.role == CopilotMessage.Role.User -> UserBubble(text = msg.text.orEmpty())
-        msg.thinking -> ThinkingRow(label = thinkingLabel)
-        else -> AssistantAnswer(text = msg.text.orEmpty(), sources = msg.sources)
+        msg.role == CopilotMessage.Role.User -> UserBubble(text = msg.text)
+        msg.text.isEmpty() && msg.thinking -> ThinkingRow(label = thinkingLabel)
+        else -> AssistantAnswer(text = msg.text, sources = msg.sources)
     }
     Spacer(Modifier.height(if (msg.role == CopilotMessage.Role.User) 14.dp else 18.dp))
 }
@@ -405,7 +442,7 @@ private fun Composer(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 8.dp, bottom = 20.dp),
+            .padding(top = 8.dp, bottom = 6.dp),
     ) {
         Row(
             modifier = Modifier
@@ -466,7 +503,19 @@ private fun Composer(
 
 // ─────────────────────────── helpers ───────────────────────────
 
-private fun defaultAnswerFor(query: String): String =
-    "Aquí va la respuesta basada en tus conversaciones, llamadas y solicitudes. " +
-        "Este modo usa contexto del backend para responder a: \"$query\". " +
-        "Pronto: integración con el pipeline de IA real."
+/**
+ * Mapea un `tool_result` event del backend al chip que renderiza la UI.
+ * Usa el label que mandó el backend (ej. "Llamadas · 3") y completa el
+ * tipo. Devuelve null si el evento no produce un chip útil.
+ */
+private fun CopilotEvent.ToolResult.toSource(s: com.midas.ui.i18n.Strings): Source? {
+    val st = sourceType ?: return null
+    val sl = sourceLabel ?: return null
+    val type = when (st.lowercase()) {
+        "call" -> Source.Type.Call
+        "chat" -> Source.Type.Chat
+        "application" -> Source.Type.Application
+        else -> return null
+    }
+    return Source(type = type, label = sl)
+}

@@ -136,3 +136,30 @@ data class TranscriptMessage(
     val summary: String? = null,
     @SerialName("is_actionable") val isActionable: Boolean = false,
 )
+
+// ─── Copilot ──────────────────────────────────────────────
+
+@Serializable
+data class CopilotHistoryItem(val role: String, val text: String)
+
+@Serializable
+data class CopilotMessageRequest(
+    val history: List<CopilotHistoryItem>,
+    val message: String,
+)
+
+/**
+ * Eventos parseados del stream SSE del Copilot. La UI de [CopilotScreen]
+ * los consume desde el [Flow] que devuelve [MidasApiClient.streamCopilot].
+ */
+sealed class CopilotEvent {
+    data class Token(val text: String) : CopilotEvent()
+    data class ToolCall(val name: String) : CopilotEvent()
+    data class ToolResult(
+        val name: String,
+        val sourceType: String? = null,   // "call" | "chat" | "application" | null
+        val sourceLabel: String? = null,
+    ) : CopilotEvent()
+    data class Done(val elapsedMs: Long) : CopilotEvent()
+    data class Error(val message: String) : CopilotEvent()
+}
