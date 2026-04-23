@@ -1,0 +1,469 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		15E37056FE2F1032E0068C18 /* PushKitHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42839035338D8A2AF24914B3 /* PushKitHandler.swift */; };
+		1AAB65EC63DA16430AC44622 /* BackendApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5CB0902FD132C8246B751E /* BackendApiService.swift */; };
+		3E33461D11AAEC8EC9A1884B /* ChimeCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D66E5523BC833B4B7921D22 /* ChimeCallManager.swift */; };
+		40A7DB602F96BE3A00AC6A12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */; };
+		40A7DB612F96BE3A00AC6A12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */; };
+		676B756FE25E4CF035B754D5 /* SwiftVoipDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC78DE6F7622AE71BD42E8 /* SwiftVoipDispatcher.swift */; };
+		7491CCFFD27043CC391D07F1 /* CallKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B0239048B9C4A446FBCDBA /* CallKitManager.swift */; };
+		7FFAB711A2F86D00C988920B /* CallControlService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBF2D72E2790223E0B2830F /* CallControlService.swift */; };
+		896BA23A5EF976A1B23392FA /* CallKitProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77A84A40EF4450C985C341D /* CallKitProvider.swift */; };
+		B5D19BA3B74334A9E9D61C70 /* ringback.wav in Resources */ = {isa = PBXBuildFile; fileRef = DE9FF1F581F9382E97766A09 /* ringback.wav */; };
+		C1562DD0753A60AF08F9D715 /* AmazonChimeSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 4FC55B7EE06B68761AF3E24E /* AmazonChimeSDK */; };
+		C469EEE37DC2BADA9D8F5840 /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DC302E392E982715491267 /* iOSApp.swift */; };
+		E24C431C4DF406C4CFBE935B /* RingbackPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D81B6B8DECE4CAC9BABE512 /* RingbackPlayer.swift */; };
+		FCD2059A34DEAAB5957DA23C /* AmazonChimeSDKMedia in Frameworks */ = {isa = PBXBuildFile; productRef = AC98F37A3D6221944F6963DA /* AmazonChimeSDKMedia */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		12DC302E392E982715491267 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		1FBF2D72E2790223E0B2830F /* CallControlService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallControlService.swift; sourceTree = "<group>"; };
+		2D66E5523BC833B4B7921D22 /* ChimeCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChimeCallManager.swift; sourceTree = "<group>"; };
+		34B0239048B9C4A446FBCDBA /* CallKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallKitManager.swift; sourceTree = "<group>"; };
+		40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		42839035338D8A2AF24914B3 /* PushKitHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushKitHandler.swift; sourceTree = "<group>"; };
+		6D81B6B8DECE4CAC9BABE512 /* RingbackPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingbackPlayer.swift; sourceTree = "<group>"; };
+		6F5CB0902FD132C8246B751E /* BackendApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendApiService.swift; sourceTree = "<group>"; };
+		A99824FF563253FA942E5F5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AF8CEBF28D0FDEEF430D80C0 /* MidasApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MidasApp.entitlements; sourceTree = "<group>"; };
+		B77A84A40EF4450C985C341D /* CallKitProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallKitProvider.swift; sourceTree = "<group>"; };
+		C9BC78DE6F7622AE71BD42E8 /* SwiftVoipDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftVoipDispatcher.swift; sourceTree = "<group>"; };
+		DE9FF1F581F9382E97766A09 /* ringback.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ringback.wav; sourceTree = "<group>"; };
+		E1A9E149020260999085F163 /* MidasApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MidasApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1AB256FE544A443C4D8097EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1562DD0753A60AF08F9D715 /* AmazonChimeSDK in Frameworks */,
+				FCD2059A34DEAAB5957DA23C /* AmazonChimeSDKMedia in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7283A7BB2D73728E92088059 /* iosApp */ = {
+			isa = PBXGroup;
+			children = (
+				40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */,
+				40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */,
+				A99824FF563253FA942E5F5D /* Info.plist */,
+				12DC302E392E982715491267 /* iOSApp.swift */,
+				AF8CEBF28D0FDEEF430D80C0 /* MidasApp.entitlements */,
+				C849787DDDFE5225641FAC57 /* VoIP */,
+			);
+			path = iosApp;
+			sourceTree = "<group>";
+		};
+		A9E086043E684174E8F574BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E1A9E149020260999085F163 /* MidasApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C849787DDDFE5225641FAC57 /* VoIP */ = {
+			isa = PBXGroup;
+			children = (
+				6F5CB0902FD132C8246B751E /* BackendApiService.swift */,
+				1FBF2D72E2790223E0B2830F /* CallControlService.swift */,
+				34B0239048B9C4A446FBCDBA /* CallKitManager.swift */,
+				B77A84A40EF4450C985C341D /* CallKitProvider.swift */,
+				2D66E5523BC833B4B7921D22 /* ChimeCallManager.swift */,
+				42839035338D8A2AF24914B3 /* PushKitHandler.swift */,
+				DE9FF1F581F9382E97766A09 /* ringback.wav */,
+				6D81B6B8DECE4CAC9BABE512 /* RingbackPlayer.swift */,
+				C9BC78DE6F7622AE71BD42E8 /* SwiftVoipDispatcher.swift */,
+			);
+			path = VoIP;
+			sourceTree = "<group>";
+		};
+		E2F8D7F04242B6CDEFE37E18 = {
+			isa = PBXGroup;
+			children = (
+				7283A7BB2D73728E92088059 /* iosApp */,
+				A9E086043E684174E8F574BE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E079477F7E4F41A93AED3DB7 /* MidasApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 662D8E3B4D6226F4089FB839 /* Build configuration list for PBXNativeTarget "MidasApp" */;
+			buildPhases = (
+				5004B903100691CD6A1EB558 /* Build Kotlin Framework */,
+				DCF37D635C85C6AA1AFC14C7 /* Sources */,
+				64FECBCD438E09F678060AC3 /* Embed Kotlin Framework */,
+				A1A9E68179BBE00E7BF64EAC /* Resources */,
+				1AB256FE544A443C4D8097EB /* Frameworks */,
+				AACEC12D57D61D3453F2D22F /* Sync Compose Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MidasApp;
+			packageProductDependencies = (
+				4FC55B7EE06B68761AF3E24E /* AmazonChimeSDK */,
+				AC98F37A3D6221944F6963DA /* AmazonChimeSDKMedia */,
+			);
+			productName = MidasApp;
+			productReference = E1A9E149020260999085F163 /* MidasApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		11C2BAFC41E8A4F4C8B87618 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E079477F7E4F41A93AED3DB7 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F7FABA4E236BE575CD5A376C /* Build configuration list for PBXProject "MidasApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E2F8D7F04242B6CDEFE37E18;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2C6A7C52B1307D2D9C349530 /* XCRemoteSwiftPackageReference "amazon-chime-sdk-ios-spm" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A9E086043E684174E8F574BE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E079477F7E4F41A93AED3DB7 /* MidasApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1A9E68179BBE00E7BF64EAC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5D19BA3B74334A9E9D61C70 /* ringback.wav in Resources */,
+				40A7DB602F96BE3A00AC6A12 /* LaunchScreen.storyboard in Resources */,
+				40A7DB612F96BE3A00AC6A12 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5004B903100691CD6A1EB558 /* Build Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/..\"\nexport JAVA_HOME=\"/opt/homebrew/opt/openjdk@21\"\nexport PATH=\"$JAVA_HOME/bin:$PATH\"\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n  GRADLE_TASK=\"linkDebugFrameworkIosSimulatorArm64\"\n  FRAMEWORK_DIR=\"iosSimulatorArm64\"\nelse\n  GRADLE_TASK=\"linkDebugFrameworkIosArm64\"\n  FRAMEWORK_DIR=\"iosArm64\"\nfi\n./gradlew :composeApp:$GRADLE_TASK\nrm -f composeApp/build/bin/currentFramework\nln -sf \"$(pwd)/composeApp/build/bin/$FRAMEWORK_DIR/debugFramework\" composeApp/build/bin/currentFramework\n";
+		};
+		64FECBCD438E09F678060AC3 /* Embed Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH\"\ncp -R \"$SRCROOT/../composeApp/build/bin/currentFramework/ComposeApp.framework\" \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/\"\nif [ \"$PLATFORM_NAME\" != \"iphonesimulator\" ]; then\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/ComposeApp.framework\"\nfi\n";
+		};
+		AACEC12D57D61D3453F2D22F /* Sync Compose Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Sync Compose Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/..\"\nexport JAVA_HOME=\"/opt/homebrew/opt/openjdk@21\"\nexport PATH=\"$JAVA_HOME/bin:$PATH\"\n./gradlew :composeApp:syncComposeResourcesForIos\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DCF37D635C85C6AA1AFC14C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AAB65EC63DA16430AC44622 /* BackendApiService.swift in Sources */,
+				7FFAB711A2F86D00C988920B /* CallControlService.swift in Sources */,
+				7491CCFFD27043CC391D07F1 /* CallKitManager.swift in Sources */,
+				896BA23A5EF976A1B23392FA /* CallKitProvider.swift in Sources */,
+				3E33461D11AAEC8EC9A1884B /* ChimeCallManager.swift in Sources */,
+				15E37056FE2F1032E0068C18 /* PushKitHandler.swift in Sources */,
+				E24C431C4DF406C4CFBE935B /* RingbackPlayer.swift in Sources */,
+				676B756FE25E4CF035B754D5 /* SwiftVoipDispatcher.swift in Sources */,
+				C469EEE37DC2BADA9D8F5840 /* iOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		020D4C94DA8BF0EC310C6152 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AMR55A6D7F;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/bin/currentFramework";
+				INFOPLIST_FILE = iosApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LINKER_FLAGS = "-ObjC -framework ComposeApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cristianduque.midas;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1BD7B7C91887E6C7AAEF019E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A56713FFD2EF9EC5D9E6A023 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AMR55A6D7F;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/bin/currentFramework";
+				INFOPLIST_FILE = iosApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LINKER_FLAGS = "-ObjC -framework ComposeApp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cristianduque.midas;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EB7D3271F0987EBC191CADCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		662D8E3B4D6226F4089FB839 /* Build configuration list for PBXNativeTarget "MidasApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A56713FFD2EF9EC5D9E6A023 /* Debug */,
+				020D4C94DA8BF0EC310C6152 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F7FABA4E236BE575CD5A376C /* Build configuration list for PBXProject "MidasApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB7D3271F0987EBC191CADCC /* Debug */,
+				1BD7B7C91887E6C7AAEF019E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2C6A7C52B1307D2D9C349530 /* XCRemoteSwiftPackageReference "amazon-chime-sdk-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aws/amazon-chime-sdk-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.27.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4FC55B7EE06B68761AF3E24E /* AmazonChimeSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2C6A7C52B1307D2D9C349530 /* XCRemoteSwiftPackageReference "amazon-chime-sdk-ios-spm" */;
+			productName = AmazonChimeSDK;
+		};
+		AC98F37A3D6221944F6963DA /* AmazonChimeSDKMedia */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2C6A7C52B1307D2D9C349530 /* XCRemoteSwiftPackageReference "amazon-chime-sdk-ios-spm" */;
+			productName = AmazonChimeSDKMedia;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 11C2BAFC41E8A4F4C8B87618 /* Project object */;
+}
