@@ -125,13 +125,19 @@ fun CopilotScreen(apiClient: MidasApiClient) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(colors.bg)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.bg)
+            .statusBarsPadding()  // header below the iOS notch / status bar
+            .imePadding(),        // composer rises with the keyboard
+    ) {
         // Header
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
-                .padding(top = 32.dp, bottom = 14.dp),
+                .padding(top = 16.dp, bottom = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MidasMonogram(size = 26.dp, cornerRadius = 7.dp)
@@ -436,7 +442,7 @@ private fun Composer(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 8.dp, bottom = 20.dp),
+            .padding(top = 8.dp, bottom = 6.dp),
     ) {
         Row(
             modifier = Modifier

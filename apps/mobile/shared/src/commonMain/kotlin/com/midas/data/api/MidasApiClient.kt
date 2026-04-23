@@ -10,8 +10,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.utils.io.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -141,7 +142,10 @@ class MidasApiClient(
      *
      * El backend es stateless — pasamos el historial completo en cada call.
      */
-    fun streamCopilot(history: List<CopilotHistoryItem>, message: String): Flow<CopilotEvent> = flow {
+    fun streamCopilot(history: List<CopilotHistoryItem>, message: String): Flow<CopilotEvent> = channelFlow {
+        // channelFlow (no flow) — Ktor's `execute` runs the body in Dispatchers.IO,
+        // so emissions cross the collector's coroutine context. channelFlow is the
+        // context-preserving builder that handles that safely.
         val key = getApiKey()
         val request = CopilotMessageRequest(history = history, message = message)
         client.preparePost("$baseUrl/api/copilot/messages") {
@@ -151,7 +155,7 @@ class MidasApiClient(
             setBody(request)
         }.execute { response ->
             if (response.status.value >= 400) {
-                emit(CopilotEvent.Error("HTTP ${response.status.value}"))
+                send(CopilotEvent.Error("HTTP ${response.status.value}"))
                 return@execute
             }
             val channel: ByteReadChannel = response.bodyAsChannel()
@@ -169,13 +173,14 @@ class MidasApiClient(
                         val payload = line.removePrefix("data:").trim()
                         if (payload.isNotEmpty()) {
                             val parsed = parseCopilotEvent(eventName, payload)
-                            if (parsed != null) emit(parsed)
+                            if (parsed != null) send(parsed)
                             if (parsed is CopilotEvent.Done) return@execute
                         }
                     }
                 }
             }
         }
+        awaitClose { /* ktor request finishes when execute returns */ }
     }
 
     private fun parseCopilotEvent(eventName: String, dataJson: String): CopilotEvent? {
