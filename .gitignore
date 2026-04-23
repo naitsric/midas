@@ -19,3 +19,16 @@ __pycache__/
 
 # Obsidian
 .obsidian/
+
+# Claude Code local
+.claude/
+
+# Chrome extension — signing key and build artifacts
+apps/chrome-extension.pem
+apps/chrome-extension.crx
+apps/chrome-extension.zip
+apps/chrome-extension/dist/
+
+# Xcode — user-specific
+xcuserdata/
+*.xcuserstate
