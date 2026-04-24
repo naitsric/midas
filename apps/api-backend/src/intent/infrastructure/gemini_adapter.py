@@ -28,12 +28,28 @@ SYSTEM_PROMPT = (
     '    "confidence": 0.0-1.0,\n'
     '    "product_type": "mortgage" | "auto_loan" | "credit_card" | "personal_loan" | "refinance" | "insurance" | null,\n'
     '    "entities": {\n'
-    '        "amount": "monto o null",\n'
-    '        "term": "plazo o null",\n'
+    '        "amount": "monto NORMALIZADO como número entero string sin símbolos ni separadores",\n'
+    '        "term": "plazo NORMALIZADO en meses (entero string)",\n'
     '        "location": "ubicación o null"\n'
     "    },\n"
     '    "summary": "resumen breve de la intención detectada"\n'
-    "}"
+    "}\n\n"
+    "REGLAS DE NORMALIZACIÓN (importante para que el frontend pueda sumar):\n\n"
+    "amount: convertí cualquier expresión a un entero string sin símbolos\n"
+    "  ni separadores ni unidades. La moneda implícita es la local del cliente\n"
+    "  (COP en Colombia, MXN en México). Ejemplos:\n"
+    '    - "850 millones de pesos" → "850000000"\n'
+    '    - "$1.2M" → "1200000"\n'
+    '    - "300 mil dólares" → "300000"  (no convertir USD→COP, solo normalizar)\n'
+    '    - "1,500,000" → "1500000"\n'
+    '    - "entre 380 y 450 millones" → "415000000"  (promedio si es rango)\n'
+    "    - no mencionado o ambiguo → null\n\n"
+    "term: convertí a meses como entero string. Ejemplos:\n"
+    '    - "20 años" → "240"\n'
+    '    - "60 meses" → "60"\n'
+    '    - "5 años" → "60"\n'
+    "    - no mencionado → null\n\n"
+    "location: ciudad/región como texto plano (ej. \"Bogotá\", \"Chapinero\").\n"
 )
 
 

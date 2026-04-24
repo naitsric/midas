@@ -9,14 +9,15 @@
 /* Begin PBXBuildFile section */
 		15E37056FE2F1032E0068C18 /* PushKitHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42839035338D8A2AF24914B3 /* PushKitHandler.swift */; };
 		1AAB65EC63DA16430AC44622 /* BackendApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5CB0902FD132C8246B751E /* BackendApiService.swift */; };
+		3AE12B75D6DD8EDAFE555A8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD29B817D254BA3F86E3BF /* LaunchScreen.storyboard */; };
 		3E33461D11AAEC8EC9A1884B /* ChimeCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D66E5523BC833B4B7921D22 /* ChimeCallManager.swift */; };
-		40A7DB602F96BE3A00AC6A12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */; };
-		40A7DB612F96BE3A00AC6A12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */; };
 		676B756FE25E4CF035B754D5 /* SwiftVoipDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC78DE6F7622AE71BD42E8 /* SwiftVoipDispatcher.swift */; };
 		7491CCFFD27043CC391D07F1 /* CallKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B0239048B9C4A446FBCDBA /* CallKitManager.swift */; };
 		7FFAB711A2F86D00C988920B /* CallControlService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBF2D72E2790223E0B2830F /* CallControlService.swift */; };
 		896BA23A5EF976A1B23392FA /* CallKitProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77A84A40EF4450C985C341D /* CallKitProvider.swift */; };
+		A201E960AEB14838F3154DB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39D79355E645B36656A99A58 /* Assets.xcassets */; };
 		B5D19BA3B74334A9E9D61C70 /* ringback.wav in Resources */ = {isa = PBXBuildFile; fileRef = DE9FF1F581F9382E97766A09 /* ringback.wav */; };
+		BCE7119747B8EC59600A3681 /* CalendarBridgeImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E97780952CA7FD23021649 /* CalendarBridgeImpl.swift */; };
 		C1562DD0753A60AF08F9D715 /* AmazonChimeSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 4FC55B7EE06B68761AF3E24E /* AmazonChimeSDK */; };
 		C469EEE37DC2BADA9D8F5840 /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DC302E392E982715491267 /* iOSApp.swift */; };
 		E24C431C4DF406C4CFBE935B /* RingbackPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D81B6B8DECE4CAC9BABE512 /* RingbackPlayer.swift */; };
@@ -28,11 +29,12 @@
 		1FBF2D72E2790223E0B2830F /* CallControlService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallControlService.swift; sourceTree = "<group>"; };
 		2D66E5523BC833B4B7921D22 /* ChimeCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChimeCallManager.swift; sourceTree = "<group>"; };
 		34B0239048B9C4A446FBCDBA /* CallKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallKitManager.swift; sourceTree = "<group>"; };
-		40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		39D79355E645B36656A99A58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42839035338D8A2AF24914B3 /* PushKitHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushKitHandler.swift; sourceTree = "<group>"; };
+		4DFD29B817D254BA3F86E3BF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6D81B6B8DECE4CAC9BABE512 /* RingbackPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingbackPlayer.swift; sourceTree = "<group>"; };
 		6F5CB0902FD132C8246B751E /* BackendApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendApiService.swift; sourceTree = "<group>"; };
+		81E97780952CA7FD23021649 /* CalendarBridgeImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarBridgeImpl.swift; sourceTree = "<group>"; };
 		A99824FF563253FA942E5F5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF8CEBF28D0FDEEF430D80C0 /* MidasApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MidasApp.entitlements; sourceTree = "<group>"; };
 		B77A84A40EF4450C985C341D /* CallKitProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallKitProvider.swift; sourceTree = "<group>"; };
@@ -57,11 +59,12 @@
 		7283A7BB2D73728E92088059 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				40A7DB5E2F96BE3A00AC6A12 /* Assets.xcassets */,
-				40A7DB5F2F96BE3A00AC6A12 /* LaunchScreen.storyboard */,
+				39D79355E645B36656A99A58 /* Assets.xcassets */,
 				A99824FF563253FA942E5F5D /* Info.plist */,
 				12DC302E392E982715491267 /* iOSApp.swift */,
+				4DFD29B817D254BA3F86E3BF /* LaunchScreen.storyboard */,
 				AF8CEBF28D0FDEEF430D80C0 /* MidasApp.entitlements */,
+				D59EC1231577FCC55508C1D8 /* Calendar */,
 				C849787DDDFE5225641FAC57 /* VoIP */,
 			);
 			path = iosApp;
@@ -89,6 +92,14 @@
 				C9BC78DE6F7622AE71BD42E8 /* SwiftVoipDispatcher.swift */,
 			);
 			path = VoIP;
+			sourceTree = "<group>";
+		};
+		D59EC1231577FCC55508C1D8 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				81E97780952CA7FD23021649 /* CalendarBridgeImpl.swift */,
+			);
+			path = Calendar;
 			sourceTree = "<group>";
 		};
 		E2F8D7F04242B6CDEFE37E18 = {
@@ -167,9 +178,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A201E960AEB14838F3154DB7 /* Assets.xcassets in Resources */,
+				3AE12B75D6DD8EDAFE555A8B /* LaunchScreen.storyboard in Resources */,
 				B5D19BA3B74334A9E9D61C70 /* ringback.wav in Resources */,
-				40A7DB602F96BE3A00AC6A12 /* LaunchScreen.storyboard in Resources */,
-				40A7DB612F96BE3A00AC6A12 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AAB65EC63DA16430AC44622 /* BackendApiService.swift in Sources */,
+				BCE7119747B8EC59600A3681 /* CalendarBridgeImpl.swift in Sources */,
 				7FFAB711A2F86D00C988920B /* CallControlService.swift in Sources */,
 				7491CCFFD27043CC391D07F1 /* CallKitManager.swift in Sources */,
 				896BA23A5EF976A1B23392FA /* CallKitProvider.swift in Sources */,

@@ -27,6 +27,9 @@ data class Strings(
     val copilotSourceCall: String,        // e.g. "Llamada · {mins} min"
     val copilotSourceChat: String,        // e.g. "WhatsApp · {n} mensajes"
     val copilotSourceApp: String,         // e.g. "Solicitud #{id}"
+    val copilotCalendarAdded: String,     // chip mostrado cuando se crea evento
+    val copilotCalendarDenied: String,    // mensaje cuando iOS niega permission
+    val copilotCalendarError: String,     // error genérico de calendar
 
     // Login
     val loginTitle: String,
@@ -375,6 +378,9 @@ val SpanishStrings = Strings(
     copilotSourceCall = "Llamada",
     copilotSourceChat = "WhatsApp",
     copilotSourceApp = "Solicitud",
+    copilotCalendarAdded = "Agregado al calendario",
+    copilotCalendarDenied = "Necesito permiso de Calendar — actívalo en Ajustes para crear recordatorios.",
+    copilotCalendarError = "No pude crear el recordatorio.",
 
     loginTitle = "AUTENTICACION · API KEY",
     loginApiKeyLabel = "API Key",
@@ -712,6 +718,9 @@ val EnglishStrings = Strings(
     copilotSourceCall = "Call",
     copilotSourceChat = "WhatsApp",
     copilotSourceApp = "Application",
+    copilotCalendarAdded = "Added to calendar",
+    copilotCalendarDenied = "I need Calendar permission — enable it in Settings to create reminders.",
+    copilotCalendarError = "Could not create the reminder.",
 
     loginTitle = "AUTHENTICATION · API KEY",
     loginApiKeyLabel = "API Key",
