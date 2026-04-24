@@ -198,6 +198,10 @@ class MidasApiClient(
                         sourceLabel = source?.get("label")?.jsonPrimitive?.contentOrNull,
                     )
                 }
+                "client_action" -> CopilotEvent.ClientAction(
+                    action = obj["action"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+                    payload = obj["payload"]?.toString().orEmpty(),
+                )
                 "done" -> CopilotEvent.Done(
                     elapsedMs = obj["elapsed_ms"]?.jsonPrimitive?.longOrNull ?: 0L
                 )

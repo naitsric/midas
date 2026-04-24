@@ -36,4 +36,24 @@ class ErrorEvent:
     message: str
 
 
-CopilotEvent = TokenEvent | ToolCallEvent | ToolResultEvent | DoneEvent | ErrorEvent
+@dataclass(frozen=True)
+class ClientActionEvent:
+    """Instrucción para que el cliente (app móvil) ejecute una acción nativa.
+
+    El backend no ejecuta la acción — solo la propone. La app iOS recibe
+    este evento en el stream SSE y dispara el handler correspondiente
+    (ej. EventKit para `create_event`).
+    """
+
+    action: str  # "create_event", "open_url", etc.
+    payload: dict  # JSON-serializable; schema depende del action
+
+
+CopilotEvent = (
+    TokenEvent
+    | ToolCallEvent
+    | ToolResultEvent
+    | ClientActionEvent
+    | DoneEvent
+    | ErrorEvent
+)

@@ -23,6 +23,7 @@ from src.advisor.domain.entities import Advisor
 from src.advisor.infrastructure.auth import RequireAdvisor
 from src.copilot.application.use_cases import RunCopilotTurn
 from src.copilot.domain.events import (
+    ClientActionEvent,
     CopilotEvent,
     DoneEvent,
     ErrorEvent,
@@ -51,6 +52,8 @@ def _serialize(event: CopilotEvent) -> bytes:
         if event.source is not None:
             data["source"] = {"type": event.source.type.value, "label": event.source.label}
         return _format_sse("tool_result", data)
+    if isinstance(event, ClientActionEvent):
+        return _format_sse("client_action", {"action": event.action, "payload": event.payload})
     if isinstance(event, DoneEvent):
         return _format_sse("done", {"elapsed_ms": event.elapsed_ms})
     if isinstance(event, ErrorEvent):

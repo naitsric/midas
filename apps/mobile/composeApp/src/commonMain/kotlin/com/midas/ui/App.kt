@@ -28,6 +28,7 @@ import com.midas.ui.i18n.*
 import com.midas.ui.onboarding.OnboardingScreen
 import com.midas.ui.profile.ProfileScreen
 import com.midas.ui.voip.VoipDialScreen
+import com.midas.calendar.CalendarBridge
 import com.midas.voip.VoipCallManager
 import com.midas.ui.theme.LocalMidasColors
 import com.midas.ui.theme.MidasTheme
@@ -47,6 +48,7 @@ fun MidasApp(
         )
     },
     voipCallManager: VoipCallManager? = null,
+    calendarBridge: CalendarBridge? = null,
 ) {
     val storedApiKey by settings.apiKey.collectAsState()
     val onboarded by settings.onboarded.collectAsState()
@@ -70,6 +72,7 @@ fun MidasApp(
                     apiClient = apiClient,
                     settings = settings,
                     voipCallManager = voipCallManager,
+                    calendarBridge = calendarBridge,
                     currentLanguage = currentLanguage,
                     onLanguageChange = {
                         currentLanguage = it
@@ -92,6 +95,7 @@ private fun MainScaffold(
     apiClient: MidasApiClient,
     settings: SettingsRepository,
     voipCallManager: VoipCallManager?,
+    calendarBridge: CalendarBridge?,
     currentLanguage: Language,
     onLanguageChange: (Language) -> Unit,
     onLogout: () -> Unit,
@@ -205,7 +209,7 @@ private fun MainScaffold(
                         }
                     }
                     Screen.Applications -> ApplicationListScreen(apiClient)
-                    Screen.Copilot -> CopilotScreen(apiClient = apiClient)
+                    Screen.Copilot -> CopilotScreen(apiClient = apiClient, calendarBridge = calendarBridge)
                     Screen.Calls -> CallListScreen(
                         apiClient = apiClient,
                         onNewRecording = { currentScreen = Screen.NewRecording },
