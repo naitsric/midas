@@ -1195,13 +1195,36 @@ private fun statusColor(status: String, defaultGreen: Color): Color = when (stat
     else -> Color(0xFF9E9E9E)
 }
 
+/**
+ * Parses amount strings tolerantly. Handles all of:
+ *   "300,000,000"   → 300_000_000
+ *   "850 millones"  → 850_000_000
+ *   "1.5M" / "1.5MM" / "1.5 millones" → 1_500_000
+ *   "$2,500"        → 2_500
+ *   "150 mil"       → 150_000
+ * The LLM emits these in different shapes depending on the conversation —
+ * the parser has to be forgiving so the pipeline total isn't off by 1000x.
+ */
 private fun parseAmount(raw: String?): Double {
-    if (raw == null) return 0.0
-    val digits = raw.filter { it.isDigit() || it == '.' }
-    return digits.toDoubleOrNull() ?: 0.0
+    if (raw.isNullOrBlank()) return 0.0
+    val lower = raw.lowercase()
+
+    val multiplier = when {
+        // millones / millions / trailing "M" or "MM" (e.g. "1.5M", "1.5MM")
+        Regex("""\bmillon(es)?\b|\bmillions?\b|\d\s*mm?\b""").containsMatchIn(lower) -> 1_000_000.0
+        // mil / thousand / trailing "K" (e.g. "200K")
+        Regex("""\bmil\b|\bthousand\b|\d\s*k\b""").containsMatchIn(lower) -> 1_000.0
+        else -> 1.0
+    }
+
+    // Strip commas (US thousand sep) — what's left should be digits + at most one dot.
+    val numeric = lower.replace(",", "").filter { it.isDigit() || it == '.' }
+    val value = numeric.toDoubleOrNull() ?: 0.0
+    return value * multiplier
 }
 
 private fun formatPipeline(amount: Double): String = when {
+    amount >= 1_000_000_000 -> "$${"%.1f".format1(amount / 1_000_000_000)}B"
     amount >= 1_000_000 -> "$${"%.1f".format1(amount / 1_000_000)}M"
     amount >= 1_000 -> "$${"%.0f".format1(amount / 1_000)}K"
     amount > 0 -> "$${"%.0f".format1(amount)}"
