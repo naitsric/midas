@@ -23,6 +23,7 @@ import com.midas.ui.calls.RecordingScreen
 import com.midas.ui.conversations.ConversationDetailScreen
 import com.midas.ui.conversations.ConversationListScreen
 import com.midas.ui.copilot.CopilotScreen
+import com.midas.ui.copilot.rememberCopilotConversationState
 import com.midas.ui.dashboard.DashboardScreen
 import com.midas.ui.i18n.*
 import com.midas.ui.onboarding.OnboardingScreen
@@ -108,6 +109,10 @@ private fun MainScaffold(
     var currentScreen by remember { mutableStateOf(Screen.Dashboard) }
     var selectedCallId by remember { mutableStateOf<String?>(null) }
     var selectedConversationId by remember { mutableStateOf<String?>(null) }
+    // Copilot conversation lives one level above the tab `when` so it
+    // survives navigation between tabs (otherwise the conversation resets
+    // every time the user leaves the Copilot screen).
+    val copilotConversation = rememberCopilotConversationState()
     val showBottomBar = currentScreen != Screen.NewRecording &&
         currentScreen != Screen.VoipDial &&
         currentScreen != Screen.CallDetail &&
@@ -214,7 +219,11 @@ private fun MainScaffold(
                         }
                     }
                     Screen.Applications -> ApplicationListScreen(apiClient)
-                    Screen.Copilot -> CopilotScreen(apiClient = apiClient, calendarBridge = calendarBridge)
+                    Screen.Copilot -> CopilotScreen(
+                        apiClient = apiClient,
+                        calendarBridge = calendarBridge,
+                        conversation = copilotConversation,
+                    )
                     Screen.Calls -> CallListScreen(
                         apiClient = apiClient,
                         onNewRecording = { currentScreen = Screen.NewRecording },

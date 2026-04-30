@@ -51,9 +51,9 @@ import com.midas.ui.theme.LocalMidasColors
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-private enum class CopilotState { Empty, Thinking, Answered }
+internal enum class CopilotState { Empty, Thinking, Answered }
 
-private data class CopilotMessage(
+internal data class CopilotMessage(
     val id: Int,
     val role: Role,
     val text: String = "",
@@ -63,32 +63,48 @@ private data class CopilotMessage(
     enum class Role { User, Assistant }
 }
 
-private data class Source(val type: Type, val label: String) {
+internal data class Source(val type: Type, val label: String) {
     enum class Type { Call, Chat, Application }
 }
+
+/**
+ * State holder de la conversación con Copilot.
+ *
+ * Vive en [com.midas.ui.MainScaffold] (un nivel arriba del when de pestañas)
+ * para que NO se desmonte al cambiar de tab. Si vivieran como `remember { }`
+ * dentro de [CopilotScreen], saltar a Calls/Dashboard y volver borraría la
+ * conversación.
+ */
+class CopilotConversationState internal constructor() {
+    internal var state by mutableStateOf(CopilotState.Empty)
+    internal var input by mutableStateOf("")
+    internal var messages by mutableStateOf<List<CopilotMessage>>(emptyList())
+    internal var nextId by mutableStateOf(1)
+}
+
+@Composable
+fun rememberCopilotConversationState(): CopilotConversationState =
+    remember { CopilotConversationState() }
 
 @Composable
 fun CopilotScreen(
     apiClient: MidasApiClient,
     calendarBridge: CalendarBridge? = null,
+    conversation: CopilotConversationState = rememberCopilotConversationState(),
 ) {
     val s = LocalStrings.current
     val colors = LocalMidasColors.current
 
-    var state by remember { mutableStateOf(CopilotState.Empty) }
-    var input by remember { mutableStateOf("") }
-    var messages by remember { mutableStateOf<List<CopilotMessage>>(emptyList()) }
     val scope = rememberCoroutineScope()
-    var nextId by remember { mutableStateOf(1) }
 
     fun ask(query: String) {
         val q = query.trim()
         if (q.isEmpty()) return
-        val userMsg = CopilotMessage(id = nextId++, role = CopilotMessage.Role.User, text = q)
-        val assistantId = nextId++
+        val userMsg = CopilotMessage(id = conversation.nextId++, role = CopilotMessage.Role.User, text = q)
+        val assistantId = conversation.nextId++
         val thinkingMsg = CopilotMessage(id = assistantId, role = CopilotMessage.Role.Assistant, thinking = true)
         // Construir historial del backend ANTES de agregar el nuevo turno.
-        val history = messages
+        val history = conversation.messages
             .filter { !it.thinking && it.text.isNotEmpty() }
             .map {
                 CopilotHistoryItem(
@@ -96,23 +112,23 @@ fun CopilotScreen(
                     text = it.text,
                 )
             }
-        messages = messages + userMsg + thinkingMsg
-        input = ""
-        state = CopilotState.Thinking
+        conversation.messages = conversation.messages + userMsg + thinkingMsg
+        conversation.input = ""
+        conversation.state = CopilotState.Thinking
 
         scope.launch {
             apiClient.streamCopilot(history = history, message = q)
                 .catch { e ->
-                    messages = messages.map { m ->
+                    conversation.messages = conversation.messages.map { m ->
                         if (m.id == assistantId) m.copy(
                             thinking = false,
                             text = "Error: ${e.message ?: "no se pudo conectar"}",
                         ) else m
                     }
-                    state = CopilotState.Answered
+                    conversation.state = CopilotState.Answered
                 }
                 .collect { event ->
-                    messages = messages.map { m ->
+                    conversation.messages = conversation.messages.map { m ->
                         if (m.id != assistantId) return@map m
                         when (event) {
                             is CopilotEvent.Token -> m.copy(thinking = false, text = m.text + event.text)
@@ -135,12 +151,12 @@ fun CopilotScreen(
                             bridge = calendarBridge,
                             strings = s,
                             onResult = { src ->
-                                messages = messages.map { m ->
+                                conversation.messages = conversation.messages.map { m ->
                                     if (m.id == assistantId) m.copy(sources = m.sources + src) else m
                                 }
                             },
                             onError = { errMsg ->
-                                messages = messages.map { m ->
+                                conversation.messages = conversation.messages.map { m ->
                                     if (m.id == assistantId) m.copy(
                                         text = if (m.text.isEmpty()) errMsg else "${m.text}\n\n⚠️ $errMsg",
                                     ) else m
@@ -149,7 +165,7 @@ fun CopilotScreen(
                         )
                     }
                     if (event is CopilotEvent.Done || event is CopilotEvent.Error) {
-                        state = CopilotState.Answered
+                        conversation.state = CopilotState.Answered
                     }
                 }
         }
@@ -183,7 +199,7 @@ fun CopilotScreen(
 
         // Body
         Box(modifier = Modifier.weight(1f)) {
-            when (state) {
+            when (conversation.state) {
                 CopilotState.Empty -> EmptyState(
                     title = s.copilotEmptyTitle,
                     body = s.copilotEmptyBody,
@@ -195,17 +211,17 @@ fun CopilotScreen(
                     onPick = { ask(it) },
                 )
                 else -> MessagesList(
-                    messages = messages,
+                    messages = conversation.messages,
                     thinkingLabel = s.copilotThinking,
                 )
             }
         }
 
         Composer(
-            value = input,
-            onValueChange = { input = it },
+            value = conversation.input,
+            onValueChange = { conversation.input = it },
             placeholder = s.copilotComposerPlaceholder,
-            onSend = { ask(input) },
+            onSend = { ask(conversation.input) },
         )
     }
 }
