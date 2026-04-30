@@ -14,6 +14,10 @@
     <string>0.1.0</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>MIDAS necesita acceso al microfono para grabar llamadas y transcribirlas en tiempo real.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>MIDAS necesita acceso al calendario para crear recordatorios de seguimiento con tus clientes.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>MIDAS necesita acceso al calendario para crear recordatorios de seguimiento con tus clientes.</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>UISupportedInterfaceOrientations</key>

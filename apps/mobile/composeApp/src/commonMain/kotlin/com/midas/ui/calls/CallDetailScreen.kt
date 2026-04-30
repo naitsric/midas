@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.midas.audioplayer.AudioPlayerBridge
 import com.midas.data.api.MidasApiClient
 import com.midas.domain.model.CallDetail
 import com.midas.domain.model.CreditApplication
@@ -44,6 +45,7 @@ import kotlin.math.sin
 fun CallDetailScreen(
     apiClient: MidasApiClient,
     callId: String,
+    audioPlayerBridge: AudioPlayerBridge? = null,
     onBack: () -> Unit,
     onApplicationGenerated: (CreditApplication) -> Unit = {},
 ) {
@@ -107,6 +109,7 @@ fun CallDetailScreen(
                 generatedApp = generatedApp,
                 generating = generating,
                 generationError = generationError,
+                audioPlayerBridge = audioPlayerBridge,
                 onBack = onBack,
                 onGenerate = {
                     scope.launch {
@@ -136,6 +139,7 @@ private fun CallDetailContent(
     generatedApp: CreditApplication?,
     generating: Boolean,
     generationError: String?,
+    audioPlayerBridge: AudioPlayerBridge?,
     onBack: () -> Unit,
     onGenerate: () -> Unit,
 ) {
@@ -159,7 +163,11 @@ private fun CallDetailContent(
         )
 
         Spacer(Modifier.height(16.dp))
-        AudioPlayer(durationSeconds = call.durationSeconds ?: 0)
+        AudioPlayer(
+            recordingUrl = call.recordingUrl,
+            fallbackDurationSeconds = call.durationSeconds ?: 0,
+            bridge = audioPlayerBridge,
+        )
 
         // Intent strip
         if (intentLoading) {
@@ -284,19 +292,47 @@ private fun DetailHeader(idLabel: String, callId: String, name: String, onBack: 
 // ─────────────────────────── AudioPlayer ───────────────────────────
 
 @Composable
-private fun AudioPlayer(durationSeconds: Int) {
+private fun AudioPlayer(
+    recordingUrl: String?,
+    fallbackDurationSeconds: Int,
+    bridge: AudioPlayerBridge?,
+) {
     val colors = LocalMidasColors.current
     val accent = colors.primaryAccent
-    var playing by remember { mutableStateOf(false) }
-    var pos by remember { mutableStateOf(0) }
-    val total = durationSeconds.coerceAtLeast(1)
+    var playing by remember(recordingUrl) { mutableStateOf(false) }
+    var positionSeconds by remember(recordingUrl) { mutableStateOf(0.0) }
+    var durationSeconds by remember(recordingUrl) { mutableStateOf(fallbackDurationSeconds.toDouble()) }
+    var ready by remember(recordingUrl) { mutableStateOf(false) }
+    var error by remember(recordingUrl) { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(playing, total) {
-        while (playing) {
-            delay(1000)
-            pos = if (pos >= total) 0 else pos + 1
+    val canPlay = recordingUrl != null && bridge != null && error == null
+
+    // Load when URL is available; release on dispose / URL change.
+    DisposableEffect(recordingUrl, bridge) {
+        if (recordingUrl != null && bridge != null) {
+            bridge.load(
+                url = recordingUrl,
+                onReady = { d ->
+                    if (d > 0) durationSeconds = d
+                    ready = true
+                },
+                onProgress = { positionSeconds = it },
+                onCompleted = {
+                    playing = false
+                    positionSeconds = 0.0
+                    bridge.seek(0.0)
+                },
+                onError = {
+                    error = it
+                    playing = false
+                },
+            )
         }
+        onDispose { bridge?.release() }
     }
+
+    val total = durationSeconds.coerceAtLeast(1.0)
+    val progress = (positionSeconds / total).toFloat().coerceIn(0f, 1f)
 
     val cardBg = if (colors.isDark) accent.copy(alpha = 0.05f) else accent.copy(alpha = 0.06f)
 
@@ -309,12 +345,21 @@ private fun AudioPlayer(durationSeconds: Int) {
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val playButtonBg = if (canPlay) accent else accent.copy(alpha = 0.4f)
         Box(
             modifier = Modifier
                 .size(42.dp)
                 .clip(CircleShape)
-                .background(accent)
-                .clickable { playing = !playing },
+                .background(playButtonBg)
+                .clickable(enabled = canPlay) {
+                    if (playing) {
+                        bridge?.pause()
+                        playing = false
+                    } else {
+                        bridge?.play()
+                        playing = true
+                    }
+                },
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -326,21 +371,21 @@ private fun AudioPlayer(durationSeconds: Int) {
         }
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Waveform(progress = pos.toFloat() / total)
+            Waveform(progress = progress)
             Spacer(Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = fmtMMSS(pos),
+                    text = fmtMMSS(positionSeconds.toInt()),
                     color = colors.muted,
                     fontSize = 10.sp,
                     fontFamily = FontFamily.Monospace,
                 )
                 Text(
-                    text = fmtMMSS(total),
-                    color = colors.muted,
+                    text = error ?: fmtMMSS(total.toInt()),
+                    color = if (error != null) Color(0xFFEF5350) else colors.muted,
                     fontSize = 10.sp,
                     fontFamily = FontFamily.Monospace,
                 )

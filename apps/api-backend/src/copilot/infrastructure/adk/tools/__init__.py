@@ -17,6 +17,11 @@ from src.call.domain.ports import CallRepository
 from src.conversation.domain.ports import ConversationRepository
 from src.copilot.domain.value_objects import SourceRef, SourceType
 from src.copilot.infrastructure.adk.tools.applications import build_applications_tools
+from src.copilot.infrastructure.adk.tools.calendar import (
+    CLIENT_SIDE_TOOL_ACTIONS,
+    build_calendar_tools,
+    build_client_action_payload,
+)
 from src.copilot.infrastructure.adk.tools.calls import build_calls_tools
 from src.copilot.infrastructure.adk.tools.conversations import build_conversations_tools
 
@@ -32,6 +37,7 @@ def build_all_tools(
         *build_calls_tools(advisor_id, call_repo),
         *build_applications_tools(advisor_id, application_repo),
         *build_conversations_tools(advisor_id, conversation_repo),
+        *build_calendar_tools(),
     ]
 
 
@@ -73,4 +79,9 @@ def extract_source_ref(tool_name: str, tool_result: Any) -> SourceRef | None:
     return None
 
 
-__all__ = ["build_all_tools", "extract_source_ref"]
+__all__ = [
+    "build_all_tools",
+    "extract_source_ref",
+    "CLIENT_SIDE_TOOL_ACTIONS",
+    "build_client_action_payload",
+]

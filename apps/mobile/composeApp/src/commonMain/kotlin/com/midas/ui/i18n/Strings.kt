@@ -7,1029 +7,1038 @@ enum class Language(val code: String, val label: String) {
     EN("en", "English"),
 }
 
-data class Strings(
+class Strings {
     // Navigation
-    val navHome: String,
-    val navChats: String,
-    val navApplications: String,
-    val navCalls: String,
-    val navCopilot: String,
+    var navHome: String = ""
+    var navChats: String = ""
+    var navApplications: String = ""
+    var navCalls: String = ""
+    var navCopilot: String = ""
 
     // Copilot
-    val copilotTitle: String,
-    val copilotEmptyTitle: String,
-    val copilotEmptyBody: String,
-    val copilotSuggestion1: String,
-    val copilotSuggestion2: String,
-    val copilotSuggestion3: String,
-    val copilotThinking: String,
-    val copilotComposerPlaceholder: String,
-    val copilotSourceCall: String,        // e.g. "Llamada · {mins} min"
-    val copilotSourceChat: String,        // e.g. "WhatsApp · {n} mensajes"
-    val copilotSourceApp: String,         // e.g. "Solicitud #{id}"
+    var copilotTitle: String = ""
+    var copilotEmptyTitle: String = ""
+    var copilotEmptyBody: String = ""
+    var copilotSuggestion1: String = ""
+    var copilotSuggestion2: String = ""
+    var copilotSuggestion3: String = ""
+    var copilotThinking: String = ""
+    var copilotComposerPlaceholder: String = ""
+    var copilotSourceCall: String = "" // e.g. "Llamada · {mins} min"
+    var copilotSourceChat: String = "" // e.g. "WhatsApp · {n} mensajes"
+    var copilotSourceApp: String = "" // e.g. "Solicitud #{id}"
+    var copilotCalendarAdded: String = "" // chip mostrado cuando se crea evento
+    var copilotCalendarDenied: String = "" // mensaje cuando iOS niega permission
+    var copilotCalendarError: String = "" // error genérico de calendar
 
     // Login
-    val loginTitle: String,
-    val loginApiKeyLabel: String,
-    val loginApiKeyPlaceholder: String,
-    val loginApiKeyHint: String,
-    val loginButton: String,
-    val loginValidating: String,
-    val loginErrorEmpty: String,
-    val loginErrorInvalid: String,
-    val loginRegister: String,
-    val loginRegisterPrompt: String,
-    val loginOr: String,
-    val loginSupport: String,
-    val loginTerms: String,
-    val loginPrivacy: String,
-    val loginStatusOnline: String,
-    val loginSubtitlePrefix: String,
-    val loginSubtitleAccent: String,
-    val loginPasteTitle: String,
-    val loginPasteAction: String,
-    val loginPasteEmpty: String,
-    val loginFooterTrust: String,
-    val loginFooterCompliance: String,
+    var loginTitle: String = ""
+    var loginApiKeyLabel: String = ""
+    var loginApiKeyPlaceholder: String = ""
+    var loginApiKeyHint: String = ""
+    var loginButton: String = ""
+    var loginValidating: String = ""
+    var loginErrorEmpty: String = ""
+    var loginErrorInvalid: String = ""
+    var loginRegister: String = ""
+    var loginRegisterPrompt: String = ""
+    var loginOr: String = ""
+    var loginSupport: String = ""
+    var loginTerms: String = ""
+    var loginPrivacy: String = ""
+    var loginStatusOnline: String = ""
+    var loginSubtitlePrefix: String = ""
+    var loginSubtitleAccent: String = ""
+    var loginPasteTitle: String = ""
+    var loginPasteAction: String = ""
+    var loginPasteEmpty: String = ""
+    var loginFooterTrust: String = ""
+    var loginFooterCompliance: String = ""
 
     // Dashboard
-    val dashboardGreeting: String,
-    val dashboardSubtitle: String,
-    val dashboardConversations: String,
-    val dashboardApplications: String,
-    val dashboardCalls: String,
-    val dashboardOnline: String,            // "EN LINEA"
-    val dashboardHeroChip: String,          // "ACCION RAPIDA"
-    val dashboardHeroTitle: String,         // "Vas a llamar a un cliente?"
-    val dashboardHeroSubtitle: String,      // "Midas transcribe y genera..."
-    val dashboardHeroRecord: String,        // "Grabar"
-    val dashboardHeroCall: String,          // "Llamar"
-    val dashboardStatConversations: String, // "CONVERSACIONES"
-    val dashboardStatCalls: String,         // "LLAMADAS"
-    val dashboardStatApplications: String,  // "SOLICITUDES"
-    val dashboardStatPending: String,       // "PENDIENTES"
-    val dashboardStatNew: String,           // "NUEVAS"
-    val dashboardRecentSection: String,     // "ACTIVIDAD RECIENTE"
-    val dashboardRecentSeeAll: String,      // "Ver todo"
-    val dashboardEmpty: String,             // "Sin actividad reciente"
+    var dashboardGreeting: String = ""
+    var dashboardSubtitle: String = ""
+    var dashboardConversations: String = ""
+    var dashboardApplications: String = ""
+    var dashboardCalls: String = ""
+    var dashboardOnline: String = "" // "EN LINEA"
+    var dashboardHeroChip: String = "" // "ACCION RAPIDA"
+    var dashboardHeroTitle: String = "" // "Vas a llamar a un cliente?"
+    var dashboardHeroSubtitle: String = "" // "Midas transcribe y genera..."
+    var dashboardHeroRecord: String = "" // "Grabar"
+    var dashboardHeroCall: String = "" // "Llamar"
+    var dashboardStatConversations: String = "" // "CONVERSACIONES"
+    var dashboardStatCalls: String = "" // "LLAMADAS"
+    var dashboardStatApplications: String = "" // "SOLICITUDES"
+    var dashboardStatPending: String = "" // "PENDIENTES"
+    var dashboardStatNew: String = "" // "NUEVAS"
+    var dashboardRecentSection: String = "" // "ACTIVIDAD RECIENTE"
+    var dashboardRecentSeeAll: String = "" // "Ver todo"
+    var dashboardEmpty: String = "" // "Sin actividad reciente"
 
     // Conversations
-    val conversationsTitle: String,
-    val conversationsEmpty: String,
-    val conversationsMessages: String,
-    val chatsSyncPill: String,
-    val chatsStatConversations: String,
-    val chatsStatMessages: String,
-    val chatsStatApplications: String,
-    val chatsSearchPlaceholder: String,
-    val chatsFilterAll: String,
-    val chatsFilterHot: String,
-    val chatsFilterUnread: String,
-    val chatsFilterApp: String,
-    val chatsEmptyFilter: String,
-    val chatDetailAiToggle: String,
-    val chatDetailIntentHeader: String,
-    val chatDetailSeeApplication: String,
-    val chatDetailFirstSeen: String,
-    val chatComposerPlaceholder: String,
-    val chatComposerFooter: String,
+    var conversationsTitle: String = ""
+    var conversationsEmpty: String = ""
+    var conversationsMessages: String = ""
+    var chatsSyncPill: String = ""
+    var chatsStatConversations: String = ""
+    var chatsStatMessages: String = ""
+    var chatsStatApplications: String = ""
+    var chatsSearchPlaceholder: String = ""
+    var chatsFilterAll: String = ""
+    var chatsFilterHot: String = ""
+    var chatsFilterUnread: String = ""
+    var chatsFilterApp: String = ""
+    var chatsEmptyFilter: String = ""
+    var chatDetailAiToggle: String = ""
+    var chatDetailIntentHeader: String = ""
+    var chatDetailSeeApplication: String = ""
+    var chatDetailFirstSeen: String = ""
+    var chatComposerPlaceholder: String = ""
+    var chatComposerFooter: String = ""
 
     // Applications
-    val applicationsTitle: String,
-    val applicationsEmpty: String,
-    val applicationDetail: String,
-    val applicationStatus: String,
-    val applicationApplicant: String,
-    val applicationProduct: String,
-    val applicationSummary: String,
-    val applicationRejectionReason: String,
-    val applicationName: String,
-    val applicationPhone: String,
-    val applicationIncome: String,
-    val applicationEmployment: String,
-    val applicationCompleteness: String,
-    val applicationProductType: String,
-    val applicationAmount: String,
-    val applicationTerm: String,
-    val applicationLocation: String,
-    val appsSyncPill: String,                // "Auto-generadas por conversacion"
-    val appsStatPipeline: String,            // "Pipeline"
-    val appsStatDrafts: String,              // "Borradores"
-    val appsStatSubmitted: String,           // "Enviadas"
-    val appsFilterAll: String,
-    val appsFilterDrafts: String,
-    val appsFilterSubmitted: String,
-    val appsFilterReview: String,
-    val appsEmptyFilter: String,
-    val appsAiPrefix: String,                // "IA"
-    val appsSendButton: String,              // "ENVIAR"
-    val appsHeroChip: String,                // "PRODUCTO SUGERIDO"
-    val appsHeroConfidence: String,          // "CONFIANZA"
-    val appsMetricAmount: String,            // "MONTO"
-    val appsMetricTerm: String,              // "PLAZO"
-    val appsMetricRate: String,              // "TASA"
-    val appsSectionCompleteness: String,     // "Completitud"
-    val appsSectionExtracted: String,        // "Datos extraidos por IA"
-    val appsSectionSummary: String,          // "Resumen"
-    val appsCompletenessFooter: String,      // "Faltan %d campos para envio."
-    val appsCompletenessReady: String,       // "Lista para enviar."
-    val appsRequiresManual: String,          // "REQUIERE COMPLEMENTO MANUAL"
-    val appsAddAction: String,               // "AGREGAR"
-    val appsSourceLabel: String,             // "FUENTE"
-    val appsSourceTrace: String,             // "FUENTE EN CONVERSACION"
+    var applicationsTitle: String = ""
+    var applicationsEmpty: String = ""
+    var applicationDetail: String = ""
+    var applicationStatus: String = ""
+    var applicationApplicant: String = ""
+    var applicationProduct: String = ""
+    var applicationSummary: String = ""
+    var applicationRejectionReason: String = ""
+    var applicationName: String = ""
+    var applicationPhone: String = ""
+    var applicationIncome: String = ""
+    var applicationEmployment: String = ""
+    var applicationCompleteness: String = ""
+    var applicationProductType: String = ""
+    var applicationAmount: String = ""
+    var applicationTerm: String = ""
+    var applicationLocation: String = ""
+    var appsSyncPill: String = "" // "Auto-generadas por conversacion"
+    var appsStatPipeline: String = "" // "Pipeline"
+    var appsStatDrafts: String = "" // "Borradores"
+    var appsStatSubmitted: String = "" // "Enviadas"
+    var appsFilterAll: String = ""
+    var appsFilterDrafts: String = ""
+    var appsFilterSubmitted: String = ""
+    var appsFilterReview: String = ""
+    var appsEmptyFilter: String = ""
+    var appsAiPrefix: String = "" // "IA"
+    var appsSendButton: String = "" // "ENVIAR"
+    var appsHeroChip: String = "" // "PRODUCTO SUGERIDO"
+    var appsHeroConfidence: String = "" // "CONFIANZA"
+    var appsMetricAmount: String = "" // "MONTO"
+    var appsMetricTerm: String = "" // "PLAZO"
+    var appsMetricRate: String = "" // "TASA"
+    var appsSectionCompleteness: String = "" // "Completitud"
+    var appsSectionExtracted: String = "" // "Datos extraidos por IA"
+    var appsSectionSummary: String = "" // "Resumen"
+    var appsCompletenessFooter: String = "" // "Faltan %d campos para envio."
+    var appsCompletenessReady: String = "" // "Lista para enviar."
+    var appsRequiresManual: String = "" // "REQUIERE COMPLEMENTO MANUAL"
+    var appsAddAction: String = "" // "AGREGAR"
+    var appsSourceLabel: String = "" // "FUENTE"
+    var appsSourceTrace: String = "" // "FUENTE EN CONVERSACION"
 
     // Calls
-    val callsTitle: String,
-    val callsEmpty: String,
-    val callNewRecording: String,
-    val callsTotalSuffix: String,        // "total"
-    val callsTabAll: String,             // "Todas"
-    val callsTabIntent: String,          // "Con intencion"
-    val callsTabNoIntent: String,        // "Sin intencion"
-    val callsStatusReady: String,        // "LISTA"
-    val callsStatusProcessing: String,   // "PROCESANDO"
-    val callsStatusError: String,        // "ERROR"
-    val callsIntentDetected: String,     // "intencion"
-    val callsIntentNone: String,         // "sin intencion"
-    val callsEmptyTitle: String,         // "Graba tu primera llamada"
-    val callsEmptyBody: String,
-    val callsEmptyCta: String,           // "Grabar ahora"
-    val callsEmptyFooter: String,        // "Promedio: primera solicitud en < 24 h"
+    var callsTitle: String = ""
+    var callsEmpty: String = ""
+    var callNewRecording: String = ""
+    var callsTotalSuffix: String = "" // "total"
+    var callsTabAll: String = "" // "Todas"
+    var callsTabIntent: String = "" // "Con intencion"
+    var callsTabNoIntent: String = "" // "Sin intencion"
+    var callsStatusReady: String = "" // "LISTA"
+    var callsStatusProcessing: String = "" // "PROCESANDO"
+    var callsStatusError: String = "" // "ERROR"
+    var callsIntentDetected: String = "" // "intencion"
+    var callsIntentNone: String = "" // "sin intencion"
+    var callsEmptyTitle: String = "" // "Graba tu primera llamada"
+    var callsEmptyBody: String = ""
+    var callsEmptyCta: String = "" // "Grabar ahora"
+    var callsEmptyFooter: String = "" // "Promedio: primera solicitud en < 24 h"
 
     // Recording
-    val recordingTitle: String,
-    val recordingSetupTitle: String,
-    val recordingSetupSubtitle: String,
-    val recordingMicAccess: String,
-    val recordingMicEnabled: String,
-    val recordingSessionSubject: String,
-    val recordingClientName: String,
-    val recordingStart: String,
-    val recordingStop: String,
-    val recordingProcessing: String,
-    val recordingCompleted: String,
-    val recordingError: String,
-    val recordingErrorEmptyName: String,
-    val recordingTranscription: String,
-    val recordingBackToCalls: String,
-    val recordingIntentDetected: String,
-    val recordingNoIntent: String,
-    val recordingProduct: String,
-    val recordingGenerateApp: String,
-    val recordingGenerating: String,
-    val recordingGeneratedApp: String,
-    val recordingAnalyzing: String,
-    val recordingDisclaimer: String,
-    val recordingLive: String,
-    val recordingSecureConnection: String,
-    val recordingHeaderSetup: String,
-    val recordingHeaderLive: String,
-    val recordingHeaderResult: String,
-    val recordingTileMicLabel: String,
-    val recordingTileEncryptionLabel: String,
-    val recordingTileEncryptionValue: String,
-    val recordingPermissionNeeded: String,
-    val recordingSectionIdentification: String,
-    val recordingSectionLiveTranscript: String,
-    val recordingSectionSummary: String,
-    val recordingSectionNextStep: String,
-    val recordingPlaceholderName: String,
-    val recordingPlaceholderNotes: String,
-    val recordingOptionalTag: String,
-    val recordingMaxFooter: String,
-    val recordingLiveLabel: String,
-    val recordingLiveMax: String,
-    val recordingLiveHintWait: String,
-    val recordingLiveHintSignals: String,
-    val recordingLiveHintLikely: String,
-    val recordingAnalyzingIntent: String,
-    val recordingWaitingAudio: String,
-    val recordingStopAnalyze: String,
-    val recordingResultHero: String,
-    val recordingResultSubtitle: String,
-    val recordingMetricConfidence: String,
-    val recordingMetricProduct: String,
-    val recordingMetricAmount: String,
-    val recordingGenerateSubtitle: String,
-    val recordingCallIdPrefix: String,
-    val recordingProcessedIn: String,
-    val recordingDetectedLabel: String,
+    var recordingTitle: String = ""
+    var recordingSetupTitle: String = ""
+    var recordingSetupSubtitle: String = ""
+    var recordingMicAccess: String = ""
+    var recordingMicEnabled: String = ""
+    var recordingSessionSubject: String = ""
+    var recordingClientName: String = ""
+    var recordingStart: String = ""
+    var recordingStop: String = ""
+    var recordingProcessing: String = ""
+    var recordingCompleted: String = ""
+    var recordingError: String = ""
+    var recordingErrorEmptyName: String = ""
+    var recordingTranscription: String = ""
+    var recordingBackToCalls: String = ""
+    var recordingIntentDetected: String = ""
+    var recordingNoIntent: String = ""
+    var recordingProduct: String = ""
+    var recordingGenerateApp: String = ""
+    var recordingGenerating: String = ""
+    var recordingGeneratedApp: String = ""
+    var recordingAnalyzing: String = ""
+    var recordingDisclaimer: String = ""
+    var recordingLive: String = ""
+    var recordingSecureConnection: String = ""
+    var recordingHeaderSetup: String = ""
+    var recordingHeaderLive: String = ""
+    var recordingHeaderResult: String = ""
+    var recordingTileMicLabel: String = ""
+    var recordingTileEncryptionLabel: String = ""
+    var recordingTileEncryptionValue: String = ""
+    var recordingPermissionNeeded: String = ""
+    var recordingSectionIdentification: String = ""
+    var recordingSectionLiveTranscript: String = ""
+    var recordingSectionSummary: String = ""
+    var recordingSectionNextStep: String = ""
+    var recordingPlaceholderName: String = ""
+    var recordingPlaceholderNotes: String = ""
+    var recordingOptionalTag: String = ""
+    var recordingMaxFooter: String = ""
+    var recordingLiveLabel: String = ""
+    var recordingLiveMax: String = ""
+    var recordingLiveHintWait: String = ""
+    var recordingLiveHintSignals: String = ""
+    var recordingLiveHintLikely: String = ""
+    var recordingAnalyzingIntent: String = ""
+    var recordingWaitingAudio: String = ""
+    var recordingStopAnalyze: String = ""
+    var recordingResultHero: String = ""
+    var recordingResultSubtitle: String = ""
+    var recordingMetricConfidence: String = ""
+    var recordingMetricProduct: String = ""
+    var recordingMetricAmount: String = ""
+    var recordingGenerateSubtitle: String = ""
+    var recordingCallIdPrefix: String = ""
+    var recordingProcessedIn: String = ""
+    var recordingDetectedLabel: String = ""
 
     // Onboarding
-    val onbStepOf: String,              // "Paso %d · %d"
-    val onbWelcomeTitlePrefix: String,  // "Bienvenido a"
-    val onbWelcomeBody: String,
-    val onbJourneyPermissions: String,  // "Permisos"
-    val onbJourneyFirstCall: String,    // "Primera grabacion"
-    val onbJourneyApplication: String,  // "Solicitud lista"
-    val onbPermsTitle: String,          // "Dos permisos y listo"
-    val onbPermsBody: String,
-    val onbPermMic: String,             // "Microfono"
-    val onbPermMicSub: String,          // "Captura y transcripcion"
-    val onbPermNotifs: String,          // "Notificaciones"
-    val onbPermNotifsSub: String,       // "Alertas de solicitudes"
-    val onbPermAllow: String,           // "Permitir"
-    val onbPermGranted: String,         // "OK"
-    val onbPermAssurance: String,       // "El audio se procesa cifrado..."
-    val onbAhaChip: String,             // "AHA MOMENT"
-    val onbAhaTitle: String,            // "Primera solicitud en 24h"
-    val onbAhaBody: String,
-    val onbAhaCallLabel: String,        // "REC 02:14"
-    val onbAhaCallName: String,         // "Carlos Mendez"
-    val onbAhaCallQuote: String,        // "necesito un credito..."
-    val onbAhaAppLabel: String,         // "SOLICITUD · DRAFT"
-    val onbAhaAppProduct: String,       // "Credito PyME · $180k"
-    val onbAhaAppCompleteness: String,  // "Completitud 84%"
-    val onbContinue: String,            // "Continuar"
-    val onbRecordFirstCall: String,     // "Grabar primera llamada"
-    val onbSkipToDashboard: String,     // "Ir directo al dashboard"
-    val onbStageStatus: String,         // "CONFIGURANDO · PASO %d DE %d"
-    val onbStageGreeting: String,       // "Hola, asesor"
-    val onbStageSubtitle: String,       // "Tu dashboard estara listo en un momento."
+    var onbStepOf: String = "" // "Paso %d · %d"
+    var onbWelcomeTitlePrefix: String = "" // "Bienvenido a"
+    var onbWelcomeBody: String = ""
+    var onbJourneyPermissions: String = "" // "Permisos"
+    var onbJourneyFirstCall: String = "" // "Primera grabacion"
+    var onbJourneyApplication: String = "" // "Solicitud lista"
+    var onbPermsTitle: String = "" // "Dos permisos y listo"
+    var onbPermsBody: String = ""
+    var onbPermMic: String = "" // "Microfono"
+    var onbPermMicSub: String = "" // "Captura y transcripcion"
+    var onbPermNotifs: String = "" // "Notificaciones"
+    var onbPermNotifsSub: String = "" // "Alertas de solicitudes"
+    var onbPermAllow: String = "" // "Permitir"
+    var onbPermGranted: String = "" // "OK"
+    var onbPermAssurance: String = "" // "El audio se procesa cifrado..."
+    var onbAhaChip: String = "" // "AHA MOMENT"
+    var onbAhaTitle: String = "" // "Primera solicitud en 24h"
+    var onbAhaBody: String = ""
+    var onbAhaCallLabel: String = "" // "REC 02:14"
+    var onbAhaCallName: String = "" // "Carlos Mendez"
+    var onbAhaCallQuote: String = "" // "necesito un credito..."
+    var onbAhaAppLabel: String = "" // "SOLICITUD · DRAFT"
+    var onbAhaAppProduct: String = "" // "Credito PyME · $180k"
+    var onbAhaAppCompleteness: String = "" // "Completitud 84%"
+    var onbContinue: String = "" // "Continuar"
+    var onbRecordFirstCall: String = "" // "Grabar primera llamada"
+    var onbSkipToDashboard: String = "" // "Ir directo al dashboard"
+    var onbStageStatus: String = "" // "CONFIGURANDO · PASO %d DE %d"
+    var onbStageGreeting: String = "" // "Hola, asesor"
+    var onbStageSubtitle: String = "" // "Tu dashboard estara listo en un momento."
 
     // VoIP / Call
-    val voipNewCall: String,             // "Nueva llamada"
-    val voipDialClientName: String,      // "Nombre del cliente (opcional)"
-    val voipDialRecord: String,          // "Grabar y transcribir"
-    val voipDialRecordSub: String,
-    val voipDialCallButton: String,      // "Llamar"
-    val voipCountryMX: String,
-    val voipCountryCO: String,
-    val voipCountryUS: String,
-    val voipCountryE164: String,
-    val voipInCallRec: String,           // "REC"
-    val voipInCallE2E: String,           // "MIDAS · E2E"
-    val voipInCallConnected: String,     // "CONECTADO"
-    val voipInCallConnecting: String,    // "Conectando..."
-    val voipInCallRinging: String,       // "Llamando..."
-    val voipCtrlMute: String,            // "Silenciar"
-    val voipCtrlKeypad: String,          // "Teclado"
-    val voipCtrlSpeaker: String,         // "Altavoz"
-    val voipHangup: String,              // "Colgar"
-    val voipUnknownClient: String,       // "Cliente"
-    val voipPostCallTitle: String,       // "LLAMADA · COMPLETADA"
-    val voipPostStatDuration: String,
-    val voipPostStatWords: String,
-    val voipPostStatSpeakers: String,
-    val voipPostTranscriptHeader: String,
-    val voipPostGenerate: String,
-    val voipPostLater: String,
-    val voipPostProcessing: String,
-    val voipPostProcessingSub: String,
-    val voipPostTimeout: String,
-    val voipPostOpenDetail: String,
+    var voipNewCall: String = "" // "Nueva llamada"
+    var voipDialClientName: String = "" // "Nombre del cliente (opcional)"
+    var voipDialRecord: String = "" // "Grabar y transcribir"
+    var voipDialRecordSub: String = ""
+    var voipDialCallButton: String = "" // "Llamar"
+    var voipCountryMX: String = ""
+    var voipCountryCO: String = ""
+    var voipCountryUS: String = ""
+    var voipCountryE164: String = ""
+    var voipInCallRec: String = "" // "REC"
+    var voipInCallE2E: String = "" // "MIDAS · E2E"
+    var voipInCallConnected: String = "" // "CONECTADO"
+    var voipInCallConnecting: String = "" // "Conectando..."
+    var voipInCallRinging: String = "" // "Llamando..."
+    var voipCtrlMute: String = "" // "Silenciar"
+    var voipCtrlKeypad: String = "" // "Teclado"
+    var voipCtrlSpeaker: String = "" // "Altavoz"
+    var voipHangup: String = "" // "Colgar"
+    var voipUnknownClient: String = "" // "Cliente"
+    var voipPostCallTitle: String = "" // "LLAMADA · COMPLETADA"
+    var voipPostStatDuration: String = ""
+    var voipPostStatWords: String = ""
+    var voipPostStatSpeakers: String = ""
+    var voipPostTranscriptHeader: String = ""
+    var voipPostGenerate: String = ""
+    var voipPostLater: String = ""
+    var voipPostProcessing: String = ""
+    var voipPostProcessingSub: String = ""
+    var voipPostTimeout: String = ""
+    var voipPostOpenDetail: String = ""
 
     // Call detail (Variant A — Timeline)
-    val callDetailId: String,
-    val callDetailIntentTitle: String,
-    val callDetailIntentNone: String,
-    val callDetailConfidence: String,
-    val callDetailAppStatus: String,
-    val callDetailSectionSummary: String,
-    val callDetailSectionExtracted: String,
-    val callDetailSectionTranscript: String,
-    val callDetailAnalyzing: String,
-    val callDetailGenerate: String,
-    val callDetailNoTranscript: String,
-    val callDetailLoadError: String,
+    var callDetailId: String = ""
+    var callDetailIntentTitle: String = ""
+    var callDetailIntentNone: String = ""
+    var callDetailConfidence: String = ""
+    var callDetailAppStatus: String = ""
+    var callDetailSectionSummary: String = ""
+    var callDetailSectionExtracted: String = ""
+    var callDetailSectionTranscript: String = ""
+    var callDetailAnalyzing: String = ""
+    var callDetailGenerate: String = ""
+    var callDetailNoTranscript: String = ""
+    var callDetailLoadError: String = ""
 
     // General
-    val close: String,
-    val back: String,
-    val language: String,
-    val logout: String,
+    var close: String = ""
+    var back: String = ""
+    var language: String = ""
+    var logout: String = ""
 
     // Profile
-    val profileHeaderOverline: String,       // "Cuenta · Preferencias"
-    val profileTitle: String,                // "Perfil"
-    val profileSave: String,                 // "GUARDAR"
-    val profilePerfChip: String,             // "DESEMPENO · ULTIMOS 30 DIAS"
-    val profileStatConversations: String,    // "CONVERS."
-    val profileStatApplications: String,     // "SOLICITUDES"
-    val profileStatConversion: String,       // "CONVERSION"
-    val profileAdvisorId: String,            // "ADV"
-    val profileActiveLabel: String,          // "ACTIVO"
-    val profileSectionContact: String,
-    val profileSectionPreferences: String,
-    val profileSectionNotifications: String,
-    val profileSectionIntegrations: String,
-    val profileSectionPrivacy: String,
-    val profileSectionSession: String,
-    val profileContactEmail: String,
-    val profileContactPhone: String,
-    val profileContactRegion: String,
-    val profilePrefAutoAppLabel: String,
-    val profilePrefAutoAppDesc: String,
-    val profilePrefLanguage: String,
-    val profilePrefTheme: String,
-    val profileLangEs: String,
-    val profileLangEn: String,
-    val profileThemeDark: String,
-    val profileThemeLight: String,
-    val profileThemeAuto: String,
-    val profileNotifHotLabel: String,
-    val profileNotifHotDesc: String,
-    val profileNotifNewAppLabel: String,
-    val profileNotifNewAppDesc: String,
-    val profileNotifWeeklyLabel: String,
-    val profileNotifWeeklyDesc: String,
-    val profileNotifPushLabel: String,
-    val profileNotifPushDesc: String,
-    val profileIntegrationWhatsApp: String,
-    val profileIntegrationWhatsAppMeta: String,
-    val profileIntegrationVoIP: String,
-    val profileIntegrationVoIPMeta: String,
-    val profileIntegrationCalendar: String,
-    val profileIntegrationCalendarMeta: String,
-    val profileIntegrationConnect: String,
-    val profileIntegrationManage: String,
-    val profilePrivacyConsentLabel: String,
-    val profilePrivacyConsentDesc: String,
-    val profilePrivacyDownload: String,
-    val profilePrivacyDownloadMeta: String,
-    val profilePrivacyPolicy: String,
-    val profilePrivacyTerms: String,
-    val profileApiKeyLabel: String,
-    val profileApiKeyReveal: String,
-    val profileApiKeyRotateDays: String,
-    val profileSessionRotate: String,
-    val profileSessionLogout: String,
-    val profileFooterTemplate: String,       // "MIDAS v%s · %s · MX"
-)
+    var profileHeaderOverline: String = "" // "Cuenta · Preferencias"
+    var profileTitle: String = "" // "Perfil"
+    var profileSave: String = "" // "GUARDAR"
+    var profilePerfChip: String = "" // "DESEMPENO · ULTIMOS 30 DIAS"
+    var profileStatConversations: String = "" // "CONVERS."
+    var profileStatApplications: String = "" // "SOLICITUDES"
+    var profileStatConversion: String = "" // "CONVERSION"
+    var profileAdvisorId: String = "" // "ADV"
+    var profileActiveLabel: String = "" // "ACTIVO"
+    var profileSectionContact: String = ""
+    var profileSectionPreferences: String = ""
+    var profileSectionNotifications: String = ""
+    var profileSectionIntegrations: String = ""
+    var profileSectionPrivacy: String = ""
+    var profileSectionSession: String = ""
+    var profileContactEmail: String = ""
+    var profileContactPhone: String = ""
+    var profileContactRegion: String = ""
+    var profilePrefAutoAppLabel: String = ""
+    var profilePrefAutoAppDesc: String = ""
+    var profilePrefLanguage: String = ""
+    var profilePrefTheme: String = ""
+    var profileLangEs: String = ""
+    var profileLangEn: String = ""
+    var profileThemeDark: String = ""
+    var profileThemeLight: String = ""
+    var profileThemeAuto: String = ""
+    var profileNotifHotLabel: String = ""
+    var profileNotifHotDesc: String = ""
+    var profileNotifNewAppLabel: String = ""
+    var profileNotifNewAppDesc: String = ""
+    var profileNotifWeeklyLabel: String = ""
+    var profileNotifWeeklyDesc: String = ""
+    var profileNotifPushLabel: String = ""
+    var profileNotifPushDesc: String = ""
+    var profileIntegrationWhatsApp: String = ""
+    var profileIntegrationWhatsAppMeta: String = ""
+    var profileIntegrationVoIP: String = ""
+    var profileIntegrationVoIPMeta: String = ""
+    var profileIntegrationCalendar: String = ""
+    var profileIntegrationCalendarMeta: String = ""
+    var profileIntegrationConnect: String = ""
+    var profileIntegrationManage: String = ""
+    var profilePrivacyConsentLabel: String = ""
+    var profilePrivacyConsentDesc: String = ""
+    var profilePrivacyDownload: String = ""
+    var profilePrivacyDownloadMeta: String = ""
+    var profilePrivacyPolicy: String = ""
+    var profilePrivacyTerms: String = ""
+    var profileApiKeyLabel: String = ""
+    var profileApiKeyReveal: String = ""
+    var profileApiKeyRotateDays: String = ""
+    var profileSessionRotate: String = ""
+    var profileSessionLogout: String = ""
+    var profileFooterTemplate: String = "" // "MIDAS v%s · %s · MX"
+}
 
-val SpanishStrings = Strings(
-    navHome = "Inicio",
-    navChats = "Chats",
-    navApplications = "Solicitudes",
-    navCalls = "Llamadas",
-    navCopilot = "Copilot",
+val SpanishStrings = Strings().apply {
+    navHome = "Inicio"
+    navChats = "Chats"
+    navApplications = "Solicitudes"
+    navCalls = "Llamadas"
+    navCopilot = "Copilot"
 
-    copilotTitle = "Copilot",
-    copilotEmptyTitle = "Que quieres saber sobre tus clientes?",
-    copilotEmptyBody = "Pregunta en lenguaje natural. Midas responde usando tus conversaciones, llamadas y solicitudes.",
-    copilotSuggestion1 = "Resumen de mis clientes recientes",
-    copilotSuggestion2 = "Clientes sin respuesta esta semana",
-    copilotSuggestion3 = "Solicitudes pendientes de enviar",
-    copilotThinking = "Revisando tus conversaciones...",
-    copilotComposerPlaceholder = "Pregunta algo...",
-    copilotSourceCall = "Llamada",
-    copilotSourceChat = "WhatsApp",
-    copilotSourceApp = "Solicitud",
+    copilotTitle = "Copilot"
+    copilotEmptyTitle = "Que quieres saber sobre tus clientes?"
+    copilotEmptyBody = "Pregunta en lenguaje natural. Midas responde usando tus conversaciones, llamadas y solicitudes."
+    copilotSuggestion1 = "Resumen de mis clientes recientes"
+    copilotSuggestion2 = "Clientes sin respuesta esta semana"
+    copilotSuggestion3 = "Solicitudes pendientes de enviar"
+    copilotThinking = "Revisando tus conversaciones..."
+    copilotComposerPlaceholder = "Pregunta algo..."
+    copilotSourceCall = "Llamada"
+    copilotSourceChat = "WhatsApp"
+    copilotSourceApp = "Solicitud"
+    copilotCalendarAdded = "Agregado al calendario"
+    copilotCalendarDenied = "Necesito permiso de Calendar — actívalo en Ajustes para crear recordatorios."
+    copilotCalendarError = "No pude crear el recordatorio."
 
-    loginTitle = "AUTENTICACION · API KEY",
-    loginApiKeyLabel = "API Key",
-    loginApiKeyPlaceholder = "mk_live_••••••••",
-    loginApiKeyHint = "Tu API Key fue enviada al registrarte",
-    loginButton = "Ingresar",
-    loginValidating = "Validando...",
-    loginErrorEmpty = "Ingresa tu API key",
-    loginErrorInvalid = "API key invalida",
-    loginRegister = "Registrate como asesor",
-    loginRegisterPrompt = "No tienes una?",
-    loginOr = "o",
-    loginSupport = "SOPORTE TECNICO",
-    loginTerms = "TERMINOS DE SERVICIO",
-    loginPrivacy = "POLITICA DE PRIVACIDAD",
-    loginStatusOnline = "SISTEMA OPERATIVO",
-    loginSubtitlePrefix = "Inteligencia de conversaciones para",
-    loginSubtitleAccent = "asesores financieros.",
-    loginPasteTitle = "Pegar desde portapapeles",
-    loginPasteAction = "PEGAR",
-    loginPasteEmpty = "Sin contenido",
-    loginFooterTrust = "E2E CIFRADO",
-    loginFooterCompliance = "SOC 2 TYPE II",
+    loginTitle = "AUTENTICACION · API KEY"
+    loginApiKeyLabel = "API Key"
+    loginApiKeyPlaceholder = "mk_live_••••••••"
+    loginApiKeyHint = "Tu API Key fue enviada al registrarte"
+    loginButton = "Ingresar"
+    loginValidating = "Validando..."
+    loginErrorEmpty = "Ingresa tu API key"
+    loginErrorInvalid = "API key invalida"
+    loginRegister = "Registrate como asesor"
+    loginRegisterPrompt = "No tienes una?"
+    loginOr = "o"
+    loginSupport = "SOPORTE TECNICO"
+    loginTerms = "TERMINOS DE SERVICIO"
+    loginPrivacy = "POLITICA DE PRIVACIDAD"
+    loginStatusOnline = "SISTEMA OPERATIVO"
+    loginSubtitlePrefix = "Inteligencia de conversaciones para"
+    loginSubtitleAccent = "asesores financieros."
+    loginPasteTitle = "Pegar desde portapapeles"
+    loginPasteAction = "PEGAR"
+    loginPasteEmpty = "Sin contenido"
+    loginFooterTrust = "E2E CIFRADO"
+    loginFooterCompliance = "SOC 2 TYPE II"
 
-    dashboardGreeting = "Hola,",
-    dashboardSubtitle = "Tu resumen de actividad",
-    dashboardConversations = "Conversaciones",
-    dashboardApplications = "Solicitudes",
-    dashboardCalls = "Llamadas",
-    dashboardOnline = "EN LINEA",
-    dashboardHeroChip = "ACCION RAPIDA",
-    dashboardHeroTitle = "Vas a llamar a un cliente?",
-    dashboardHeroSubtitle = "Midas transcribe y genera la solicitud en automatico.",
-    dashboardHeroRecord = "Grabar",
-    dashboardHeroCall = "Llamar",
-    dashboardStatConversations = "CONVERSACIONES",
-    dashboardStatCalls = "LLAMADAS",
-    dashboardStatApplications = "SOLICITUDES",
-    dashboardStatPending = "PENDIENTES",
-    dashboardStatNew = "NUEVAS",
-    dashboardRecentSection = "ACTIVIDAD RECIENTE",
-    dashboardRecentSeeAll = "Ver todo",
-    dashboardEmpty = "Sin actividad reciente",
+    dashboardGreeting = "Hola,"
+    dashboardSubtitle = "Tu resumen de actividad"
+    dashboardConversations = "Conversaciones"
+    dashboardApplications = "Solicitudes"
+    dashboardCalls = "Llamadas"
+    dashboardOnline = "EN LINEA"
+    dashboardHeroChip = "ACCION RAPIDA"
+    dashboardHeroTitle = "Vas a llamar a un cliente?"
+    dashboardHeroSubtitle = "Midas transcribe y genera la solicitud en automatico."
+    dashboardHeroRecord = "Grabar"
+    dashboardHeroCall = "Llamar"
+    dashboardStatConversations = "CONVERSACIONES"
+    dashboardStatCalls = "LLAMADAS"
+    dashboardStatApplications = "SOLICITUDES"
+    dashboardStatPending = "PENDIENTES"
+    dashboardStatNew = "NUEVAS"
+    dashboardRecentSection = "ACTIVIDAD RECIENTE"
+    dashboardRecentSeeAll = "Ver todo"
+    dashboardEmpty = "Sin actividad reciente"
 
-    conversationsTitle = "Conversaciones",
-    conversationsEmpty = "No hay conversaciones aun.",
-    conversationsMessages = "mensajes",
-    chatsSyncPill = "WhatsApp Business · Sincronizado",
-    chatsStatConversations = "Conversaciones",
-    chatsStatMessages = "Mensajes",
-    chatsStatApplications = "Solicitudes",
-    chatsSearchPlaceholder = "Buscar conversacion...",
-    chatsFilterAll = "Todas",
-    chatsFilterHot = "Con intencion",
-    chatsFilterUnread = "No leidos",
-    chatsFilterApp = "Con solicitud",
-    chatsEmptyFilter = "Sin resultados para este filtro.",
-    chatDetailAiToggle = "AI",
-    chatDetailIntentHeader = "INTENCION DETECTADA",
-    chatDetailSeeApplication = "VER SOLICITUD",
-    chatDetailFirstSeen = "Primer contacto",
-    chatComposerPlaceholder = "Mensaje (las respuestas se envian por WhatsApp)",
-    chatComposerFooter = "ESCUCHANDO · MIDAS ANALIZA EN SEGUNDO PLANO",
+    conversationsTitle = "Conversaciones"
+    conversationsEmpty = "No hay conversaciones aun."
+    conversationsMessages = "mensajes"
+    chatsSyncPill = "WhatsApp Business · Sincronizado"
+    chatsStatConversations = "Conversaciones"
+    chatsStatMessages = "Mensajes"
+    chatsStatApplications = "Solicitudes"
+    chatsSearchPlaceholder = "Buscar conversacion..."
+    chatsFilterAll = "Todas"
+    chatsFilterHot = "Con intencion"
+    chatsFilterUnread = "No leidos"
+    chatsFilterApp = "Con solicitud"
+    chatsEmptyFilter = "Sin resultados para este filtro."
+    chatDetailAiToggle = "AI"
+    chatDetailIntentHeader = "INTENCION DETECTADA"
+    chatDetailSeeApplication = "VER SOLICITUD"
+    chatDetailFirstSeen = "Primer contacto"
+    chatComposerPlaceholder = "Mensaje (las respuestas se envian por WhatsApp)"
+    chatComposerFooter = "ESCUCHANDO · MIDAS ANALIZA EN SEGUNDO PLANO"
 
-    applicationsTitle = "Solicitudes de Credito",
-    applicationsEmpty = "No hay solicitudes aun. Graba una llamada con intencion financiera para generar una.",
-    applicationDetail = "Detalle de Solicitud",
-    applicationStatus = "Estado",
-    applicationApplicant = "Solicitante",
-    applicationProduct = "Producto Solicitado",
-    applicationSummary = "Resumen",
-    applicationRejectionReason = "Motivo de rechazo",
-    applicationName = "Nombre",
-    applicationPhone = "Telefono",
-    applicationIncome = "Ingreso estimado",
-    applicationEmployment = "Tipo de empleo",
-    applicationCompleteness = "Completitud",
-    applicationProductType = "Tipo",
-    applicationAmount = "Monto",
-    applicationTerm = "Plazo",
-    applicationLocation = "Ubicacion",
-    appsSyncPill = "Auto-generadas por conversacion",
-    appsStatPipeline = "Pipeline",
-    appsStatDrafts = "Borradores",
-    appsStatSubmitted = "Enviadas",
-    appsFilterAll = "Todas",
-    appsFilterDrafts = "Borradores",
-    appsFilterSubmitted = "Enviadas",
-    appsFilterReview = "En revision",
-    appsEmptyFilter = "Sin solicitudes en este estado.",
-    appsAiPrefix = "IA",
-    appsSendButton = "ENVIAR",
-    appsHeroChip = "PRODUCTO SUGERIDO",
-    appsHeroConfidence = "CONFIANZA",
-    appsMetricAmount = "MONTO",
-    appsMetricTerm = "PLAZO",
-    appsMetricRate = "TASA",
-    appsSectionCompleteness = "Completitud",
-    appsSectionExtracted = "Datos extraidos por IA",
-    appsSectionSummary = "Resumen",
-    appsCompletenessFooter = "Faltan %d campos para envio.",
-    appsCompletenessReady = "Lista para enviar.",
-    appsRequiresManual = "REQUIERE COMPLEMENTO MANUAL",
-    appsAddAction = "AGREGAR",
-    appsSourceLabel = "FUENTE",
-    appsSourceTrace = "FUENTE EN CONVERSACION",
+    applicationsTitle = "Solicitudes de Credito"
+    applicationsEmpty = "No hay solicitudes aun. Graba una llamada con intencion financiera para generar una."
+    applicationDetail = "Detalle de Solicitud"
+    applicationStatus = "Estado"
+    applicationApplicant = "Solicitante"
+    applicationProduct = "Producto Solicitado"
+    applicationSummary = "Resumen"
+    applicationRejectionReason = "Motivo de rechazo"
+    applicationName = "Nombre"
+    applicationPhone = "Telefono"
+    applicationIncome = "Ingreso estimado"
+    applicationEmployment = "Tipo de empleo"
+    applicationCompleteness = "Completitud"
+    applicationProductType = "Tipo"
+    applicationAmount = "Monto"
+    applicationTerm = "Plazo"
+    applicationLocation = "Ubicacion"
+    appsSyncPill = "Auto-generadas por conversacion"
+    appsStatPipeline = "Pipeline"
+    appsStatDrafts = "Borradores"
+    appsStatSubmitted = "Enviadas"
+    appsFilterAll = "Todas"
+    appsFilterDrafts = "Borradores"
+    appsFilterSubmitted = "Enviadas"
+    appsFilterReview = "En revision"
+    appsEmptyFilter = "Sin solicitudes en este estado."
+    appsAiPrefix = "IA"
+    appsSendButton = "ENVIAR"
+    appsHeroChip = "PRODUCTO SUGERIDO"
+    appsHeroConfidence = "CONFIANZA"
+    appsMetricAmount = "MONTO"
+    appsMetricTerm = "PLAZO"
+    appsMetricRate = "TASA"
+    appsSectionCompleteness = "Completitud"
+    appsSectionExtracted = "Datos extraidos por IA"
+    appsSectionSummary = "Resumen"
+    appsCompletenessFooter = "Faltan %d campos para envio."
+    appsCompletenessReady = "Lista para enviar."
+    appsRequiresManual = "REQUIERE COMPLEMENTO MANUAL"
+    appsAddAction = "AGREGAR"
+    appsSourceLabel = "FUENTE"
+    appsSourceTrace = "FUENTE EN CONVERSACION"
 
-    callsTitle = "Llamadas",
-    callsEmpty = "No hay grabaciones aun. Presiona + para grabar una llamada.",
-    callNewRecording = "Nueva grabacion",
-    callsTotalSuffix = "total",
-    callsTabAll = "Todas",
-    callsTabIntent = "Con intencion",
-    callsTabNoIntent = "Sin intencion",
-    callsStatusReady = "LISTA",
-    callsStatusProcessing = "PROCESANDO",
-    callsStatusError = "ERROR",
-    callsIntentDetected = "intencion",
-    callsIntentNone = "sin intencion",
-    callsEmptyTitle = "Graba tu primera llamada",
-    callsEmptyBody = "Midas transcribe, detecta intenciones y arma solicitudes. Tu enfocate en el cliente.",
-    callsEmptyCta = "Grabar ahora",
-    callsEmptyFooter = "Promedio: primera solicitud en < 24 h",
+    callsTitle = "Llamadas"
+    callsEmpty = "No hay grabaciones aun. Presiona + para grabar una llamada."
+    callNewRecording = "Nueva grabacion"
+    callsTotalSuffix = "total"
+    callsTabAll = "Todas"
+    callsTabIntent = "Con intencion"
+    callsTabNoIntent = "Sin intencion"
+    callsStatusReady = "LISTA"
+    callsStatusProcessing = "PROCESANDO"
+    callsStatusError = "ERROR"
+    callsIntentDetected = "intencion"
+    callsIntentNone = "sin intencion"
+    callsEmptyTitle = "Graba tu primera llamada"
+    callsEmptyBody = "Midas transcribe, detecta intenciones y arma solicitudes. Tu enfocate en el cliente."
+    callsEmptyCta = "Grabar ahora"
+    callsEmptyFooter = "Promedio: primera solicitud en < 24 h"
 
-    recordingTitle = "NUEVA GRABACION",
-    recordingSetupTitle = "Activa el microfono",
-    recordingSetupSubtitle = "Pon la llamada en altavoz o usa audifonos para que MIDAS capture la conversacion con la mejor calidad posible.",
-    recordingMicAccess = "Acceso al microfono",
-    recordingMicEnabled = "HABILITADO",
-    recordingSessionSubject = "NOMBRE DEL CLIENTE",
-    recordingClientName = "NOTAS (OPCIONAL)",
-    recordingStart = "INICIAR GRABACION",
-    recordingStop = "DETENER GRABACION",
-    recordingProcessing = "Procesando...",
-    recordingCompleted = "Completado",
-    recordingError = "Error",
-    recordingErrorEmptyName = "Ingresa el nombre del cliente",
-    recordingTranscription = "TRANSCRIPCION EN VIVO",
-    recordingBackToCalls = "Volver a llamadas",
-    recordingIntentDetected = "Intencion financiera detectada",
-    recordingNoIntent = "Sin intencion financiera",
-    recordingProduct = "Producto",
-    recordingGenerateApp = "Generar Solicitud de Credito",
-    recordingGenerating = "Generando solicitud...",
-    recordingGeneratedApp = "Solicitud Generada:",
-    recordingAnalyzing = "Analizando...",
-    recordingDisclaimer = "Al iniciar, la conversacion sera transcrita y analizada por IA para detectar intenciones financieras. Asegurate de contar con el consentimiento del cliente.",
-    recordingLive = "EN VIVO",
-    recordingSecureConnection = "CONEXION SEGURA CON MIDAS",
-    recordingHeaderSetup = "Nueva grabacion",
-    recordingHeaderLive = "En curso",
-    recordingHeaderResult = "Analisis completado",
-    recordingTileMicLabel = "Microfono",
-    recordingTileEncryptionLabel = "Cifrado",
-    recordingTileEncryptionValue = "E2E · TLS 1.3",
-    recordingPermissionNeeded = "PERMITIR",
-    recordingSectionIdentification = "Identificacion de la sesion",
-    recordingSectionLiveTranscript = "Transcripcion en vivo",
-    recordingSectionSummary = "Resumen del analisis",
-    recordingSectionNextStep = "Siguiente paso",
-    recordingPlaceholderName = "Nombre del cliente",
-    recordingPlaceholderNotes = "Notas (opcional)",
-    recordingOptionalTag = "OPC",
-    recordingMaxFooter = "MAX 1:20 · ~8 S PARA DETECTAR INTENCION",
-    recordingLiveLabel = "EN VIVO",
-    recordingLiveMax = "1:20 MAX",
-    recordingLiveHintWait = "Escuchando contexto...",
-    recordingLiveHintSignals = "Analizando senales financieras...",
-    recordingLiveHintLikely = "Intencion probable",
-    recordingAnalyzingIntent = "ANALIZANDO INTENCION",
-    recordingWaitingAudio = "Esperando audio",
-    recordingStopAnalyze = "Detener y analizar",
-    recordingResultHero = "Intencion financiera",
-    recordingResultSubtitle = "Cliente potencial de alta calidad",
-    recordingMetricConfidence = "Confianza",
-    recordingMetricProduct = "Producto",
-    recordingMetricAmount = "Monto",
-    recordingGenerateSubtitle = "Pre-llenada con los datos detectados",
-    recordingCallIdPrefix = "CALL_ID",
-    recordingProcessedIn = "PROCESADO",
-    recordingDetectedLabel = "detectada",
+    recordingTitle = "NUEVA GRABACION"
+    recordingSetupTitle = "Activa el microfono"
+    recordingSetupSubtitle = "Pon la llamada en altavoz o usa audifonos para que MIDAS capture la conversacion con la mejor calidad posible."
+    recordingMicAccess = "Acceso al microfono"
+    recordingMicEnabled = "HABILITADO"
+    recordingSessionSubject = "NOMBRE DEL CLIENTE"
+    recordingClientName = "NOTAS (OPCIONAL)"
+    recordingStart = "INICIAR GRABACION"
+    recordingStop = "DETENER GRABACION"
+    recordingProcessing = "Procesando..."
+    recordingCompleted = "Completado"
+    recordingError = "Error"
+    recordingErrorEmptyName = "Ingresa el nombre del cliente"
+    recordingTranscription = "TRANSCRIPCION EN VIVO"
+    recordingBackToCalls = "Volver a llamadas"
+    recordingIntentDetected = "Intencion financiera detectada"
+    recordingNoIntent = "Sin intencion financiera"
+    recordingProduct = "Producto"
+    recordingGenerateApp = "Generar Solicitud de Credito"
+    recordingGenerating = "Generando solicitud..."
+    recordingGeneratedApp = "Solicitud Generada:"
+    recordingAnalyzing = "Analizando..."
+    recordingDisclaimer = "Al iniciar, la conversacion sera transcrita y analizada por IA para detectar intenciones financieras. Asegurate de contar con el consentimiento del cliente."
+    recordingLive = "EN VIVO"
+    recordingSecureConnection = "CONEXION SEGURA CON MIDAS"
+    recordingHeaderSetup = "Nueva grabacion"
+    recordingHeaderLive = "En curso"
+    recordingHeaderResult = "Analisis completado"
+    recordingTileMicLabel = "Microfono"
+    recordingTileEncryptionLabel = "Cifrado"
+    recordingTileEncryptionValue = "E2E · TLS 1.3"
+    recordingPermissionNeeded = "PERMITIR"
+    recordingSectionIdentification = "Identificacion de la sesion"
+    recordingSectionLiveTranscript = "Transcripcion en vivo"
+    recordingSectionSummary = "Resumen del analisis"
+    recordingSectionNextStep = "Siguiente paso"
+    recordingPlaceholderName = "Nombre del cliente"
+    recordingPlaceholderNotes = "Notas (opcional)"
+    recordingOptionalTag = "OPC"
+    recordingMaxFooter = "MAX 1:20 · ~8 S PARA DETECTAR INTENCION"
+    recordingLiveLabel = "EN VIVO"
+    recordingLiveMax = "1:20 MAX"
+    recordingLiveHintWait = "Escuchando contexto..."
+    recordingLiveHintSignals = "Analizando senales financieras..."
+    recordingLiveHintLikely = "Intencion probable"
+    recordingAnalyzingIntent = "ANALIZANDO INTENCION"
+    recordingWaitingAudio = "Esperando audio"
+    recordingStopAnalyze = "Detener y analizar"
+    recordingResultHero = "Intencion financiera"
+    recordingResultSubtitle = "Cliente potencial de alta calidad"
+    recordingMetricConfidence = "Confianza"
+    recordingMetricProduct = "Producto"
+    recordingMetricAmount = "Monto"
+    recordingGenerateSubtitle = "Pre-llenada con los datos detectados"
+    recordingCallIdPrefix = "CALL_ID"
+    recordingProcessedIn = "PROCESADO"
+    recordingDetectedLabel = "detectada"
 
-    onbStepOf = "Paso %1\$d · %2\$d",
-    onbWelcomeTitlePrefix = "Bienvenido a",
-    onbWelcomeBody = "Convertimos cada conversacion con tus clientes en solicitudes de credito estructuradas. Sin papeleo, sin cambios en tu rutina.",
-    onbJourneyPermissions = "Permisos",
-    onbJourneyFirstCall = "Primera grabacion",
-    onbJourneyApplication = "Solicitud lista",
-    onbPermsTitle = "Dos permisos y listo",
-    onbPermsBody = "Necesitamos capturar audio y avisarte cuando una solicitud este lista.",
-    onbPermMic = "Microfono",
-    onbPermMicSub = "Captura y transcripcion",
-    onbPermNotifs = "Notificaciones",
-    onbPermNotifsSub = "Alertas de solicitudes",
-    onbPermAllow = "Permitir",
-    onbPermGranted = "OK",
-    onbPermAssurance = "El audio se procesa cifrado. Nunca se comparte con terceros.",
-    onbAhaChip = "AHA MOMENT",
-    onbAhaTitle = "Primera solicitud\nen 24h",
-    onbAhaBody = "Graba tu primera llamada hoy. Midas genera la solicitud de credito completa mientras tu sigues atendiendo.",
-    onbAhaCallLabel = "REC 02:14",
-    onbAhaCallName = "Carlos Mendez",
-    onbAhaCallQuote = "\"...necesito un credito para mi negocio...\"",
-    onbAhaAppLabel = "SOLICITUD · DRAFT",
-    onbAhaAppProduct = "Credito PyME · \$180k",
-    onbAhaAppCompleteness = "Completitud 84%",
-    onbContinue = "Continuar",
-    onbRecordFirstCall = "Grabar primera llamada",
-    onbSkipToDashboard = "Ir directo al dashboard",
-    onbStageStatus = "CONFIGURANDO · PASO %1\$d DE %2\$d",
-    onbStageGreeting = "Hola, asesor",
-    onbStageSubtitle = "Tu dashboard estara listo en un momento.",
+    onbStepOf = "Paso %1\$d · %2\$d"
+    onbWelcomeTitlePrefix = "Bienvenido a"
+    onbWelcomeBody = "Convertimos cada conversacion con tus clientes en solicitudes de credito estructuradas. Sin papeleo, sin cambios en tu rutina."
+    onbJourneyPermissions = "Permisos"
+    onbJourneyFirstCall = "Primera grabacion"
+    onbJourneyApplication = "Solicitud lista"
+    onbPermsTitle = "Dos permisos y listo"
+    onbPermsBody = "Necesitamos capturar audio y avisarte cuando una solicitud este lista."
+    onbPermMic = "Microfono"
+    onbPermMicSub = "Captura y transcripcion"
+    onbPermNotifs = "Notificaciones"
+    onbPermNotifsSub = "Alertas de solicitudes"
+    onbPermAllow = "Permitir"
+    onbPermGranted = "OK"
+    onbPermAssurance = "El audio se procesa cifrado. Nunca se comparte con terceros."
+    onbAhaChip = "AHA MOMENT"
+    onbAhaTitle = "Primera solicitud\nen 24h"
+    onbAhaBody = "Graba tu primera llamada hoy. Midas genera la solicitud de credito completa mientras tu sigues atendiendo."
+    onbAhaCallLabel = "REC 02:14"
+    onbAhaCallName = "Carlos Mendez"
+    onbAhaCallQuote = "\"...necesito un credito para mi negocio...\""
+    onbAhaAppLabel = "SOLICITUD · DRAFT"
+    onbAhaAppProduct = "Credito PyME · \$180k"
+    onbAhaAppCompleteness = "Completitud 84%"
+    onbContinue = "Continuar"
+    onbRecordFirstCall = "Grabar primera llamada"
+    onbSkipToDashboard = "Ir directo al dashboard"
+    onbStageStatus = "CONFIGURANDO · PASO %1\$d DE %2\$d"
+    onbStageGreeting = "Hola, asesor"
+    onbStageSubtitle = "Tu dashboard estara listo en un momento."
 
-    voipNewCall = "Nueva llamada",
-    voipDialClientName = "Nombre del cliente (opcional)",
-    voipDialRecord = "Grabar y transcribir",
-    voipDialRecordSub = "Midas detectara intenciones y creara solicitudes",
-    voipDialCallButton = "Llamar",
-    voipCountryMX = "MEXICO",
-    voipCountryCO = "COLOMBIA",
-    voipCountryUS = "ESTADOS UNIDOS",
-    voipCountryE164 = "E.164 INTERNACIONAL",
-    voipInCallRec = "REC",
-    voipInCallE2E = "MIDAS · E2E",
-    voipInCallConnected = "CONECTADO",
-    voipInCallConnecting = "Conectando...",
-    voipInCallRinging = "Llamando...",
-    voipCtrlMute = "Silenciar",
-    voipCtrlKeypad = "Teclado",
-    voipCtrlSpeaker = "Altavoz",
-    voipHangup = "Colgar",
-    voipUnknownClient = "Cliente",
-    voipPostCallTitle = "LLAMADA · COMPLETADA",
-    voipPostStatDuration = "Duracion",
-    voipPostStatWords = "Palabras",
-    voipPostStatSpeakers = "Hablantes",
-    voipPostTranscriptHeader = "TRANSCRIPCION · FRAGMENTO",
-    voipPostGenerate = "Generar solicitud",
-    voipPostLater = "Mas tarde",
-    voipPostProcessing = "Procesando grabacion",
-    voipPostProcessingSub = "Transcribiendo y analizando. Puede tomar 10-30s.",
-    voipPostTimeout = "El analisis esta tomando mas de lo esperado. Revisa la llamada en unos minutos.",
-    voipPostOpenDetail = "Ver detalle completo",
+    voipNewCall = "Nueva llamada"
+    voipDialClientName = "Nombre del cliente (opcional)"
+    voipDialRecord = "Grabar y transcribir"
+    voipDialRecordSub = "Midas detectara intenciones y creara solicitudes"
+    voipDialCallButton = "Llamar"
+    voipCountryMX = "MEXICO"
+    voipCountryCO = "COLOMBIA"
+    voipCountryUS = "ESTADOS UNIDOS"
+    voipCountryE164 = "E.164 INTERNACIONAL"
+    voipInCallRec = "REC"
+    voipInCallE2E = "MIDAS · E2E"
+    voipInCallConnected = "CONECTADO"
+    voipInCallConnecting = "Conectando..."
+    voipInCallRinging = "Llamando..."
+    voipCtrlMute = "Silenciar"
+    voipCtrlKeypad = "Teclado"
+    voipCtrlSpeaker = "Altavoz"
+    voipHangup = "Colgar"
+    voipUnknownClient = "Cliente"
+    voipPostCallTitle = "LLAMADA · COMPLETADA"
+    voipPostStatDuration = "Duracion"
+    voipPostStatWords = "Palabras"
+    voipPostStatSpeakers = "Hablantes"
+    voipPostTranscriptHeader = "TRANSCRIPCION · FRAGMENTO"
+    voipPostGenerate = "Generar solicitud"
+    voipPostLater = "Mas tarde"
+    voipPostProcessing = "Procesando grabacion"
+    voipPostProcessingSub = "Transcribiendo y analizando. Puede tomar 10-30s."
+    voipPostTimeout = "El analisis esta tomando mas de lo esperado. Revisa la llamada en unos minutos."
+    voipPostOpenDetail = "Ver detalle completo"
 
-    callDetailId = "DETALLE",
-    callDetailIntentTitle = "Intencion financiera detectada",
-    callDetailIntentNone = "Sin intencion clara",
-    callDetailConfidence = "Confianza",
-    callDetailAppStatus = "SOLICITUD",
-    callDetailSectionSummary = "RESUMEN",
-    callDetailSectionExtracted = "DATOS EXTRAIDOS",
-    callDetailSectionTranscript = "TRANSCRIPCION",
-    callDetailAnalyzing = "Analizando intencion...",
-    callDetailGenerate = "Generar solicitud de credito",
-    callDetailNoTranscript = "(Sin transcripcion aun)",
-    callDetailLoadError = "Llamada no encontrada",
+    callDetailId = "DETALLE"
+    callDetailIntentTitle = "Intencion financiera detectada"
+    callDetailIntentNone = "Sin intencion clara"
+    callDetailConfidence = "Confianza"
+    callDetailAppStatus = "SOLICITUD"
+    callDetailSectionSummary = "RESUMEN"
+    callDetailSectionExtracted = "DATOS EXTRAIDOS"
+    callDetailSectionTranscript = "TRANSCRIPCION"
+    callDetailAnalyzing = "Analizando intencion..."
+    callDetailGenerate = "Generar solicitud de credito"
+    callDetailNoTranscript = "(Sin transcripcion aun)"
+    callDetailLoadError = "Llamada no encontrada"
 
-    close = "Cerrar",
-    back = "Volver",
-    language = "Idioma",
-    logout = "Cerrar sesion",
+    close = "Cerrar"
+    back = "Volver"
+    language = "Idioma"
+    logout = "Cerrar sesion"
 
-    profileHeaderOverline = "Cuenta · Preferencias",
-    profileTitle = "Perfil",
-    profileSave = "GUARDAR",
-    profilePerfChip = "DESEMPENO · ULTIMOS 30 DIAS",
-    profileStatConversations = "CONVERS.",
-    profileStatApplications = "SOLICITUDES",
-    profileStatConversion = "CONVERSION",
-    profileAdvisorId = "ADV",
-    profileActiveLabel = "ACTIVO",
-    profileSectionContact = "Contacto",
-    profileSectionPreferences = "Preferencias",
-    profileSectionNotifications = "Notificaciones",
-    profileSectionIntegrations = "Integraciones",
-    profileSectionPrivacy = "Privacidad",
-    profileSectionSession = "Sesion",
-    profileContactEmail = "Correo",
-    profileContactPhone = "Telefono",
-    profileContactRegion = "Region",
-    profilePrefAutoAppLabel = "Generar solicitudes automaticamente",
-    profilePrefAutoAppDesc = "MIDAS crea un borrador cuando detecta intencion >= 70%",
-    profilePrefLanguage = "Idioma",
-    profilePrefTheme = "Tema",
-    profileLangEs = "Espanol",
-    profileLangEn = "English",
-    profileThemeDark = "Oscuro",
-    profileThemeLight = "Claro",
-    profileThemeAuto = "Automatico",
-    profileNotifHotLabel = "Leads con intencion alta",
-    profileNotifHotDesc = "Cuando se detecta >= 85% de probabilidad",
-    profileNotifNewAppLabel = "Nueva solicitud generada",
-    profileNotifNewAppDesc = "Al crear un borrador desde conversacion",
-    profileNotifWeeklyLabel = "Resumen semanal",
-    profileNotifWeeklyDesc = "Lunes a las 08:00 · Pipeline y conversion",
-    profileNotifPushLabel = "Push en este dispositivo",
-    profileNotifPushDesc = "Alertas inmediatas",
-    profileIntegrationWhatsApp = "WhatsApp Business",
-    profileIntegrationWhatsAppMeta = "Sincroniza conversaciones",
-    profileIntegrationVoIP = "Llamadas VoIP",
-    profileIntegrationVoIPMeta = "Amazon Chime · CallKit",
-    profileIntegrationCalendar = "Google Calendar",
-    profileIntegrationCalendarMeta = "Para agendar seguimientos automaticos",
-    profileIntegrationConnect = "CONECTAR",
-    profileIntegrationManage = "GESTIONAR",
-    profilePrivacyConsentLabel = "Registrar consentimiento al iniciar grabacion",
-    profilePrivacyConsentDesc = "Pregunta explicita antes de capturar audio",
-    profilePrivacyDownload = "Descargar mis datos",
-    profilePrivacyDownloadMeta = "JSON · Ultimos 90 dias",
-    profilePrivacyPolicy = "Politica de privacidad",
-    profilePrivacyTerms = "Terminos de servicio",
-    profileApiKeyLabel = "API KEY ACTIVA",
-    profileApiKeyReveal = "REVELAR",
-    profileApiKeyRotateDays = "Rotada hace",
-    profileSessionRotate = "Rotar API Key",
-    profileSessionLogout = "Cerrar sesion en este dispositivo",
-    profileFooterTemplate = "MIDAS v1.0.0",
-)
+    profileHeaderOverline = "Cuenta · Preferencias"
+    profileTitle = "Perfil"
+    profileSave = "GUARDAR"
+    profilePerfChip = "DESEMPENO · ULTIMOS 30 DIAS"
+    profileStatConversations = "CONVERS."
+    profileStatApplications = "SOLICITUDES"
+    profileStatConversion = "CONVERSION"
+    profileAdvisorId = "ADV"
+    profileActiveLabel = "ACTIVO"
+    profileSectionContact = "Contacto"
+    profileSectionPreferences = "Preferencias"
+    profileSectionNotifications = "Notificaciones"
+    profileSectionIntegrations = "Integraciones"
+    profileSectionPrivacy = "Privacidad"
+    profileSectionSession = "Sesion"
+    profileContactEmail = "Correo"
+    profileContactPhone = "Telefono"
+    profileContactRegion = "Region"
+    profilePrefAutoAppLabel = "Generar solicitudes automaticamente"
+    profilePrefAutoAppDesc = "MIDAS crea un borrador cuando detecta intencion >= 70%"
+    profilePrefLanguage = "Idioma"
+    profilePrefTheme = "Tema"
+    profileLangEs = "Espanol"
+    profileLangEn = "English"
+    profileThemeDark = "Oscuro"
+    profileThemeLight = "Claro"
+    profileThemeAuto = "Automatico"
+    profileNotifHotLabel = "Leads con intencion alta"
+    profileNotifHotDesc = "Cuando se detecta >= 85% de probabilidad"
+    profileNotifNewAppLabel = "Nueva solicitud generada"
+    profileNotifNewAppDesc = "Al crear un borrador desde conversacion"
+    profileNotifWeeklyLabel = "Resumen semanal"
+    profileNotifWeeklyDesc = "Lunes a las 08:00 · Pipeline y conversion"
+    profileNotifPushLabel = "Push en este dispositivo"
+    profileNotifPushDesc = "Alertas inmediatas"
+    profileIntegrationWhatsApp = "WhatsApp Business"
+    profileIntegrationWhatsAppMeta = "Sincroniza conversaciones"
+    profileIntegrationVoIP = "Llamadas VoIP"
+    profileIntegrationVoIPMeta = "Amazon Chime · CallKit"
+    profileIntegrationCalendar = "Google Calendar"
+    profileIntegrationCalendarMeta = "Para agendar seguimientos automaticos"
+    profileIntegrationConnect = "CONECTAR"
+    profileIntegrationManage = "GESTIONAR"
+    profilePrivacyConsentLabel = "Registrar consentimiento al iniciar grabacion"
+    profilePrivacyConsentDesc = "Pregunta explicita antes de capturar audio"
+    profilePrivacyDownload = "Descargar mis datos"
+    profilePrivacyDownloadMeta = "JSON · Ultimos 90 dias"
+    profilePrivacyPolicy = "Politica de privacidad"
+    profilePrivacyTerms = "Terminos de servicio"
+    profileApiKeyLabel = "API KEY ACTIVA"
+    profileApiKeyReveal = "REVELAR"
+    profileApiKeyRotateDays = "Rotada hace"
+    profileSessionRotate = "Rotar API Key"
+    profileSessionLogout = "Cerrar sesion en este dispositivo"
+    profileFooterTemplate = "MIDAS v1.0.0"
+}
 
-val EnglishStrings = Strings(
-    navHome = "Home",
-    navChats = "Chats",
-    navApplications = "Applications",
-    navCalls = "Calls",
-    navCopilot = "Copilot",
+val EnglishStrings = Strings().apply {
+    navHome = "Home"
+    navChats = "Chats"
+    navApplications = "Applications"
+    navCalls = "Calls"
+    navCopilot = "Copilot"
 
-    copilotTitle = "Copilot",
-    copilotEmptyTitle = "What do you want to know about your clients?",
-    copilotEmptyBody = "Ask in natural language. Midas answers using your conversations, calls, and applications.",
-    copilotSuggestion1 = "Summary of my recent clients",
-    copilotSuggestion2 = "Clients without reply this week",
-    copilotSuggestion3 = "Applications pending to submit",
-    copilotThinking = "Reviewing your conversations...",
-    copilotComposerPlaceholder = "Ask something...",
-    copilotSourceCall = "Call",
-    copilotSourceChat = "WhatsApp",
-    copilotSourceApp = "Application",
+    copilotTitle = "Copilot"
+    copilotEmptyTitle = "What do you want to know about your clients?"
+    copilotEmptyBody = "Ask in natural language. Midas answers using your conversations, calls, and applications."
+    copilotSuggestion1 = "Summary of my recent clients"
+    copilotSuggestion2 = "Clients without reply this week"
+    copilotSuggestion3 = "Applications pending to submit"
+    copilotThinking = "Reviewing your conversations..."
+    copilotComposerPlaceholder = "Ask something..."
+    copilotSourceCall = "Call"
+    copilotSourceChat = "WhatsApp"
+    copilotSourceApp = "Application"
+    copilotCalendarAdded = "Added to calendar"
+    copilotCalendarDenied = "I need Calendar permission — enable it in Settings to create reminders."
+    copilotCalendarError = "Could not create the reminder."
 
-    loginTitle = "AUTHENTICATION · API KEY",
-    loginApiKeyLabel = "API Key",
-    loginApiKeyPlaceholder = "mk_live_••••••••",
-    loginApiKeyHint = "Your API Key was sent upon registration",
-    loginButton = "Sign in",
-    loginValidating = "Validating...",
-    loginErrorEmpty = "Enter your API key",
-    loginErrorInvalid = "Invalid API key",
-    loginRegister = "Register as advisor",
-    loginRegisterPrompt = "Don't have one?",
-    loginOr = "or",
-    loginSupport = "TECHNICAL SUPPORT",
-    loginTerms = "TERMS OF SERVICE",
-    loginPrivacy = "PRIVACY POLICY",
-    loginStatusOnline = "SYSTEM ONLINE",
-    loginSubtitlePrefix = "Conversation intelligence for",
-    loginSubtitleAccent = "financial advisors.",
-    loginPasteTitle = "Paste from clipboard",
-    loginPasteAction = "PASTE",
-    loginPasteEmpty = "Clipboard empty",
-    loginFooterTrust = "E2E ENCRYPTED",
-    loginFooterCompliance = "SOC 2 TYPE II",
+    loginTitle = "AUTHENTICATION · API KEY"
+    loginApiKeyLabel = "API Key"
+    loginApiKeyPlaceholder = "mk_live_••••••••"
+    loginApiKeyHint = "Your API Key was sent upon registration"
+    loginButton = "Sign in"
+    loginValidating = "Validating..."
+    loginErrorEmpty = "Enter your API key"
+    loginErrorInvalid = "Invalid API key"
+    loginRegister = "Register as advisor"
+    loginRegisterPrompt = "Don't have one?"
+    loginOr = "or"
+    loginSupport = "TECHNICAL SUPPORT"
+    loginTerms = "TERMS OF SERVICE"
+    loginPrivacy = "PRIVACY POLICY"
+    loginStatusOnline = "SYSTEM ONLINE"
+    loginSubtitlePrefix = "Conversation intelligence for"
+    loginSubtitleAccent = "financial advisors."
+    loginPasteTitle = "Paste from clipboard"
+    loginPasteAction = "PASTE"
+    loginPasteEmpty = "Clipboard empty"
+    loginFooterTrust = "E2E ENCRYPTED"
+    loginFooterCompliance = "SOC 2 TYPE II"
 
-    dashboardGreeting = "Hello,",
-    dashboardSubtitle = "Your activity summary",
-    dashboardConversations = "Conversations",
-    dashboardApplications = "Applications",
-    dashboardCalls = "Calls",
-    dashboardOnline = "ONLINE",
-    dashboardHeroChip = "QUICK ACTION",
-    dashboardHeroTitle = "About to call a client?",
-    dashboardHeroSubtitle = "Midas transcribes and generates the application automatically.",
-    dashboardHeroRecord = "Record",
-    dashboardHeroCall = "Call",
-    dashboardStatConversations = "CONVERSATIONS",
-    dashboardStatCalls = "CALLS",
-    dashboardStatApplications = "APPLICATIONS",
-    dashboardStatPending = "PENDING",
-    dashboardStatNew = "NEW",
-    dashboardRecentSection = "RECENT ACTIVITY",
-    dashboardRecentSeeAll = "See all",
-    dashboardEmpty = "No recent activity",
+    dashboardGreeting = "Hello,"
+    dashboardSubtitle = "Your activity summary"
+    dashboardConversations = "Conversations"
+    dashboardApplications = "Applications"
+    dashboardCalls = "Calls"
+    dashboardOnline = "ONLINE"
+    dashboardHeroChip = "QUICK ACTION"
+    dashboardHeroTitle = "About to call a client?"
+    dashboardHeroSubtitle = "Midas transcribes and generates the application automatically."
+    dashboardHeroRecord = "Record"
+    dashboardHeroCall = "Call"
+    dashboardStatConversations = "CONVERSATIONS"
+    dashboardStatCalls = "CALLS"
+    dashboardStatApplications = "APPLICATIONS"
+    dashboardStatPending = "PENDING"
+    dashboardStatNew = "NEW"
+    dashboardRecentSection = "RECENT ACTIVITY"
+    dashboardRecentSeeAll = "See all"
+    dashboardEmpty = "No recent activity"
 
-    conversationsTitle = "Conversations",
-    conversationsEmpty = "No conversations yet.",
-    conversationsMessages = "messages",
-    chatsSyncPill = "WhatsApp Business · Synced",
-    chatsStatConversations = "Conversations",
-    chatsStatMessages = "Messages",
-    chatsStatApplications = "Applications",
-    chatsSearchPlaceholder = "Search conversation...",
-    chatsFilterAll = "All",
-    chatsFilterHot = "With intent",
-    chatsFilterUnread = "Unread",
-    chatsFilterApp = "With application",
-    chatsEmptyFilter = "No results for this filter.",
-    chatDetailAiToggle = "AI",
-    chatDetailIntentHeader = "INTENT DETECTED",
-    chatDetailSeeApplication = "OPEN APPLICATION",
-    chatDetailFirstSeen = "First contact",
-    chatComposerPlaceholder = "Message (replies go via WhatsApp)",
-    chatComposerFooter = "LISTENING · MIDAS ANALYZES IN BACKGROUND",
+    conversationsTitle = "Conversations"
+    conversationsEmpty = "No conversations yet."
+    conversationsMessages = "messages"
+    chatsSyncPill = "WhatsApp Business · Synced"
+    chatsStatConversations = "Conversations"
+    chatsStatMessages = "Messages"
+    chatsStatApplications = "Applications"
+    chatsSearchPlaceholder = "Search conversation..."
+    chatsFilterAll = "All"
+    chatsFilterHot = "With intent"
+    chatsFilterUnread = "Unread"
+    chatsFilterApp = "With application"
+    chatsEmptyFilter = "No results for this filter."
+    chatDetailAiToggle = "AI"
+    chatDetailIntentHeader = "INTENT DETECTED"
+    chatDetailSeeApplication = "OPEN APPLICATION"
+    chatDetailFirstSeen = "First contact"
+    chatComposerPlaceholder = "Message (replies go via WhatsApp)"
+    chatComposerFooter = "LISTENING · MIDAS ANALYZES IN BACKGROUND"
 
-    applicationsTitle = "Credit Applications",
-    applicationsEmpty = "No applications yet. Record a call with financial intent to generate one.",
-    applicationDetail = "Application Detail",
-    applicationStatus = "Status",
-    applicationApplicant = "Applicant",
-    applicationProduct = "Requested Product",
-    applicationSummary = "Summary",
-    applicationRejectionReason = "Rejection reason",
-    applicationName = "Name",
-    applicationPhone = "Phone",
-    applicationIncome = "Estimated income",
-    applicationEmployment = "Employment type",
-    applicationCompleteness = "Completeness",
-    applicationProductType = "Type",
-    applicationAmount = "Amount",
-    applicationTerm = "Term",
-    applicationLocation = "Location",
-    appsSyncPill = "Auto-generated from conversations",
-    appsStatPipeline = "Pipeline",
-    appsStatDrafts = "Drafts",
-    appsStatSubmitted = "Submitted",
-    appsFilterAll = "All",
-    appsFilterDrafts = "Drafts",
-    appsFilterSubmitted = "Submitted",
-    appsFilterReview = "In review",
-    appsEmptyFilter = "No applications in this state.",
-    appsAiPrefix = "AI",
-    appsSendButton = "SUBMIT",
-    appsHeroChip = "SUGGESTED PRODUCT",
-    appsHeroConfidence = "CONFIDENCE",
-    appsMetricAmount = "AMOUNT",
-    appsMetricTerm = "TERM",
-    appsMetricRate = "RATE",
-    appsSectionCompleteness = "Completeness",
-    appsSectionExtracted = "AI extracted data",
-    appsSectionSummary = "Summary",
-    appsCompletenessFooter = "%d field(s) missing for submission.",
-    appsCompletenessReady = "Ready to submit.",
-    appsRequiresManual = "REQUIRES MANUAL INPUT",
-    appsAddAction = "ADD",
-    appsSourceLabel = "SOURCE",
-    appsSourceTrace = "SOURCE IN CONVERSATION",
+    applicationsTitle = "Credit Applications"
+    applicationsEmpty = "No applications yet. Record a call with financial intent to generate one."
+    applicationDetail = "Application Detail"
+    applicationStatus = "Status"
+    applicationApplicant = "Applicant"
+    applicationProduct = "Requested Product"
+    applicationSummary = "Summary"
+    applicationRejectionReason = "Rejection reason"
+    applicationName = "Name"
+    applicationPhone = "Phone"
+    applicationIncome = "Estimated income"
+    applicationEmployment = "Employment type"
+    applicationCompleteness = "Completeness"
+    applicationProductType = "Type"
+    applicationAmount = "Amount"
+    applicationTerm = "Term"
+    applicationLocation = "Location"
+    appsSyncPill = "Auto-generated from conversations"
+    appsStatPipeline = "Pipeline"
+    appsStatDrafts = "Drafts"
+    appsStatSubmitted = "Submitted"
+    appsFilterAll = "All"
+    appsFilterDrafts = "Drafts"
+    appsFilterSubmitted = "Submitted"
+    appsFilterReview = "In review"
+    appsEmptyFilter = "No applications in this state."
+    appsAiPrefix = "AI"
+    appsSendButton = "SUBMIT"
+    appsHeroChip = "SUGGESTED PRODUCT"
+    appsHeroConfidence = "CONFIDENCE"
+    appsMetricAmount = "AMOUNT"
+    appsMetricTerm = "TERM"
+    appsMetricRate = "RATE"
+    appsSectionCompleteness = "Completeness"
+    appsSectionExtracted = "AI extracted data"
+    appsSectionSummary = "Summary"
+    appsCompletenessFooter = "%d field(s) missing for submission."
+    appsCompletenessReady = "Ready to submit."
+    appsRequiresManual = "REQUIRES MANUAL INPUT"
+    appsAddAction = "ADD"
+    appsSourceLabel = "SOURCE"
+    appsSourceTrace = "SOURCE IN CONVERSATION"
 
-    callsTitle = "Calls",
-    callsEmpty = "No recordings yet. Press + to record a call.",
-    callNewRecording = "New recording",
-    callsTotalSuffix = "total",
-    callsTabAll = "All",
-    callsTabIntent = "With intent",
-    callsTabNoIntent = "No intent",
-    callsStatusReady = "READY",
-    callsStatusProcessing = "PROCESSING",
-    callsStatusError = "ERROR",
-    callsIntentDetected = "intent",
-    callsIntentNone = "no intent",
-    callsEmptyTitle = "Record your first call",
-    callsEmptyBody = "Midas transcribes, detects intent and builds applications. You focus on the client.",
-    callsEmptyCta = "Record now",
-    callsEmptyFooter = "Average: first application in < 24 h",
+    callsTitle = "Calls"
+    callsEmpty = "No recordings yet. Press + to record a call."
+    callNewRecording = "New recording"
+    callsTotalSuffix = "total"
+    callsTabAll = "All"
+    callsTabIntent = "With intent"
+    callsTabNoIntent = "No intent"
+    callsStatusReady = "READY"
+    callsStatusProcessing = "PROCESSING"
+    callsStatusError = "ERROR"
+    callsIntentDetected = "intent"
+    callsIntentNone = "no intent"
+    callsEmptyTitle = "Record your first call"
+    callsEmptyBody = "Midas transcribes, detects intent and builds applications. You focus on the client."
+    callsEmptyCta = "Record now"
+    callsEmptyFooter = "Average: first application in < 24 h"
 
-    recordingTitle = "NEW RECORDING",
-    recordingSetupTitle = "Activate the microphone",
-    recordingSetupSubtitle = "Put the call on speaker or use headphones so MIDAS can capture the conversation with the best possible quality.",
-    recordingMicAccess = "Microphone access",
-    recordingMicEnabled = "ENABLED",
-    recordingSessionSubject = "CLIENT NAME",
-    recordingClientName = "NOTES (OPTIONAL)",
-    recordingStart = "START RECORDING",
-    recordingStop = "STOP RECORDING",
-    recordingProcessing = "Processing...",
-    recordingCompleted = "Completed",
-    recordingError = "Error",
-    recordingErrorEmptyName = "Enter the session subject",
-    recordingTranscription = "LIVE TRANSCRIPTION",
-    recordingBackToCalls = "Back to calls",
-    recordingIntentDetected = "Financial intent detected",
-    recordingNoIntent = "No financial intent",
-    recordingProduct = "Product",
-    recordingGenerateApp = "Generate Credit Application",
-    recordingGenerating = "Generating application...",
-    recordingGeneratedApp = "Generated Application:",
-    recordingAnalyzing = "Analyzing...",
-    recordingDisclaimer = "By starting, the conversation will be transcribed and analyzed by AI to detect financial intents. Make sure you have the client's consent.",
-    recordingLive = "LIVE",
-    recordingSecureConnection = "SECURE CONNECTION WITH MIDAS",
-    recordingHeaderSetup = "New recording",
-    recordingHeaderLive = "In progress",
-    recordingHeaderResult = "Analysis completed",
-    recordingTileMicLabel = "Microphone",
-    recordingTileEncryptionLabel = "Encryption",
-    recordingTileEncryptionValue = "E2E · TLS 1.3",
-    recordingPermissionNeeded = "ALLOW",
-    recordingSectionIdentification = "Session identification",
-    recordingSectionLiveTranscript = "Live transcript",
-    recordingSectionSummary = "Analysis summary",
-    recordingSectionNextStep = "Next step",
-    recordingPlaceholderName = "Client name",
-    recordingPlaceholderNotes = "Notes (optional)",
-    recordingOptionalTag = "OPT",
-    recordingMaxFooter = "MAX 1:20 · ~8 S TO DETECT INTENT",
-    recordingLiveLabel = "LIVE",
-    recordingLiveMax = "1:20 MAX",
-    recordingLiveHintWait = "Listening to context...",
-    recordingLiveHintSignals = "Analyzing financial signals...",
-    recordingLiveHintLikely = "Likely intent",
-    recordingAnalyzingIntent = "ANALYZING INTENT",
-    recordingWaitingAudio = "Waiting for audio",
-    recordingStopAnalyze = "Stop and analyze",
-    recordingResultHero = "Financial intent",
-    recordingResultSubtitle = "High-quality potential client",
-    recordingMetricConfidence = "Confidence",
-    recordingMetricProduct = "Product",
-    recordingMetricAmount = "Amount",
-    recordingGenerateSubtitle = "Pre-filled with detected data",
-    recordingCallIdPrefix = "CALL_ID",
-    recordingProcessedIn = "PROCESSED",
-    recordingDetectedLabel = "detected",
+    recordingTitle = "NEW RECORDING"
+    recordingSetupTitle = "Activate the microphone"
+    recordingSetupSubtitle = "Put the call on speaker or use headphones so MIDAS can capture the conversation with the best possible quality."
+    recordingMicAccess = "Microphone access"
+    recordingMicEnabled = "ENABLED"
+    recordingSessionSubject = "CLIENT NAME"
+    recordingClientName = "NOTES (OPTIONAL)"
+    recordingStart = "START RECORDING"
+    recordingStop = "STOP RECORDING"
+    recordingProcessing = "Processing..."
+    recordingCompleted = "Completed"
+    recordingError = "Error"
+    recordingErrorEmptyName = "Enter the session subject"
+    recordingTranscription = "LIVE TRANSCRIPTION"
+    recordingBackToCalls = "Back to calls"
+    recordingIntentDetected = "Financial intent detected"
+    recordingNoIntent = "No financial intent"
+    recordingProduct = "Product"
+    recordingGenerateApp = "Generate Credit Application"
+    recordingGenerating = "Generating application..."
+    recordingGeneratedApp = "Generated Application:"
+    recordingAnalyzing = "Analyzing..."
+    recordingDisclaimer = "By starting, the conversation will be transcribed and analyzed by AI to detect financial intents. Make sure you have the client's consent."
+    recordingLive = "LIVE"
+    recordingSecureConnection = "SECURE CONNECTION WITH MIDAS"
+    recordingHeaderSetup = "New recording"
+    recordingHeaderLive = "In progress"
+    recordingHeaderResult = "Analysis completed"
+    recordingTileMicLabel = "Microphone"
+    recordingTileEncryptionLabel = "Encryption"
+    recordingTileEncryptionValue = "E2E · TLS 1.3"
+    recordingPermissionNeeded = "ALLOW"
+    recordingSectionIdentification = "Session identification"
+    recordingSectionLiveTranscript = "Live transcript"
+    recordingSectionSummary = "Analysis summary"
+    recordingSectionNextStep = "Next step"
+    recordingPlaceholderName = "Client name"
+    recordingPlaceholderNotes = "Notes (optional)"
+    recordingOptionalTag = "OPT"
+    recordingMaxFooter = "MAX 1:20 · ~8 S TO DETECT INTENT"
+    recordingLiveLabel = "LIVE"
+    recordingLiveMax = "1:20 MAX"
+    recordingLiveHintWait = "Listening to context..."
+    recordingLiveHintSignals = "Analyzing financial signals..."
+    recordingLiveHintLikely = "Likely intent"
+    recordingAnalyzingIntent = "ANALYZING INTENT"
+    recordingWaitingAudio = "Waiting for audio"
+    recordingStopAnalyze = "Stop and analyze"
+    recordingResultHero = "Financial intent"
+    recordingResultSubtitle = "High-quality potential client"
+    recordingMetricConfidence = "Confidence"
+    recordingMetricProduct = "Product"
+    recordingMetricAmount = "Amount"
+    recordingGenerateSubtitle = "Pre-filled with detected data"
+    recordingCallIdPrefix = "CALL_ID"
+    recordingProcessedIn = "PROCESSED"
+    recordingDetectedLabel = "detected"
 
-    onbStepOf = "Step %1\$d · %2\$d",
-    onbWelcomeTitlePrefix = "Welcome to",
-    onbWelcomeBody = "We turn every client conversation into structured credit applications. No paperwork, no changes to your routine.",
-    onbJourneyPermissions = "Permissions",
-    onbJourneyFirstCall = "First recording",
-    onbJourneyApplication = "Application ready",
-    onbPermsTitle = "Two permissions and you're set",
-    onbPermsBody = "We need to capture audio and notify you when an application is ready.",
-    onbPermMic = "Microphone",
-    onbPermMicSub = "Capture & transcription",
-    onbPermNotifs = "Notifications",
-    onbPermNotifsSub = "Application alerts",
-    onbPermAllow = "Allow",
-    onbPermGranted = "OK",
-    onbPermAssurance = "Audio is processed encrypted. Never shared with third parties.",
-    onbAhaChip = "AHA MOMENT",
-    onbAhaTitle = "First application\nin 24h",
-    onbAhaBody = "Record your first call today. Midas generates the full credit application while you keep working.",
-    onbAhaCallLabel = "REC 02:14",
-    onbAhaCallName = "Carlos Mendez",
-    onbAhaCallQuote = "\"...I need a loan for my business...\"",
-    onbAhaAppLabel = "APPLICATION · DRAFT",
-    onbAhaAppProduct = "SMB Loan · \$180k",
-    onbAhaAppCompleteness = "Completeness 84%",
-    onbContinue = "Continue",
-    onbRecordFirstCall = "Record first call",
-    onbSkipToDashboard = "Skip to dashboard",
-    onbStageStatus = "CONFIGURING · STEP %1\$d OF %2\$d",
-    onbStageGreeting = "Hello, advisor",
-    onbStageSubtitle = "Your dashboard will be ready in a moment.",
+    onbStepOf = "Step %1\$d · %2\$d"
+    onbWelcomeTitlePrefix = "Welcome to"
+    onbWelcomeBody = "We turn every client conversation into structured credit applications. No paperwork, no changes to your routine."
+    onbJourneyPermissions = "Permissions"
+    onbJourneyFirstCall = "First recording"
+    onbJourneyApplication = "Application ready"
+    onbPermsTitle = "Two permissions and you're set"
+    onbPermsBody = "We need to capture audio and notify you when an application is ready."
+    onbPermMic = "Microphone"
+    onbPermMicSub = "Capture & transcription"
+    onbPermNotifs = "Notifications"
+    onbPermNotifsSub = "Application alerts"
+    onbPermAllow = "Allow"
+    onbPermGranted = "OK"
+    onbPermAssurance = "Audio is processed encrypted. Never shared with third parties."
+    onbAhaChip = "AHA MOMENT"
+    onbAhaTitle = "First application\nin 24h"
+    onbAhaBody = "Record your first call today. Midas generates the full credit application while you keep working."
+    onbAhaCallLabel = "REC 02:14"
+    onbAhaCallName = "Carlos Mendez"
+    onbAhaCallQuote = "\"...I need a loan for my business...\""
+    onbAhaAppLabel = "APPLICATION · DRAFT"
+    onbAhaAppProduct = "SMB Loan · \$180k"
+    onbAhaAppCompleteness = "Completeness 84%"
+    onbContinue = "Continue"
+    onbRecordFirstCall = "Record first call"
+    onbSkipToDashboard = "Skip to dashboard"
+    onbStageStatus = "CONFIGURING · STEP %1\$d OF %2\$d"
+    onbStageGreeting = "Hello, advisor"
+    onbStageSubtitle = "Your dashboard will be ready in a moment."
 
-    voipNewCall = "New call",
-    voipDialClientName = "Client name (optional)",
-    voipDialRecord = "Record & transcribe",
-    voipDialRecordSub = "Midas will detect intent and create applications",
-    voipDialCallButton = "Call",
-    voipCountryMX = "MEXICO",
-    voipCountryCO = "COLOMBIA",
-    voipCountryUS = "UNITED STATES",
-    voipCountryE164 = "E.164 INTERNATIONAL",
-    voipInCallRec = "REC",
-    voipInCallE2E = "MIDAS · E2E",
-    voipInCallConnected = "CONNECTED",
-    voipInCallConnecting = "Connecting...",
-    voipInCallRinging = "Ringing...",
-    voipCtrlMute = "Mute",
-    voipCtrlKeypad = "Keypad",
-    voipCtrlSpeaker = "Speaker",
-    voipHangup = "Hang up",
-    voipUnknownClient = "Client",
-    voipPostCallTitle = "CALL · COMPLETED",
-    voipPostStatDuration = "Duration",
-    voipPostStatWords = "Words",
-    voipPostStatSpeakers = "Speakers",
-    voipPostTranscriptHeader = "TRANSCRIPT · EXCERPT",
-    voipPostGenerate = "Generate application",
-    voipPostLater = "Later",
-    voipPostProcessing = "Processing recording",
-    voipPostProcessingSub = "Transcribing and analyzing. Takes 10-30s.",
-    voipPostTimeout = "Analysis is taking longer than usual. Check the call in a few minutes.",
-    voipPostOpenDetail = "Open full detail",
+    voipNewCall = "New call"
+    voipDialClientName = "Client name (optional)"
+    voipDialRecord = "Record & transcribe"
+    voipDialRecordSub = "Midas will detect intent and create applications"
+    voipDialCallButton = "Call"
+    voipCountryMX = "MEXICO"
+    voipCountryCO = "COLOMBIA"
+    voipCountryUS = "UNITED STATES"
+    voipCountryE164 = "E.164 INTERNATIONAL"
+    voipInCallRec = "REC"
+    voipInCallE2E = "MIDAS · E2E"
+    voipInCallConnected = "CONNECTED"
+    voipInCallConnecting = "Connecting..."
+    voipInCallRinging = "Ringing..."
+    voipCtrlMute = "Mute"
+    voipCtrlKeypad = "Keypad"
+    voipCtrlSpeaker = "Speaker"
+    voipHangup = "Hang up"
+    voipUnknownClient = "Client"
+    voipPostCallTitle = "CALL · COMPLETED"
+    voipPostStatDuration = "Duration"
+    voipPostStatWords = "Words"
+    voipPostStatSpeakers = "Speakers"
+    voipPostTranscriptHeader = "TRANSCRIPT · EXCERPT"
+    voipPostGenerate = "Generate application"
+    voipPostLater = "Later"
+    voipPostProcessing = "Processing recording"
+    voipPostProcessingSub = "Transcribing and analyzing. Takes 10-30s."
+    voipPostTimeout = "Analysis is taking longer than usual. Check the call in a few minutes."
+    voipPostOpenDetail = "Open full detail"
 
-    callDetailId = "DETAIL",
-    callDetailIntentTitle = "Financial intent detected",
-    callDetailIntentNone = "No clear intent",
-    callDetailConfidence = "Confidence",
-    callDetailAppStatus = "APPLICATION",
-    callDetailSectionSummary = "SUMMARY",
-    callDetailSectionExtracted = "EXTRACTED DATA",
-    callDetailSectionTranscript = "TRANSCRIPT",
-    callDetailAnalyzing = "Analyzing intent...",
-    callDetailGenerate = "Generate credit application",
-    callDetailNoTranscript = "(No transcript yet)",
-    callDetailLoadError = "Call not found",
+    callDetailId = "DETAIL"
+    callDetailIntentTitle = "Financial intent detected"
+    callDetailIntentNone = "No clear intent"
+    callDetailConfidence = "Confidence"
+    callDetailAppStatus = "APPLICATION"
+    callDetailSectionSummary = "SUMMARY"
+    callDetailSectionExtracted = "EXTRACTED DATA"
+    callDetailSectionTranscript = "TRANSCRIPT"
+    callDetailAnalyzing = "Analyzing intent..."
+    callDetailGenerate = "Generate credit application"
+    callDetailNoTranscript = "(No transcript yet)"
+    callDetailLoadError = "Call not found"
 
-    close = "Close",
-    back = "Back",
-    language = "Language",
-    logout = "Sign out",
+    close = "Close"
+    back = "Back"
+    language = "Language"
+    logout = "Sign out"
 
-    profileHeaderOverline = "Account · Preferences",
-    profileTitle = "Profile",
-    profileSave = "SAVE",
-    profilePerfChip = "PERFORMANCE · LAST 30 DAYS",
-    profileStatConversations = "CHATS",
-    profileStatApplications = "APPLICATIONS",
-    profileStatConversion = "CONVERSION",
-    profileAdvisorId = "ADV",
-    profileActiveLabel = "ACTIVE",
-    profileSectionContact = "Contact",
-    profileSectionPreferences = "Preferences",
-    profileSectionNotifications = "Notifications",
-    profileSectionIntegrations = "Integrations",
-    profileSectionPrivacy = "Privacy",
-    profileSectionSession = "Session",
-    profileContactEmail = "Email",
-    profileContactPhone = "Phone",
-    profileContactRegion = "Region",
-    profilePrefAutoAppLabel = "Auto-generate applications",
-    profilePrefAutoAppDesc = "MIDAS drafts an application when intent >= 70%",
-    profilePrefLanguage = "Language",
-    profilePrefTheme = "Theme",
-    profileLangEs = "Espanol",
-    profileLangEn = "English",
-    profileThemeDark = "Dark",
-    profileThemeLight = "Light",
-    profileThemeAuto = "Auto",
-    profileNotifHotLabel = "High-intent leads",
-    profileNotifHotDesc = "When detected >= 85% probability",
-    profileNotifNewAppLabel = "New application generated",
-    profileNotifNewAppDesc = "When a draft is created from a conversation",
-    profileNotifWeeklyLabel = "Weekly summary",
-    profileNotifWeeklyDesc = "Mondays at 08:00 · Pipeline and conversion",
-    profileNotifPushLabel = "Push on this device",
-    profileNotifPushDesc = "Instant alerts",
-    profileIntegrationWhatsApp = "WhatsApp Business",
-    profileIntegrationWhatsAppMeta = "Syncs conversations",
-    profileIntegrationVoIP = "VoIP calling",
-    profileIntegrationVoIPMeta = "Amazon Chime · CallKit",
-    profileIntegrationCalendar = "Google Calendar",
-    profileIntegrationCalendarMeta = "Auto-schedule follow-ups",
-    profileIntegrationConnect = "CONNECT",
-    profileIntegrationManage = "MANAGE",
-    profilePrivacyConsentLabel = "Log consent when starting a recording",
-    profilePrivacyConsentDesc = "Explicit prompt before capturing audio",
-    profilePrivacyDownload = "Download my data",
-    profilePrivacyDownloadMeta = "JSON · Last 90 days",
-    profilePrivacyPolicy = "Privacy policy",
-    profilePrivacyTerms = "Terms of service",
-    profileApiKeyLabel = "ACTIVE API KEY",
-    profileApiKeyReveal = "REVEAL",
-    profileApiKeyRotateDays = "Rotated",
-    profileSessionRotate = "Rotate API Key",
-    profileSessionLogout = "Sign out on this device",
-    profileFooterTemplate = "MIDAS v1.0.0",
-)
+    profileHeaderOverline = "Account · Preferences"
+    profileTitle = "Profile"
+    profileSave = "SAVE"
+    profilePerfChip = "PERFORMANCE · LAST 30 DAYS"
+    profileStatConversations = "CHATS"
+    profileStatApplications = "APPLICATIONS"
+    profileStatConversion = "CONVERSION"
+    profileAdvisorId = "ADV"
+    profileActiveLabel = "ACTIVE"
+    profileSectionContact = "Contact"
+    profileSectionPreferences = "Preferences"
+    profileSectionNotifications = "Notifications"
+    profileSectionIntegrations = "Integrations"
+    profileSectionPrivacy = "Privacy"
+    profileSectionSession = "Session"
+    profileContactEmail = "Email"
+    profileContactPhone = "Phone"
+    profileContactRegion = "Region"
+    profilePrefAutoAppLabel = "Auto-generate applications"
+    profilePrefAutoAppDesc = "MIDAS drafts an application when intent >= 70%"
+    profilePrefLanguage = "Language"
+    profilePrefTheme = "Theme"
+    profileLangEs = "Espanol"
+    profileLangEn = "English"
+    profileThemeDark = "Dark"
+    profileThemeLight = "Light"
+    profileThemeAuto = "Auto"
+    profileNotifHotLabel = "High-intent leads"
+    profileNotifHotDesc = "When detected >= 85% probability"
+    profileNotifNewAppLabel = "New application generated"
+    profileNotifNewAppDesc = "When a draft is created from a conversation"
+    profileNotifWeeklyLabel = "Weekly summary"
+    profileNotifWeeklyDesc = "Mondays at 08:00 · Pipeline and conversion"
+    profileNotifPushLabel = "Push on this device"
+    profileNotifPushDesc = "Instant alerts"
+    profileIntegrationWhatsApp = "WhatsApp Business"
+    profileIntegrationWhatsAppMeta = "Syncs conversations"
+    profileIntegrationVoIP = "VoIP calling"
+    profileIntegrationVoIPMeta = "Amazon Chime · CallKit"
+    profileIntegrationCalendar = "Google Calendar"
+    profileIntegrationCalendarMeta = "Auto-schedule follow-ups"
+    profileIntegrationConnect = "CONNECT"
+    profileIntegrationManage = "MANAGE"
+    profilePrivacyConsentLabel = "Log consent when starting a recording"
+    profilePrivacyConsentDesc = "Explicit prompt before capturing audio"
+    profilePrivacyDownload = "Download my data"
+    profilePrivacyDownloadMeta = "JSON · Last 90 days"
+    profilePrivacyPolicy = "Privacy policy"
+    profilePrivacyTerms = "Terms of service"
+    profileApiKeyLabel = "ACTIVE API KEY"
+    profileApiKeyReveal = "REVEAL"
+    profileApiKeyRotateDays = "Rotated"
+    profileSessionRotate = "Rotate API Key"
+    profileSessionLogout = "Sign out on this device"
+    profileFooterTemplate = "MIDAS v1.0.0"
+}
 
 fun stringsFor(language: Language): Strings = when (language) {
     Language.ES -> SpanishStrings

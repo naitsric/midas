@@ -12,5 +12,7 @@ fun MainViewController() = ComposeUIViewController(
         settings = MidasContext.settings,
         apiClient = MidasContext.apiClient,
         voipCallManager = MidasContext.voipCallManager,
+        calendarBridge = MidasContext.calendarBridge,
+        audioPlayerBridge = MidasContext.audioPlayerBridge,
     )
 }

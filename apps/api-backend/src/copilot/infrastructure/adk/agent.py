@@ -21,6 +21,7 @@ from src.application.domain.ports import ApplicationRepository
 from src.call.domain.ports import CallRepository
 from src.conversation.domain.ports import ConversationRepository
 from src.copilot.domain.events import (
+    ClientActionEvent,
     CopilotEvent,
     TokenEvent,
     ToolCallEvent,
@@ -29,7 +30,12 @@ from src.copilot.domain.events import (
 from src.copilot.domain.ports import CopilotAgent
 from src.copilot.domain.value_objects import CopilotMessage, MessageRole
 from src.copilot.infrastructure.adk.system_prompt import build_system_prompt
-from src.copilot.infrastructure.adk.tools import build_all_tools, extract_source_ref
+from src.copilot.infrastructure.adk.tools import (
+    CLIENT_SIDE_TOOL_ACTIONS,
+    build_all_tools,
+    build_client_action_payload,
+    extract_source_ref,
+)
 
 APP_NAME = "midas-copilot"
 DEFAULT_MODEL = "gemini-2.5-flash"
@@ -91,21 +97,38 @@ class AdkCopilotAgent(CopilotAgent):
             role="user", parts=[genai_types.Part(text=message)]
         )
 
+        # Args de tool_calls pendientes — necesitamos recordarlos para construir
+        # el payload del ClientActionEvent cuando llegue el function_response,
+        # ya que FunctionResponse no trae los args originales.
+        pending_args: dict[str, dict] = {}
+
         async for event in runner.run_async(
             user_id=user_id, session_id=session.id, new_message=new_message
         ):
             yielded_any = False
 
-            # 1) Tool calls
+            # 1) Tool calls — trackeamos args para client-side tools
             for fc in event.get_function_calls():
                 yielded_any = True
+                if fc.name in CLIENT_SIDE_TOOL_ACTIONS:
+                    pending_args[fc.name] = dict(fc.args or {})
                 yield ToolCallEvent(name=fc.name)
 
-            # 2) Tool responses → SourceRef chip
+            # 2) Tool responses → SourceRef chip + opcional ClientActionEvent
             for fr in event.get_function_responses():
                 yielded_any = True
                 source = extract_source_ref(fr.name, fr.response)
                 yield ToolResultEvent(name=fr.name, source=source)
+
+                # Si el tool es client-side, emitir ClientActionEvent con los args
+                # originales (el cliente móvil los ejecuta via bridge nativo).
+                if fr.name in CLIENT_SIDE_TOOL_ACTIONS:
+                    action_name = CLIENT_SIDE_TOOL_ACTIONS[fr.name]
+                    args = pending_args.pop(fr.name, {})
+                    yield ClientActionEvent(
+                        action=action_name,
+                        payload=build_client_action_payload(fr.name, args),
+                    )
 
             # 3) Text deltas (parcial o completo) del modelo
             if event.content and event.content.parts:

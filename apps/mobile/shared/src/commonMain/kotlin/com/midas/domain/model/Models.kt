@@ -113,6 +113,7 @@ data class CallDetail(
     @SerialName("duration_seconds") val durationSeconds: Int? = null,
     @SerialName("created_at") val createdAt: String,
     @SerialName("completed_at") val completedAt: String? = null,
+    @SerialName("recording_url") val recordingUrl: String? = null,
 )
 
 @Serializable
@@ -160,6 +161,14 @@ sealed class CopilotEvent {
         val sourceType: String? = null,   // "call" | "chat" | "application" | null
         val sourceLabel: String? = null,
     ) : CopilotEvent()
+
+    /**
+     * El backend pide que el cliente ejecute una acción nativa
+     * (ej. `action="create_event"` dispara EventKit en iOS).
+     * `payload` es el JSON raw del campo `payload` del SSE event.
+     */
+    data class ClientAction(val action: String, val payload: String) : CopilotEvent()
+
     data class Done(val elapsedMs: Long) : CopilotEvent()
     data class Error(val message: String) : CopilotEvent()
 }

@@ -28,6 +28,8 @@ import com.midas.ui.i18n.*
 import com.midas.ui.onboarding.OnboardingScreen
 import com.midas.ui.profile.ProfileScreen
 import com.midas.ui.voip.VoipDialScreen
+import com.midas.audioplayer.AudioPlayerBridge
+import com.midas.calendar.CalendarBridge
 import com.midas.voip.VoipCallManager
 import com.midas.ui.theme.LocalMidasColors
 import com.midas.ui.theme.MidasTheme
@@ -47,6 +49,8 @@ fun MidasApp(
         )
     },
     voipCallManager: VoipCallManager? = null,
+    calendarBridge: CalendarBridge? = null,
+    audioPlayerBridge: AudioPlayerBridge? = null,
 ) {
     val storedApiKey by settings.apiKey.collectAsState()
     val onboarded by settings.onboarded.collectAsState()
@@ -70,6 +74,8 @@ fun MidasApp(
                     apiClient = apiClient,
                     settings = settings,
                     voipCallManager = voipCallManager,
+                    calendarBridge = calendarBridge,
+                    audioPlayerBridge = audioPlayerBridge,
                     currentLanguage = currentLanguage,
                     onLanguageChange = {
                         currentLanguage = it
@@ -92,6 +98,8 @@ private fun MainScaffold(
     apiClient: MidasApiClient,
     settings: SettingsRepository,
     voipCallManager: VoipCallManager?,
+    calendarBridge: CalendarBridge?,
+    audioPlayerBridge: AudioPlayerBridge?,
     currentLanguage: Language,
     onLanguageChange: (Language) -> Unit,
     onLogout: () -> Unit,
@@ -126,6 +134,7 @@ private fun MainScaffold(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(backgroundColor)
+                            .navigationBarsPadding()
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically,
@@ -205,7 +214,7 @@ private fun MainScaffold(
                         }
                     }
                     Screen.Applications -> ApplicationListScreen(apiClient)
-                    Screen.Copilot -> CopilotScreen(apiClient = apiClient)
+                    Screen.Copilot -> CopilotScreen(apiClient = apiClient, calendarBridge = calendarBridge)
                     Screen.Calls -> CallListScreen(
                         apiClient = apiClient,
                         onNewRecording = { currentScreen = Screen.NewRecording },
@@ -221,6 +230,7 @@ private fun MainScaffold(
                             CallDetailScreen(
                                 apiClient = apiClient,
                                 callId = id,
+                                audioPlayerBridge = audioPlayerBridge,
                                 onBack = { currentScreen = Screen.Calls },
                             )
                         } else {

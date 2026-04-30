@@ -34,9 +34,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.midas.calendar.CalendarBridge
+import com.midas.calendar.CalendarErrorReason
 import com.midas.data.api.MidasApiClient
 import com.midas.domain.model.CopilotEvent
 import com.midas.domain.model.CopilotHistoryItem
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import com.midas.ui.components.ArrowForwardGlyph
 import com.midas.ui.components.MidasMonogram
 import com.midas.ui.i18n.LocalStrings
@@ -61,7 +68,10 @@ private data class Source(val type: Type, val label: String) {
 }
 
 @Composable
-fun CopilotScreen(apiClient: MidasApiClient) {
+fun CopilotScreen(
+    apiClient: MidasApiClient,
+    calendarBridge: CalendarBridge? = null,
+) {
     val s = LocalStrings.current
     val colors = LocalMidasColors.current
 
@@ -111,12 +121,32 @@ fun CopilotScreen(apiClient: MidasApiClient) {
                                 val src = event.toSource(s) ?: return@map m
                                 m.copy(sources = m.sources + src)
                             }
+                            is CopilotEvent.ClientAction -> m  // handled below, no UI update yet
                             is CopilotEvent.Done -> m.copy(thinking = false)
                             is CopilotEvent.Error -> m.copy(
                                 thinking = false,
                                 text = if (m.text.isEmpty()) "Error: ${event.message}" else m.text,
                             )
                         }
+                    }
+                    if (event is CopilotEvent.ClientAction) {
+                        handleClientAction(
+                            event = event,
+                            bridge = calendarBridge,
+                            strings = s,
+                            onResult = { src ->
+                                messages = messages.map { m ->
+                                    if (m.id == assistantId) m.copy(sources = m.sources + src) else m
+                                }
+                            },
+                            onError = { errMsg ->
+                                messages = messages.map { m ->
+                                    if (m.id == assistantId) m.copy(
+                                        text = if (m.text.isEmpty()) errMsg else "${m.text}\n\n⚠️ $errMsg",
+                                    ) else m
+                                }
+                            },
+                        )
                     }
                     if (event is CopilotEvent.Done || event is CopilotEvent.Error) {
                         state = CopilotState.Answered
@@ -518,4 +548,60 @@ private fun CopilotEvent.ToolResult.toSource(s: com.midas.ui.i18n.Strings): Sour
         else -> return null
     }
     return Source(type = type, label = sl)
+}
+
+private val clientActionJson = Json { ignoreUnknownKeys = true }
+
+/**
+ * Dispatcha un ClientAction event al bridge nativo correspondiente.
+ *
+ * En v0.1 solo manejamos `action="create_event"` → CalendarBridge.
+ * Si el bridge no está registrado (Android, o iOS antes de inicializar
+ * AppDelegate), reportamos error visible al usuario.
+ */
+private fun handleClientAction(
+    event: CopilotEvent.ClientAction,
+    bridge: CalendarBridge?,
+    strings: com.midas.ui.i18n.Strings,
+    onResult: (Source) -> Unit,
+    onError: (String) -> Unit,
+) {
+    when (event.action) {
+        "create_event" -> {
+            if (bridge == null) {
+                onError(strings.copilotCalendarError)
+                return
+            }
+            val payload = try {
+                clientActionJson.parseToJsonElement(event.payload).jsonObject
+            } catch (_: Exception) {
+                onError(strings.copilotCalendarError)
+                return
+            }
+            val title = payload["title"]?.jsonPrimitive?.contentOrNull.orEmpty()
+            val whenIso = payload["when_iso"]?.jsonPrimitive?.contentOrNull.orEmpty()
+            val duration = payload["duration_minutes"]?.jsonPrimitive?.intOrNull ?: 30
+            if (title.isEmpty() || whenIso.isEmpty()) {
+                onError(strings.copilotCalendarError)
+                return
+            }
+            bridge.createEvent(
+                title = title,
+                whenIso = whenIso,
+                durationMinutes = duration,
+                onSuccess = {
+                    onResult(Source(Source.Type.Application, strings.copilotCalendarAdded))
+                },
+                onError = { reason, _ ->
+                    val msg = when (reason) {
+                        CalendarErrorReason.PERMISSION_DENIED -> strings.copilotCalendarDenied
+                        else -> strings.copilotCalendarError
+                    }
+                    onError(msg)
+                },
+            )
+        }
+        // Future: "open_url", "dial_number", etc.
+        else -> { /* unknown action — ignore silently */ }
+    }
 }
