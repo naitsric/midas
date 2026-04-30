@@ -33,4 +33,10 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.9.3")
+
+    // Chime SDK Android. La AAR principal trae `amazon-chime-sdk-media`
+    // como transitiva con los binarios WebRTC (~10MB). Si en el futuro
+    // queremos ahorrar peso podemos `exclude(...)` esa transitiva y usar
+    // `amazon-chime-sdk-media-no-video-codecs` en su lugar.
+    implementation("software.aws.chimesdk:amazon-chime-sdk:0.25.0")
 }
