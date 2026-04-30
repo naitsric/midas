@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.midas.applications.export.todayIsoDate
 import com.midas.data.api.MidasApiClient
 import com.midas.domain.model.ApplicantData
 import com.midas.domain.model.CreditApplication
@@ -53,6 +55,7 @@ fun ApplicationListScreen(apiClient: MidasApiClient) {
     var loading by remember { mutableStateOf(true) }
     var selectedApp by remember { mutableStateOf<CreditApplication?>(null) }
     var filter by remember { mutableStateOf(AppFilter.All) }
+    var exportSheetVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -107,19 +110,44 @@ fun ApplicationListScreen(apiClient: MidasApiClient) {
                         letterSpacing = (-0.5).sp,
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(colors.primaryAccent),
-                    contentAlignment = Alignment.Center,
+                // Header actions: download (⤓) + create (+) — paralelos.
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top,
                 ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = null,
-                        tint = colors.primaryAccentOn,
-                        modifier = Modifier.size(18.dp),
-                    )
+                    val downloadBg = if (colors.isDark) Color.White.copy(alpha = 0.05f) else Color.Black.copy(alpha = 0.04f)
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(downloadBg)
+                            .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+                            .clickable(enabled = applications.isNotEmpty()) {
+                                exportSheetVisible = true
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            Icons.Default.FileDownload,
+                            contentDescription = s.appsDownload,
+                            tint = if (applications.isNotEmpty()) colors.textPrimary else colors.muted,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.primaryAccent),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            tint = colors.primaryAccentOn,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                 }
             }
 
@@ -234,6 +262,20 @@ fun ApplicationListScreen(apiClient: MidasApiClient) {
                 }
             }
         }
+
+        ApplicationsExportSheet(
+            visible = exportSheetVisible,
+            allApplications = applications,
+            filteredApplications = filtered,
+            currentFilterLabel = when (filter) {
+                AppFilter.All -> s.appsFilterAll
+                AppFilter.Drafts -> s.appsFilterDrafts
+                AppFilter.Submitted -> s.appsFilterSubmitted
+                AppFilter.Review -> s.appsFilterReview
+            },
+            onDismiss = { exportSheetVisible = false },
+            nowIsoDate = remember { todayIsoDate() },
+        )
     }
 }
 

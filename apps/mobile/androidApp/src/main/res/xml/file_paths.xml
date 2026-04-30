@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Paths exposed to other apps via FileProvider. The export sheet writes
+  CSVs to `cacheDir/midas-export/`, so we authorise that subtree (the
+  `<cache-path>` resolves to Context.getCacheDir()).
+-->
+<paths>
+    <cache-path
+        name="midas_export"
+        path="midas-export/" />
+</paths>
