@@ -30,5 +30,20 @@
             android:name=".voip.MidasCallForegroundService"
             android:foregroundServiceType="microphone"
             android:exported="false" />
+
+        <!-- FileProvider exposes the cacheDir to other apps via content://
+             URIs so the export sheet can hand off the generated CSV to
+             Drive / WhatsApp / Mail without FileUriExposedException on
+             API 24+. Authority must match what FileShareBridge.android.kt
+             constructs at runtime: "${applicationId}.fileprovider". -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>

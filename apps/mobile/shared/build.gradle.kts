@@ -33,6 +33,9 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.ktor.client.cio)
+            // FileProvider for FileShareBridge.android.kt (writes to cacheDir
+            // and exposes a content:// URI to other apps via share intent).
+            implementation("androidx.core:core-ktx:1.13.1")
         }
 
         iosMain.dependencies {
