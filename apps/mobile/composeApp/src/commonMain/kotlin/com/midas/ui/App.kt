@@ -134,6 +134,7 @@ private fun MainScaffold(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(backgroundColor)
+                            .navigationBarsPadding()
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically,
