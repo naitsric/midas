@@ -379,6 +379,14 @@ export class InfraStack extends cdk.Stack {
       unhealthyThresholdCount: 5,
     });
 
+    // Backend reads recording WAVs to generate fresh pre-signed URLs for the
+    // mobile app's in-app audio player (the URL stored in DB expires in 1h).
+    recordingsBucket.grantRead(backendService.taskDefinition.taskRole);
+    backendService.taskDefinition.defaultContainer?.addEnvironment(
+      'RECORDINGS_BUCKET',
+      recordingsBucket.bucketName,
+    );
+
     // Backend needs to register PushKit device tokens against the APNS_VOIP
     // PlatformApplication and publish to per-advisor endpoints.
     apnsVoipPlatformArnParam.grantRead(backendService.taskDefinition.taskRole);

@@ -202,6 +202,14 @@ def create_call_router(
     )
 
     def _to_response(call: CallRecording) -> CallResponse:
+        # Generate a fresh pre-signed URL on every read — the URL stored in
+        # `call.recording_url` came from the Recording Processor Lambda with
+        # a 1h TTL and is likely expired by the time the advisor opens the
+        # detail screen. Falls back to the stored URL if signing isn't
+        # configured (tests, dev without AWS creds).
+        from src.call.infrastructure.s3_signing import presign_recording_url
+
+        fresh_url = presign_recording_url(call.recording_key) or call.recording_url
         return CallResponse(
             id=str(call.id),
             client_name=call.client_name,
@@ -209,7 +217,7 @@ def create_call_router(
             transcript=call.transcript,
             duration_seconds=call.duration_seconds,
             voip_call_id=call.voip_call_id,
-            recording_url=call.recording_url,
+            recording_url=fresh_url,
             created_at=call.created_at.isoformat(),
             completed_at=call.completed_at.isoformat() if call.completed_at else None,
         )
