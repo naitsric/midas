@@ -40,14 +40,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     lazy var voipDispatcher = SwiftVoipDispatcher(callKitManager: callKitManager)
     lazy var voipCallManager = VoipCallFactoryKt.createVoipCallManager(dispatcher: voipDispatcher)
     lazy var calendarBridge = CalendarBridgeImpl()
+    lazy var audioPlayerBridge = AudioPlayerBridgeImpl()
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        // Make the VoipCallManager + CalendarBridge visible to Compose screens via MidasContext.
+        // Make the native bridges visible to Compose screens via MidasContext.
         MidasContext.shared.voipCallManager = voipCallManager
         MidasContext.shared.calendarBridge = calendarBridge
+        MidasContext.shared.audioPlayerBridge = audioPlayerBridge
         pushKitHandler.delegate = self
         pushKitHandler.start()
         // Proactively request microphone access at launch so the user gets the

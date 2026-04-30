@@ -113,6 +113,7 @@ data class CallDetail(
     @SerialName("duration_seconds") val durationSeconds: Int? = null,
     @SerialName("created_at") val createdAt: String,
     @SerialName("completed_at") val completedAt: String? = null,
+    @SerialName("recording_url") val recordingUrl: String? = null,
 )
 
 @Serializable

@@ -28,6 +28,7 @@ import com.midas.ui.i18n.*
 import com.midas.ui.onboarding.OnboardingScreen
 import com.midas.ui.profile.ProfileScreen
 import com.midas.ui.voip.VoipDialScreen
+import com.midas.audioplayer.AudioPlayerBridge
 import com.midas.calendar.CalendarBridge
 import com.midas.voip.VoipCallManager
 import com.midas.ui.theme.LocalMidasColors
@@ -49,6 +50,7 @@ fun MidasApp(
     },
     voipCallManager: VoipCallManager? = null,
     calendarBridge: CalendarBridge? = null,
+    audioPlayerBridge: AudioPlayerBridge? = null,
 ) {
     val storedApiKey by settings.apiKey.collectAsState()
     val onboarded by settings.onboarded.collectAsState()
@@ -73,6 +75,7 @@ fun MidasApp(
                     settings = settings,
                     voipCallManager = voipCallManager,
                     calendarBridge = calendarBridge,
+                    audioPlayerBridge = audioPlayerBridge,
                     currentLanguage = currentLanguage,
                     onLanguageChange = {
                         currentLanguage = it
@@ -96,6 +99,7 @@ private fun MainScaffold(
     settings: SettingsRepository,
     voipCallManager: VoipCallManager?,
     calendarBridge: CalendarBridge?,
+    audioPlayerBridge: AudioPlayerBridge?,
     currentLanguage: Language,
     onLanguageChange: (Language) -> Unit,
     onLogout: () -> Unit,
@@ -225,6 +229,7 @@ private fun MainScaffold(
                             CallDetailScreen(
                                 apiClient = apiClient,
                                 callId = id,
+                                audioPlayerBridge = audioPlayerBridge,
                                 onBack = { currentScreen = Screen.Calls },
                             )
                         } else {

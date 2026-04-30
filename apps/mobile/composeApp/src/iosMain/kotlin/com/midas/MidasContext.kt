@@ -1,5 +1,6 @@
 package com.midas
 
+import com.midas.audioplayer.AudioPlayerBridge
 import com.midas.calendar.CalendarBridge
 import com.midas.data.api.MidasApiClient
 import com.midas.data.defaultBaseUrl
@@ -31,6 +32,9 @@ object MidasContext {
 
     /** Settable desde Swift (AppDelegate). Implementación nativa con EventKit. */
     var calendarBridge: CalendarBridge? = null
+
+    /** Settable desde Swift (AppDelegate). Implementación nativa con AVPlayer. */
+    var audioPlayerBridge: AudioPlayerBridge? = null
 
     fun currentApiKey(): String? = settings.apiKey.value
 
